@@ -29,5 +29,6 @@ export default {
   // n.b. you need to re-run build after changing these debug settings,
   // for them to have effect on the production app.
   lvDevMode: true,
+  routerDevMode: true,
   apiDevMode: false
 }
