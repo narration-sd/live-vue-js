@@ -32,7 +32,28 @@ export function directAndEditMatch (
 
 export function testit (arg, arg2) {
   // let ret = '(/.*/entries/)?' + arg
-  let ret = '(/.*/entries' + snakeToCamel(arg) + ')?(' + arg + ')?' + arg2
+  // let ret = '(/.*/entries' + snakeToCamel(arg) + ')?(' + arg + ')?' + (arg2 || '.*')
+  // let ret = '(/.*/entries' + snakeToCamel(arg) + ')?(' +
+  //   '/?[\\d-]*' + arg + ')?' +
+  //   ('/?' + (arg2 || '.*'))
+  let ret = // '/(' +
+    ':foo(' + arg + '/?)?' + // '(' +
+    ':wut(/[\\w\\d-]+/entries' + snakeToCamel(arg) + '/?)?' +
+    // ':foo(' + arg + '):wut(/[\\w\\d-]+/entries' + snakeToCamel(arg) // + '/' +
+    ':' + (arg2 || 'dummy') + '([\\w\\d-]+)?'
+  // ':foo(' + arg + '/?)?' + // '(' +
+  // ':wut(/[\\w\\d-]+/entries' + snakeToCamel(arg) + ')?' +
+  // // ':foo(' + arg + '):wut(/[\\w\\d-]+/entries' + snakeToCamel(arg) // + '/' +
+  // ':' + (arg2 || 'dummy') + '(.*)?'
+
+  // (arg2 || ':dummy(.*)') + ')'
+  // let ret = // '/(' +
+  //   '(' + arg + ')?' + '(' +
+  //   '/:wut([\\w\\d-]+)/entries' + snakeToCamel(arg) + '/' +
+  //   (arg2 || ':dummy(.*)') + ')?'
+  // '/*/entries' + snakeToCamel(arg) + '/' + (arg2 || '*') // + ')?'
+  // '/[\\w\\d-]+/entries' + snakeToCamel(arg) + '/' + (arg2 || '.*') // + ')?'
+  // '(/:wut/entries' + snakeToCamel(arg) + '/?' + (arg2 || ':dummy') + ')?'
   // let ret = '(/.*/entries' + snakeToCamel(arg) + ')?(' + arg + ')?'
   // let ret = '/.*/entries' + snakeToCamel(arg) + '|' + arg + ''
   // let ret = '(/.*/entries/)?' + snakeToCamel(arg)
