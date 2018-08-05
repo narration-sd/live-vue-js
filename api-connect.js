@@ -90,13 +90,16 @@ export default class ApiConnect extends BaseConnect {
 
   okToUseDataDiv (dataResult) {
     if (dataResult.lvMeta.dataSourceType !== 'element-api') {
+      console.log('api-connect received div data instead from: ' +
+        dataResult.lvMeta.dataSourceType)
       return false // right away, it's not for this customer
     }
 
     let apiPattern = dataResult.lvMeta.dataApiPattern
+    let ok = false
 
     if (dataResult.lvMeta.isLivePreview) {
-      // n.b. this is quite like matchingg resolvedApiPattern() in Sources.php.
+      // n.b. this is quite like matching resolvedApiPattern() in Sources.php.
       // However, be very careful, as there are many adaptations to js.
       // In particular, even the re pattern differs, due to escapes
       let source = window.location.pathname
@@ -104,10 +107,10 @@ export default class ApiConnect extends BaseConnect {
       let re = new RegExp(pattern)
       let requestItems = re.exec(source)
 
-      this.apiLog('requestItem: ' + JSON.stringify(requestItems))
+      this.apiLog('requestItems: ' + JSON.stringify(requestItems))
 
       if (requestItems === null) {
-        let msg = 'okToUseDataDiv: no match on: ' + source
+        let msg = 'okToUseDataDiv: no proper uri match on: ' + source
         throw new Error(msg)
       }
 
@@ -120,20 +123,18 @@ export default class ApiConnect extends BaseConnect {
 
       this.apiLog('requestPattern: ' + requestPattern)
 
-      let ok = (apiPattern === requestPattern)
+      ok = (apiPattern === requestPattern)
 
       this.apiLog(ok
         ? ('ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern)
         : ('not ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern))
-
-      return ok
     } else {
-      let ok = (apiPattern === window.location.pathname)
+      ok = (apiPattern === window.location.pathname)
       this.apiLog(ok
         ? ('ok to use Live Vue div having: ' + apiPattern + ' vs ' + window.location.pathname)
         : ('not ok to use Live Vue div having: ' + apiPattern + ' vs ' + window.location.pathname))
-
-      return ok
     }
+
+    return ok
   }
 }

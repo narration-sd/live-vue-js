@@ -17,12 +17,17 @@
  */
 
 import BaseConnect from './base-connect'
+// import LVHelpers from '@/live-vue/helpers.js'
+//
+// let helpers = new LVHelpers()
 
 export default class GqlConnect extends BaseConnect {
   constructor (route = null, reporter = null, sourceBase = null) {
     super(route, reporter, sourceBase, 'gapi/query') // set the tag for gql query
 
     // here define any dynamic post-construction properties for BaseConnect
+
+    this.requestUri = this.formUri()
   }
 
   convertLiveVueDiv () {
@@ -33,7 +38,7 @@ export default class GqlConnect extends BaseConnect {
       let response = JSON.parse(source)
       super.apiLog('convertLiveVueDiv source is: ' + JSON.stringify(response))
 
-      let dataResult = {}
+      let fullResult = {}
 
       if (response.errors !== undefined) { // errors, in gql
         let errMsg = 'convertLiveVueDiv: original page server reports error: ' +
@@ -42,17 +47,17 @@ export default class GqlConnect extends BaseConnect {
         this.reporter(response.error)
         throw new Error(errMsg)
       } else {
-        dataResult = response
+        fullResult = response
       }
 
-      if (!dataResult) {
+      if (!fullResult) {
         this.devLog('convertLiveVueDiv: Empty data response')
         return null
       }
 
-      this.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(dataResult))
+      this.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(fullResult))
 
-      return dataResult
+      return fullResult
     } else {
       this.devLog('no source div, trying remote api')
       return null // because we signal with this, so remote can get called
@@ -62,7 +67,7 @@ export default class GqlConnect extends BaseConnect {
   convertRemoteApi (response) {
     this.apiLog('convertRemoteApi gql data is: ' + JSON.stringify(response))
 
-    let dataResult = {}
+    let fullResult = {}
 
     if (response.errors !== undefined) {
       let errMsg = 'convertRemoteApi: gql server reports: ' +
@@ -70,26 +75,75 @@ export default class GqlConnect extends BaseConnect {
         ': ' + JSON.stringify(response.errors)
       throw new Error(errMsg)
     } else {
-      dataResult = response.data
+      fullResult = response
     }
 
-    if (this.isEmpty(dataResult)) {
+    if (this.isEmpty(fullResult)) {
       throw new Error('convertRemoteApi: gql Empty data response')
     }
 
-    this.apiLog('convertRemoteApi gql result is: ' + JSON.stringify(dataResult))
+    this.devLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResult))
 
-    return dataResult
+    return fullResult
   }
 
-  okToUseDataDiv (dataResult) {
-    return (dataResult.lvMeta.dataSourceType === 'gapi' &&
-      dataResult.lvMeta.dataSource === this.dataQuery)
+  okToUseDataDiv (fullResult) {
+    if (fullResult.lvMeta.dataSourceType !== 'gapi') {
+      console.log('gql-connect received div data instead from: ' +
+        fullResult.lvMeta.dataSourceType)
+      return false // right away, it's not for this customer
+    }
+
+    let apiPattern = fullResult.lvMeta.dataApiPattern
+    let ok = false
+
+    fullResult.lvMeta.isLivePreview = true
+
+    if (fullResult.lvMeta.isLivePreview) {
+      let requestPattern = '?script=' + this.dataQuery + '&uri=' + this.requestUri
+      this.devLog('requestPattern: ' + requestPattern)
+
+      ok = (apiPattern === requestPattern)
+
+      this.devLog(ok
+        ? ('ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern)
+        : ('not ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern))
+    } else {
+      ok = false
+      this.apiLog('trying to use direct return as if Live Vue div, on: ' + apiPattern)
+    }
+
+    return ok
+    //
+    //
+    // this.devLog('okToUseDataDiv: ' + this.dataQuery +
+    //   ' vs ' + fullResult.lvMeta.dataSource)
+    // return (fullResult.lvMeta.dataSourceType === 'gapi' &&
+    //   fullResult.lvMeta.dataSource === this.dataQuery)
+  }
+
+  formUri () {
+    let source = window.location.pathname
+
+    // see notes in Sources.php resolvedGapiPattern, as we are using a
+    // simplest pattern here for reason, with changed approach if need more
+    let pattern = '([\\d-]+)?([\\w-]+)$'
+    let re = new RegExp(pattern)
+    let requestItems = re.exec(source)
+    let lastIndex = requestItems.length - 1
+
+    this.devLog('requestItems: ' + JSON.stringify(requestItems))
+    let requestUri = requestItems[lastIndex].length === 0
+      ? '(missing)'
+      : requestItems[lastIndex]
+    return requestUri
   }
 
   dataQueryNormalize (dataQuery) {
     this.apiLog('gql dataQuery to normalize: ' + dataQuery)
-    dataQuery = '?script=' + dataQuery
+    dataQuery = '?script=' + dataQuery + '&uri=' + this.requestUri
+    this.devLog('normalized query: ' + dataQuery)
+    this.devLog('route avail: ' + this.route.params.pageURI)
     return dataQuery
   }
 }

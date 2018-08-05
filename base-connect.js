@@ -88,9 +88,9 @@ export default class BaseConnect {
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
       this.devLog('see if Live Vue div has data for ' + dataQuery)
-      let dataResult = []
+      let fullResult = []
       try {
-        dataResult = this.convertLiveVueDiv() // try for LiveVue div, first
+        fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
       } catch (err) {
         console.log('Live Vue div or its conversion has errors -- note ' +
           'that messages may be out of order, due to asynchronous ' +
@@ -98,11 +98,11 @@ export default class BaseConnect {
         throw err
       }
 
-      if (dataResult && this.okToUseDataDiv(dataResult)) {
+      if (fullResult && this.okToUseDataDiv(fullResult)) {
         this.devLog('successful using Live Vue div data for ' + dataQuery)
         this.apiLog('api data for ' + dataQuery +
-          ' from Live Vue div: ' + JSON.stringify(dataResult))
-        appDataSaver(dataResult)
+          ' from Live Vue div: ' + JSON.stringify(fullResult))
+        appDataSaver(fullResult.data)
       } else {
         this.devLog('div doesn\'t have data for ' + dataQuery +
           ', so now trying api data call on server')
@@ -144,7 +144,7 @@ export default class BaseConnect {
     throw new Error('BaseConnect: must provide actual convertRemoteApi() in inheriting Connect class...')
   }
 
-  okToUseDataDiv (dataResult) {
+  okToUseDataDiv (fullResult) {
     console.log('BaseConnect: NO DATA DIV VALIDATION')
     throw new Error('BaseConnect: must provide actual okToUseDataDiv() ' +
       ' in inheriting Connect class...')
@@ -164,9 +164,9 @@ export default class BaseConnect {
   pullFromApi (appDataSaver) {
     this.formDataUrl()
     this.getOnlineApiData(this.dataUrl, this.remoteConversion)
-      .then(result => {
-        this.apiLog('pullFromApi result: ' + JSON.stringify(result))
-        appDataSaver(result)
+      .then(fullResult => {
+        this.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
+        appDataSaver(fullResult.data)
         this.devLog('pullFromAp: successful from ' + this.dataUrl)
       })
       .catch(error => {
@@ -289,8 +289,8 @@ export default class BaseConnect {
   // --- some utilities,  ---
 
   // this is a call for appDataSaver to use when a Vuex store is present
-  storeAppData (context, dataResult) {
-    context.commit('setAppData', dataResult)
+  storeAppData (context, fullResult) {
+    context.commit('setAppData', fullResult)
   }
 
   isString (obj) { // it's robust
