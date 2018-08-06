@@ -17,9 +17,9 @@
  */
 
 import BaseConnect from './base-connect'
-// import LVHelpers from '@/live-vue/helpers.js'
-//
-// let helpers = new LVHelpers()
+import LVHelpers from '@/live-vue/helpers.js'
+
+let helpers = new LVHelpers()
 
 export default class GqlConnect extends BaseConnect {
   constructor (route = null, reporter = null, sourceBase = null) {
@@ -94,6 +94,9 @@ export default class GqlConnect extends BaseConnect {
       return false // right away, it's not for this customer
     }
 
+    this.devLog('route: ' + helpers.stringifyOnce(this.router.currentRoute))
+    this.requestUri = this.formUri()
+
     let apiPattern = fullResult.lvMeta.dataApiPattern
     let ok = false
 
@@ -110,7 +113,7 @@ export default class GqlConnect extends BaseConnect {
         : ('not ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern))
     } else {
       ok = false
-      this.apiLog('trying to use direct return as if Live Vue div, on: ' + apiPattern)
+      this.apiLog('not ok to use direct return as if Live Vue div, on: ' + apiPattern)
     }
 
     return ok
@@ -123,7 +126,8 @@ export default class GqlConnect extends BaseConnect {
   }
 
   formUri () {
-    let source = window.location.pathname
+    let source = this.router.currentRoute.path
+    this.devLog('formUri: source: ' + source)
 
     // see notes in Sources.php resolvedGapiPattern, as we are using a
     // simplest pattern here for reason, with changed approach if need more

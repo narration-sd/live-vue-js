@@ -12,6 +12,7 @@
 import axios from 'axios'
 import config from '@/live-vue/config.js'
 import Vue from 'vue'
+import router from '@/main.js'
 
 /*
  * The design premise of the Connect objects is to easily replace
@@ -38,8 +39,8 @@ import Vue from 'vue'
  * The config/config.js file provides configuration, in particular
  *
  * n.b. You may notice an ample distribution of conditional console logging,
- * the this.apiLog() and this.devLog() calls. These and the  presence of
- * stringifyOnce() can be very useful in developing a fresh Connect type.
+ * the apiLog(), and devLog() calls. These and the presence of
+ * LVHelpers.stringifyOnce() can be very useful in developing a fresh Connect type.
  * You can turn them on and off in the config/config.js file -- remember
  * to npm run build when you are changing these for staging or production.
 */
@@ -69,6 +70,7 @@ export default class BaseConnect {
       throw new Error('BaseConnect: must always provide a route')
     }
     this.route = route
+    this.router = router // used to find changed paths
 
     // n.b. there will be other dynamic properties from methods or children
   }
