@@ -102,16 +102,16 @@ export default class BaseConnect {
 
       if (fullResult && this.okToUseDataDiv(fullResult)) {
         this.devLog('successful using Live Vue div data for ' + dataQuery)
-        this.apiLog('api data for ' + dataQuery +
+        this.devLog('data for ' + dataQuery +
           ' from Live Vue div: ' + JSON.stringify(fullResult))
-        appDataSaver(fullResult.data)
+        appDataSaver(fullResult)
       } else {
         this.devLog('div doesn\'t have data for ' + dataQuery +
           ', so now trying api data call on server')
         this.pullFromApi(appDataSaver)
       }
     } else {
-      this.devLog('immediate api data call on server call, as configured')
+      this.devLog('immediate data call on server, as configured')
       this.formDataUrl() // not yet done in this case
       this.pullFromApi(appDataSaver)
     }

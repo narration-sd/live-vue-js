@@ -17,9 +17,9 @@
  */
 
 import BaseConnect from './base-connect'
-import LVHelpers from '@/live-vue/helpers.js'
-
-let helpers = new LVHelpers()
+// import LVHelpers from '@/live-vue/helpers.js'
+//
+// let helpers = new LVHelpers()
 
 export default class GqlConnect extends BaseConnect {
   constructor (route = null, reporter = null, sourceBase = null) {
@@ -54,7 +54,6 @@ export default class GqlConnect extends BaseConnect {
         this.devLog('convertLiveVueDiv: Empty data response')
         return null
       }
-
       this.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(fullResult))
 
       return fullResult
@@ -71,8 +70,8 @@ export default class GqlConnect extends BaseConnect {
 
     if (response.errors !== undefined) {
       let errMsg = 'convertRemoteApi: gql server reports: ' +
-        // this.dataUrl +
-        ': ' + JSON.stringify(response.errors)
+        // this.dataUrl + ': ' +
+        JSON.stringify(response.errors)
       throw new Error(errMsg)
     } else {
       fullResult = response
@@ -81,8 +80,7 @@ export default class GqlConnect extends BaseConnect {
     if (this.isEmpty(fullResult)) {
       throw new Error('convertRemoteApi: gql Empty data response')
     }
-
-    this.devLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResult))
+    this.apiLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResult))
 
     return fullResult
   }
@@ -94,60 +92,55 @@ export default class GqlConnect extends BaseConnect {
       return false // right away, it's not for this customer
     }
 
-    this.devLog('route: ' + helpers.stringifyOnce(this.router.currentRoute))
     this.requestUri = this.formUri()
 
     let apiPattern = fullResult.lvMeta.dataApiPattern
     let ok = false
 
-    fullResult.lvMeta.isLivePreview = true
+    // n.b. we could be using this for actual Live Vue/Prevue, or
+    // equally for Live Vue's no-round-trip speedup on spa opening
 
-    if (fullResult.lvMeta.isLivePreview) {
-      let requestPattern = '?script=' + this.dataQuery + '&uri=' + this.requestUri
-      this.devLog('requestPattern: ' + requestPattern)
+    // handy to base error reporting if we make this a dynamic property
+    this.requestPattern = '?script=' + this.dataQuery + '&uri=' + this.requestUri
 
-      ok = (apiPattern === requestPattern)
+    ok = (apiPattern === this.requestPattern)
 
-      this.devLog(ok
-        ? ('ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern)
-        : ('not ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern))
-    } else {
-      ok = false
-      this.apiLog('not ok to use direct return as if Live Vue div, on: ' + apiPattern)
-    }
+    this.devLog(ok
+      ? ('ok to use Live Vue div having: ' + apiPattern +
+        ' vs ' + this.requestPattern)
+      : ('not ok to use Live Vue div having: ' + apiPattern +
+        ' vs ' + this.requestPattern))
 
     return ok
-    //
-    //
-    // this.devLog('okToUseDataDiv: ' + this.dataQuery +
-    //   ' vs ' + fullResult.lvMeta.dataSource)
-    // return (fullResult.lvMeta.dataSourceType === 'gapi' &&
-    //   fullResult.lvMeta.dataSource === this.dataQuery)
   }
 
   formUri () {
     let source = this.router.currentRoute.path
-    this.devLog('formUri: source: ' + source)
-
+    this.devLog('formUri: router path is: ' + source) // can't we just use that?
     // see notes in Sources.php resolvedGapiPattern, as we are using a
     // simplest pattern here for reason, with changed approach if need more
+    // but really, again, all these need to go to explode with small regexes
     let pattern = '([\\d-]+)?([\\w-]+)$'
     let re = new RegExp(pattern)
     let requestItems = re.exec(source)
     let lastIndex = requestItems.length - 1
 
-    this.devLog('requestItems: ' + JSON.stringify(requestItems))
+    this.apiLog('requestItems: ' + JSON.stringify(requestItems))
     let requestUri = requestItems[lastIndex].length === 0
       ? '(missing)'
       : requestItems[lastIndex]
+    this.devLog('formUri: requestUri is: ' + requestUri)
+
     return requestUri
   }
 
   dataQueryNormalize (dataQuery) {
     this.apiLog('gql dataQuery to normalize: ' + dataQuery)
-    dataQuery = '?script=' + dataQuery + '&uri=' + this.requestUri
-    this.devLog('normalized query: ' + dataQuery)
-    this.devLog('route avail: ' + this.route.params.pageURI)
+    let path = this.router.currentRoute.path.substr(1) // correct...
+    dataQuery = '?script=' + dataQuery + '&uri=' + path
+    // dataQuery = '?script=' + dataQuery + '&uri=' + this.requestUri
+    this.apiLog('normalized query: ' + dataQuery)
+    this.apiLog('route avail: ' + this.route.params.pageURI)
     return dataQuery
   }
 }
