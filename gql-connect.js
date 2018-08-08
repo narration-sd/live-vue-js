@@ -17,9 +17,6 @@
  */
 
 import BaseConnect from './base-connect'
-// import LVHelpers from '@/live-vue/helpers.js'
-//
-// let helpers = new LVHelpers()
 
 export default class GqlConnect extends BaseConnect {
   constructor (route = null, reporter = null, sourceBase = null) {

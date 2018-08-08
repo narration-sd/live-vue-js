@@ -18,9 +18,11 @@
  * They're individually explained.
  */
 
+import getRouter from '@/main.js' // export getRouter() where you construct router
+
 export default {
 
-  adminIntroducer: 'admin', // introducer expected by the Craft installation
+  sourceBase: 'http://koty-ou.test', // unless over-ridden in Connect
 
   // these two are handy when Vuex along with browser persistence is in use
   storePersistence: 1 / 48, // fraction of day = half hour, js formatted, to remember app state
@@ -29,6 +31,10 @@ export default {
   // n.b. you need to re-run build after changing these debug settings,
   // for them to have effect on the production app.
   lvDevMode: true,
-  routerDevMode: true,
-  apiDevMode: false
+  apiDevMode: false,
+  routerDevMode: false,
+
+  // --- below here, don't modify: live-vue required items ---
+
+  getRouter: getRouter // so we can _call_ for router later; won't be known here
 }

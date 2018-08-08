@@ -11,8 +11,6 @@
 
 import axios from 'axios'
 import config from '@/live-vue/config.js'
-import Vue from 'vue'
-import router from '@/main.js'
 
 /*
  * The design premise of the Connect objects is to easily replace
@@ -46,22 +44,23 @@ import router from '@/main.js'
 */
 
 export default class BaseConnect {
-  constructor (route = null, reporter = null, sourceBase = null, sourceTag = 'unset') {
+  constructor (route = null, reporter = null, sourceBase = null, sourceTag = 'none') {
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
 
-    if (sourceBase === null | !this.isString(sourceBase)) {
+    if (!sourceBase | !this.isString(sourceBase)) {
       // try to ease by compatibility with $http.get(), in having a root
       // just use Vue.options itself in that case. But we need to have it
       // tagless, so inheritors can set their own
-      if (Vue.options.liveVueApiRoot) {
-        sourceBase = this.stripTrailingSlash(Vue.options.liveVueApiRoot) + '/' + sourceTag
+      if (config.sourceBase) {
+        sourceBase = this.stripTrailingSlash(config.sourceBase)
       } else {
-        throw new Error('BaseConnect: sourceBase not specified, and no ' +
-          'Vue.options.liveVueApiRoot has been set to substitute...')
+        throw new Error('BaseConnect: config.sourceBase not specified, and no ' +
+          'sourceBase in Connect constructor has been set to substitute...')
       }
     }
 
-    this.dataApi = this.stripTrailingSlash(sourceBase) + '/' // safety normalize
+    this.dataApi = this.stripTrailingSlash(sourceBase) + '/' +
+      this.stripTrailingSlash(sourceTag) + '/'
 
     // reporter can be a nice modal etc, while we provide a simple default
     this.reporter = (reporter !== null) ? reporter : this.consoleReport
@@ -70,7 +69,7 @@ export default class BaseConnect {
       throw new Error('BaseConnect: must always provide a route')
     }
     this.route = route
-    this.router = router // used to find changed paths
+    this.router = config.getRouter() // ready by now
 
     // n.b. there will be other dynamic properties from methods or children
   }
@@ -102,9 +101,9 @@ export default class BaseConnect {
 
       if (fullResult && this.okToUseDataDiv(fullResult)) {
         this.devLog('successful using Live Vue div data for ' + dataQuery)
-        this.devLog('data for ' + dataQuery +
+        this.apiLog('data for ' + dataQuery +
           ' from Live Vue div: ' + JSON.stringify(fullResult))
-        appDataSaver(fullResult)
+        appDataSaver(fullResult.data)
       } else {
         this.devLog('div doesn\'t have data for ' + dataQuery +
           ', so now trying api data call on server')
