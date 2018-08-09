@@ -93,9 +93,9 @@ export default class BaseConnect {
       try {
         fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
       } catch (err) {
-        console.log('Live Vue div or its conversion has errors -- note ' +
-          'that messages may be out of order, due to asynchronous ' +
-          'messaging at basis of Connections.')
+        console.log('Live Vue div or its conversion has errors -- ' +
+          'messages may be out of order, due to asynchronous ' +
+          'basis of server connections.')
         throw err
       }
 
@@ -309,7 +309,7 @@ export default class BaseConnect {
   // this is the default reporter, if one isn't defined for
   // the initial Connect object construction
   consoleReport (error) {
-    console.log('BaseConnect: ' + error.toString())
+    console.log('defaultReporter: ' + error)
   }
 
   // these are handy to keep console log clean when not developing

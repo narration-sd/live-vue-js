@@ -40,13 +40,14 @@ export default class ApiConnect extends BaseConnect {
 
       let dataResult = {}
 
-      if (response.error !== undefined) {
-        // it's member error for element-api, not errors as in gql
+      if (response.errors !== undefined) {
+        // we've translated api or other errors as best can, to gql format
+        // all elements may not be filled in, for element-api code faults
         let errstr = 'convertLiveVueDiv: web page server reports error: ' +
-          response.error.message + ', code: ' + response.error.code
-        console.log(errstr)
-        this.reporter(response.error)
-        throw new Error(errstr)
+          response.errors.message + ', code: ' + response.errors.code +
+          ', file: ' + response.errors.file + ', line: ' + response.errors.line
+        this.reporter(errstr) // for a notifier if present, default console
+        throw new Error('halted for error') // a hard stop, before components fail themselves
       } else {
         dataResult = response
       }
