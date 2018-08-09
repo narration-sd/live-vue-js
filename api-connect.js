@@ -69,21 +69,17 @@ export default class ApiConnect extends BaseConnect {
   convertRemoteApi (response) {
     this.apiLog('convertRemoteApi data is: ' + JSON.stringify(response))
 
-    let dataResult = {}
-
-    if (response.error !== undefined) {
-      console.log('convertRemoteApi: api server reports error: ' +
-        response.error.message)
-      dataResult['errors'] = response.error || {}
-      this.reporter(response.error)
-    } else {
-      dataResult = response
-    }
-
-    if (!dataResult === undefined) {
+    if (response === undefined) {
       console.log('convertRemote: Empty data response')
       return null
     }
+
+    let dataResult = {}
+
+    // direct api responses are flat, but need to look like gql responses
+    dataResult.data = response
+    dataResult.errors = response.error
+    dataResult.lvMeta = {}
 
     this.apiLog('convertRemote result is: ' + JSON.stringify(dataResult))
     return dataResult

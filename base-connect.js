@@ -171,7 +171,7 @@ export default class BaseConnect {
         this.devLog('pullFromAp: successful from ' + this.dataUrl)
       })
       .catch(error => {
-        this.devLog('pullFromAp: ' + error)
+        this.devLog('pullFromApi: ' + error)
         this.reporter(error.toString())
       })
   }
