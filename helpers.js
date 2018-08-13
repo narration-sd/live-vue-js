@@ -17,49 +17,33 @@ export default class LVHelpers {
     return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
   }
 
-  directAndEditMatchesFor (arg, arg2) {
-    // let ret = '(/.*/entries/)?' + arg
-    // let ret = '(/.*/entries' + snakeToCamel(arg) + ')?(' + arg + ')?' + (arg2 || '.*')
-    // let ret = '(/.*/entries' + snakeToCamel(arg) + ')?(' +
-    //   '/?[\\d-]*' + arg + ')?' +
-    //   ('/?' + (arg2 || '.*'))
+  directAndEditMatchesFor (marker, arg2) {
+    // This function allows having only one entry for both runtime and edit
+    // routes, when there is enough information in the paths.
+    //
+    // For home pages and their edit, or other cases like this, you'll simply provide a
+    // route config for each, in the normal way.
+    //
+    // What we are interested in here is only the tail of the path -- after
+    // a marker. However, the marker and its predecessors can occur in two
+    // differing ways: in snake-case naturally (from runtime call), or in
+    // camelCase (from edit), where it will also be prefixed by an admin
+    // introducer we don't care to know, plus '/entries'.
+    //
+    // These factors guide this matcher, which in turn is used within
+    // vue-router, which in turn operates with the path-to-regexp library,
+    // intending to be helpful to easier routing matches. This doesn't allow
+    // all normal regex abilities, but does provide its own special forms
+    // which can be used as if 'or' matchers. Thus our form is a bit unusual.
+    //
+    // https://forbeslindesay.github.io/express-route-tester/ set to 2.0 version
+    // can be very useful in working out such a matcher.
 
-    // *todo* besides making object after housecleaning, see that it works for
-    // pagings, news, etc.. -- longer paths. Doc how this employs
-    // https://forbeslindesay.github.io/express-route-tester/ on 2.9 version,
-    // and special forms of vue-router's path-to-regexp', not ordinary regex,
-    // and then why it's overall optional. But you could add your own.
-
-    let ret = // '/(' +
-      ':foo(' + arg + '/?)?' + // '(' +
-      ':wut(/[\\w\\d-]+/entries' + this.snakeToCamel(arg) + '/?)?' +
-      // ':foo(' + arg + '):wut(/[\\w\\d-]+/entries' + snakeToCamel(arg) // + '/' +
+    let ret =
+      ':discard1(' + marker + '/?)?' + // '(' +
+      ':discard2(/[\\w\\d-]+/entries' + this.snakeToCamel(marker) + '/?)?' +
       ':' + (arg2 || 'dummy') + '([\\w\\d-]+)+'
-    // ':foo(' + arg + '/?)?' + // '(' +
-    // ':wut(/[\\w\\d-]+/entries' + snakeToCamel(arg) + ')?' +
-    // // ':foo(' + arg + '):wut(/[\\w\\d-]+/entries' + snakeToCamel(arg) // + '/' +
-    // ':' + (arg2 || 'dummy') + '(.*)?'
-
-    // (arg2 || ':dummy(.*)') + ')'
-    // let ret = // '/(' +
-    //   '(' + arg + ')?' + '(' +
-    //   '/:wut([\\w\\d-]+)/entries' + snakeToCamel(arg) + '/' +
-    //   (arg2 || ':dummy(.*)') + ')?'
-    // '/*/entries' + snakeToCamel(arg) + '/' + (arg2 || '*') // + ')?'
-    // '/[\\w\\d-]+/entries' + snakeToCamel(arg) + '/' + (arg2 || '.*') // + ')?'
-    // '(/:wut/entries' + snakeToCamel(arg) + '/?' + (arg2 || ':dummy') + ')?'
-    // let ret = '(/.*/entries' + snakeToCamel(arg) + ')?(' + arg + ')?'
-    // let ret = '/.*/entries' + snakeToCamel(arg) + '|' + arg + ''
-    // let ret = '(/.*/entries/)?' + snakeToCamel(arg)
-    // let ret = '(/.*/entries' + snakeToCamel(arg) + ')?(?P<grp>' + arg + ')?'
-    // let ret = [
-    //   '/.*/entries' + snakeToCamel(arg),
-    //   arg
-    // ]
-    // let ret = '(/.*/entries' + snakeToCamel(arg) + ')?' + arg + '{0,1}'
-
-    // let ret = '(/.*/entries' + snakeToCamel(arg) + ')?' + arg + ''
-    this.routerLog('ret: ' + ret) // JSON.stringify(ret))
+    this.routerLog('ret: ' + ret)
 
     return ret
   }
@@ -70,37 +54,13 @@ export default class LVHelpers {
     }
   }
 
-  // this is going away, kept for reference
-  directAndEditMatch (
-    section,
-    entry = null) {
-    // the right kind of RE composition for the enginr that Vuejs Router
-    // uses -- (npm) path-to-rexexp.
-    //
-    // We accomplish matching either direc
-    // t or editor urls for suitable entries.
-    // As ever, pathless, i.e. home page needs its own handling, and there may be
-    // other special cases. :entry is not used, only its match position, since in
-    // this case Live Vue will be providing its own in-progress edit of the entry.
-    let matcher = '(/?.*/entries/' + section
-    matcher = this.snakeToCamel(matcher)
-    let entrySegment = entry
-      ? '/' + entry
-      : ''
-
-    matcher += entrySegment + ')|(/' + section + entrySegment + ')'
-
-    this.routerLog('matcher: ' + matcher)
-    return matcher
-  }
-
   /*
    * This routine is not normally in use for Live Vue, but can be very helpful to have
    * available in the kit for debugging, as it deals well with circular data references,
    * which often occur within Vuejs objects.
    *
    * The js-internal JSON.stringify(), on the other hand, will stack trace instead of
-   * show the content, on these.
+   * showing the content, on these.
    *
    * This code is courtesy of Guy Mograbi, https://stackoverflow.com/users/1068746/guy-mograbi,
    * via his StackExchange post https://stackoverflow.com/a/17773553/2113528
