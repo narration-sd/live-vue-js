@@ -24,7 +24,7 @@
 import BaseConnect from '@/live-vue/base-connect'
 
 export default class ApiConnect extends BaseConnect {
-  constructor (route = null, reporter = null, sourceBase = null) {
+  constructor (route, reporter = null, sourceBase = null) {
     super(route, reporter, sourceBase, 'api') // set the specific api tag
 
     // here define any dynamic post-construction properties for BaseConnect
@@ -66,6 +66,10 @@ export default class ApiConnect extends BaseConnect {
     }
   }
 
+  /*
+    * Direct element-api returns aren't structured with separate error returns,
+    * so we adjust that returned structure for compatibility with gql here.
+  */
   convertRemoteApi (response) {
     this.apiLog('convertRemoteApi data is: ' + JSON.stringify(response))
 

@@ -11,20 +11,17 @@
 
 /*
  * GraphGL returns are orderly, with data, errors, and meta sections, also our lvMeta
- * Thus for this app we return the data section itself, rather than the whole result
- * as with element-api, which treats element data as nameless arrayed objects. It's a
- * one-line difference, but must be correct.
  */
 
 import BaseConnect from './base-connect'
 
 export default class GqlConnect extends BaseConnect {
-  constructor (route = null, reporter = null, sourceBase = null) {
+  constructor (route, reporter = null, sourceBase = null) {
     super(route, reporter, sourceBase, 'gapi/query') // set the tag for gql query
 
     // here define any dynamic post-construction properties for BaseConnect
 
-    this.requestUri = this.formUri()
+    this.requestUri = this.formRequestUri()
   }
 
   convertLiveVueDiv () {
@@ -89,7 +86,7 @@ export default class GqlConnect extends BaseConnect {
       return false // right away, it's not for this customer
     }
 
-    this.requestUri = this.formUri()
+    this.requestUri = this.formRequestUri()
 
     let apiPattern = fullResult.lvMeta.dataApiPattern
     let ok = false
@@ -111,9 +108,9 @@ export default class GqlConnect extends BaseConnect {
     return ok
   }
 
-  formUri () {
+  formRequestUri () {
     let source = this.router.currentRoute.path
-    this.devLog('formUri: router path is: ' + source) // can't we just use that?
+    this.devLog('formRequestUri: router path is: ' + source) // can't we just use that?
     // see notes in Sources.php resolvedGapiPattern, as we are using a
     // simplest pattern here for reason, with changed approach if need more
     // but really, again, all these need to go to explode with small regexes
@@ -126,7 +123,7 @@ export default class GqlConnect extends BaseConnect {
     let requestUri = requestItems[lastIndex].length === 0
       ? '(missing)'
       : requestItems[lastIndex]
-    this.devLog('formUri: requestUri is: ' + requestUri)
+    this.devLog('formRequestUri: requestUri is: ' + requestUri)
 
     return requestUri
   }

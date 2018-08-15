@@ -16,25 +16,27 @@
  * controllers affect the Connect systems on all Live Vue apps.
  *
  * They're individually explained.
+ *
+ * Note that to effect their change for production, you'll generally need to run
+ * a build, at the least to assure all browser-specific adjustments are applied.
  */
 
 import getRouter from '@/main.js' // export getRouter() where you construct router
 
 export default {
-
-  sourceBase: 'http://koty-ou.test', // unless over-ridden in Connect
+  // this is the base url for api requests, unless named for a Connect constructor
+  sourceBase: 'http://koty-ou.test',
 
   // these two are handy when Vuex along with browser persistence is in use
-  storePersistence: 1 / 48, // fraction of day = half hour, js formatted, to remember app state
-  liveVuePathTime: 0, // minutes to hold currently chosen path for spa when editing - zero means always
+  storePersistence: 1 / 48, // fraction of day, js formatted, to remember app state
+  liveVuePathTime: 0, // minutes to hold current spa route when editing - zero is always
 
-  // n.b. you need to re-run build after changing these debug settings,
-  // for them to have effect on the production app.
-  lvDevMode: true,
-  apiDevMode: false,
-  routerDevMode: false,
+  // these control the debug console content. apiDevMode implies lvDevMode
+  lvDevMode: true, // light-weight indications which source provides the data
+  apiDevMode: false, // very verbose, for Connect development
+  routerDevMode: false, // useful when checking router matchings
 
-  // --- below here, don't modify: live-vue required items ---
+  // --- below here, don't modify: these will be live-vue required items ---
 
-  getRouter: getRouter // so we can _call_ for router later; won't be known here
+  getRouter: getRouter // so we can _call_ for router later; it won't be known here
 }

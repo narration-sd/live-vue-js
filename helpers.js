@@ -17,7 +17,7 @@ export default class LVHelpers {
     return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
   }
 
-  directAndEditMatchesFor (marker, arg2) {
+  directAndEditMatchesFor (marker, introducer) {
     // This function allows having only one entry for both runtime and edit
     // routes, when there is enough information in the paths.
     //
@@ -33,19 +33,19 @@ export default class LVHelpers {
     // These factors guide this matcher, which in turn is used within
     // vue-router, which in turn operates with the path-to-regexp library,
     // intending to be helpful to easier routing matches. This doesn't allow
-    // all normal regex abilities, but does provide its own special forms
-    // which can be used as if 'or' matchers. Thus our form is a bit unusual.
+    // all normal regex abilities, but does provide its own special named
+    // element forms which can be used as if 'or' matchers.
     //
     // https://forbeslindesay.github.io/express-route-tester/ set to 2.0 version
     // can be very useful in working out such a matcher.
 
-    let ret =
+    let matcher =
       ':discard1(' + marker + '/?)?' + // '(' +
       ':discard2(/[\\w\\d-]+/entries' + this.snakeToCamel(marker) + '/?)?' +
-      ':' + (arg2 || 'dummy') + '([\\w\\d-]+)+'
-    this.routerLog('ret: ' + ret)
+      ':' + (introducer || 'discard3') + '([\\w\\d-]+)+'
+    this.routerLog('matcher: ' + matcher)
 
-    return ret
+    return matcher
   }
 
   routerLog (msg) {
@@ -60,7 +60,7 @@ export default class LVHelpers {
    * which often occur within Vuejs objects.
    *
    * The js-internal JSON.stringify(), on the other hand, will stack trace instead of
-   * showing the content, on these.
+   * showing                                                                     fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd the content, on these.
    *
    * This code is courtesy of Guy Mograbi, https://stackoverflow.com/users/1068746/guy-mograbi,
    * via his StackExchange post https://stackoverflow.com/a/17773553/2113528

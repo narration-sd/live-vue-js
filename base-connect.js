@@ -44,13 +44,10 @@ import config from '@/live-vue/config.js'
 */
 
 export default class BaseConnect {
-  constructor (route = null, reporter = null, sourceBase = null, sourceTag = 'none') {
+  constructor (route, reporter = null, sourceBase = null, sourceTag = 'none') {
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
 
     if (!sourceBase | !this.isString(sourceBase)) {
-      // try to ease by compatibility with $http.get(), in having a root
-      // just use Vue.options itself in that case. But we need to have it
-      // tagless, so inheritors can set their own
       if (config.sourceBase) {
         sourceBase = this.stripTrailingSlash(config.sourceBase)
       } else {
@@ -116,7 +113,7 @@ export default class BaseConnect {
     }
   }
 
-  // As explained, pull() is the primary call form replacing $http.get()
+  // pull() is the primary call form replacing $http.get()
 
   // use Connect.get() only when you want to force a direct wire call,
   // omitting all Live Vue functionality.
