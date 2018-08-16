@@ -21,6 +21,16 @@
  * for details of automatic handling for Live Vue vs. direct calls.
  */
 
+/*
+ * You'll call ApiConnect in the ways explained in BaseConnect, additionally providing a
+ * reporter when you have one.
+ *
+ *     connect = new ApiConnect(this.$route)
+ *
+ * As explained there, it's not clear now that you would ever use sourceBase,
+ * and that argument is probably going to be removed soon.
+ */
+
 import BaseConnect from '@/live-vue/base-connect'
 
 export default class ApiConnect extends BaseConnect {

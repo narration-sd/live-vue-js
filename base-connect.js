@@ -11,6 +11,9 @@
 
 import axios from 'axios'
 import config from '@/live-vue/config.js'
+import Helpers from '@/live-vue/helpers.js'
+
+let helpers = new Helpers()
 
 /*
  * The design premise of the Connect objects is to easily replace
@@ -43,21 +46,41 @@ import config from '@/live-vue/config.js'
  * to npm run build when you are changing these for staging or production.
 */
 
+/*
+ * n.b. You very probably don't want to set sourceBase. If you do, then api or
+ * GraphQL queries will operate only on that url -- and thus won't occur on the
+ * actual Craft Site as expected for multi-site. It's provided mainly as legacy,
+ * and may soon go out.
+ *
+ * Also, sourceTag is for internal-use only. It will remain.
+ *
+ *
+ * Thus, usual usage for any of the Connects, given usual $route on compo ent, is:
+ *     connectVar = new Api/GqlConnect(this.$route)
+ * or
+ *     connectVar = new Api/GqlConnect(this.$route, this.report)
+ *
+ *     where reporter would be your failure reporting method, usually calling
+ *     up a modal alert component for the information. If you don't provide one,
+ *     fail reports will just go to the browser console automatically.
+ */
 export default class BaseConnect {
   constructor (route, reporter = null, sourceBase = null, sourceTag = 'none') {
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
 
-    if (!sourceBase | !this.isString(sourceBase)) {
-      if (config.sourceBase) {
-        sourceBase = this.stripTrailingSlash(config.sourceBase)
+    if (!sourceBase | !this.isString(sourceBase)) { // not to have this is normal
+      if (!config.sourceBase) {
+        let parsed = helpers.urlParse(document.location)
+        sourceBase = parsed.protocol + '//' + parsed.host // these parts
       } else {
-        throw new Error('BaseConnect: config.sourceBase not specified, and no ' +
-          'sourceBase in Connect constructor has been set to substitute...')
+        // as noted, you don't want usually to have provided this either
+        sourceBase = this.stripTrailingSlash(config.sourceBase)
       }
     }
 
     this.dataApi = this.stripTrailingSlash(sourceBase) + '/' +
       this.stripTrailingSlash(sourceTag) + '/'
+    this.apiLog('dataApi: ' + this.dataApi)
 
     // reporter can be a nice modal etc, while we provide a simple default
     this.reporter = (reporter !== null) ? reporter : this.consoleReport

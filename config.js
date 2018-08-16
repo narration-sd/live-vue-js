@@ -24,9 +24,6 @@
 import getRouter from '@/main.js' // export getRouter() where you construct router
 
 export default {
-  // this is the base url for api requests, unless named for a Connect constructor
-  sourceBase: 'http://koty-ou.test',
-
   // these two are handy when Vuex along with browser persistence is in use
   storePersistence: 1 / 48, // fraction of day, js formatted, to remember app state
   liveVuePathTime: 0, // minutes to hold current spa route when editing - zero is always

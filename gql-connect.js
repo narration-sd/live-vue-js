@@ -10,7 +10,15 @@
  */
 
 /*
- * GraphGL returns are orderly, with data, errors, and meta sections, also our lvMeta
+ * GraphGL returns are orderly, with data and errors sections, also our lvMeta
+ *
+ * You'll call GqlConnect in the ways explained in BaseConnect, additionally providing a
+ * reporter when you have one.
+ *
+ *     connect = new GqlConnect(this.$route)
+ *
+ * As explained there, it's not clear now that you would ever use sourceBase,
+ * and that argument is probably going to be removed soon.
  */
 
 import BaseConnect from './base-connect'

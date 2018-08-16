@@ -11,7 +11,7 @@ export default class LVHelpers {
   //     helpers = new LVKelpers()
   //     let foo = helpers.someFunc(fooOriginal)
 
-  // *todo* also in doc: every jot and tittle -- the + vs * on last part
+  // *todo* also in doc: every jot and tittle -- e.g. why the + vs * on last part
 
   snakeToCamel (str) {
     return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
@@ -48,6 +48,16 @@ export default class LVHelpers {
     return matcher
   }
 
+  urlParse (url) {
+    // we could have used new URL(), except IEdoesn't
+    // we could have used a polyfill, except doesn'tforallIE
+    // thus tradional method; let the DOM do it. I ask you, in 2018...
+
+    var parser = document.createElement('a')
+    parser.href = url
+    return parser
+  }
+
   routerLog (msg) {
     if (config.routerDevMode) {
       console.log(msg)
@@ -60,7 +70,7 @@ export default class LVHelpers {
    * which often occur within Vuejs objects.
    *
    * The js-internal JSON.stringify(), on the other hand, will stack trace instead of
-   * showing                                                                     fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd the content, on these.
+   * showing the content, on these.
    *
    * This code is courtesy of Guy Mograbi, https://stackoverflow.com/users/1068746/guy-mograbi,
    * via his StackExchange post https://stackoverflow.com/a/17773553/2113528
