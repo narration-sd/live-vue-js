@@ -13,7 +13,7 @@ import axios from 'axios'
 import config from '@/live-vue/config.js'
 import Helpers from '@/live-vue/helpers.js'
 
-let helpers = new Helpers()
+let helpers = new Helpers() // see helpers.js for why we do this
 
 /*
  * The design premise of the Connect objects is to easily replace
@@ -63,6 +63,12 @@ let helpers = new Helpers()
  *     where reporter would be your failure reporting method, usually calling
  *     up a modal alert component for the information. If you don't provide one,
  *     fail reports will just go to the browser console automatically.
+ *
+ * n.b. further: For the case where there's a separated api or gql server, it's
+ * poasible to set a config.sourceBase. If you do that, you'll need to pass Site
+ * informationyourself, and use it in the query, so that you get the correct data.
+ * This should be automatic within Live View itself, as the altered data is given
+ * based already on the Site actually being edited.
  */
 export default class BaseConnect {
   constructor (route, reporter = null, sourceBase = null, sourceTag = 'none') {
