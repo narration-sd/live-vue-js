@@ -71,7 +71,7 @@ let helpers = new Helpers() // see helpers.js for why we do this
  * based already on the Site actually being edited.
  */
 export default class BaseConnect {
-  constructor (route, reporter = null, sourceBase = null, sourceTag = 'none') {
+  constructor (reporter = null, sourceBase = null, sourceTag = 'none') {
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
 
     if (!sourceBase | !this.isString(sourceBase)) { // not to have this is normal
@@ -91,12 +91,7 @@ export default class BaseConnect {
     // reporter can be a nice modal etc, while we provide a simple default
     this.reporter = (reporter !== null) ? reporter : this.consoleReport
 
-    if (!route) {
-      throw new Error('BaseConnect: must always provide a route')
-    }
-    this.route = route
-    // decided here not to use router, as that's one more Vue vs. react dependancy
-    // n.b. there will be other dynamic properties from methods or children
+    // n.b. there cam be other dynamic properties from methods or children
   }
 
   // The following two calls, pull() and get(), are the primary interface for Connects.
@@ -108,7 +103,6 @@ export default class BaseConnect {
   // responses such as modal alerts, when these are made available.
 
   pull (dataQuery, appDataSaver, apiPathAdd = '') {
-    this.apiLog('BaseConnect route: ' + this.route.fullPath)
     this.dataQuery = dataQuery
     this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
 

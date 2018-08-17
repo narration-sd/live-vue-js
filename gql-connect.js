@@ -24,8 +24,8 @@
 import BaseConnect from './base-connect'
 
 export default class GqlConnect extends BaseConnect {
-  constructor (route, reporter = null, sourceBase = null) {
-    super(route, reporter, sourceBase, 'gapi/query') // set the tag for gql query
+  constructor (reporter = null, sourceBase = null) {
+    super(reporter, sourceBase, 'gapi/query') // set the tag for gql query
 
     // here define any dynamic post-construction properties for BaseConnect
 
@@ -118,7 +118,6 @@ export default class GqlConnect extends BaseConnect {
 
   formRequestUri () {
     let source = window.location.pathname.substr(1) // lose the slash, for match
-    this.devLog('formRequestUri: router path is: ' + source) // can't we just use that?
     // see notes in Sources.php resolvedGapiPattern, as we are using a
     // simplest pattern here for reason, with changed approach if need more
     // but really, again, all these need to go to explode with small regexes
@@ -131,7 +130,7 @@ export default class GqlConnect extends BaseConnect {
     let requestUri = requestItems[lastIndex].length === 0
       ? '(missing)'
       : requestItems[lastIndex]
-    this.devLog('formRequestUri: requestUri is: ' + requestUri)
+    this.apiLog('formRequestUri: requestUri is: ' + requestUri)
 
     return requestUri
   }

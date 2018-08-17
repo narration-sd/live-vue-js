@@ -34,8 +34,8 @@
 import BaseConnect from '@/live-vue/base-connect'
 
 export default class ApiConnect extends BaseConnect {
-  constructor (route, reporter = null, sourceBase = null) {
-    super(route, reporter, sourceBase, 'api') // set the specific api tag
+  constructor (reporter = null, sourceBase = null) {
+    super(reporter, sourceBase, 'api') // set the specific api tag
 
     // here define any dynamic post-construction properties for BaseConnect
   }
