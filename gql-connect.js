@@ -117,7 +117,7 @@ export default class GqlConnect extends BaseConnect {
   }
 
   formRequestUri () {
-    let source = this.router.currentRoute.path
+    let source = window.location.pathname.substr(1) // lose the slash, for match
     this.devLog('formRequestUri: router path is: ' + source) // can't we just use that?
     // see notes in Sources.php resolvedGapiPattern, as we are using a
     // simplest pattern here for reason, with changed approach if need more
@@ -138,11 +138,9 @@ export default class GqlConnect extends BaseConnect {
 
   dataQueryNormalize (dataQuery) {
     this.apiLog('gql dataQuery to normalize: ' + dataQuery)
-    let path = this.router.currentRoute.path.substr(1) // correct...
+    let path = window.location.pathname.substr(1) // lose the slash, for match
     dataQuery = '?script=' + dataQuery + '&uri=' + path
-    // dataQuery = '?script=' + dataQuery + '&uri=' + this.requestUri
     this.apiLog('normalized query: ' + dataQuery)
-    this.apiLog('route avail: ' + this.route.params.pageURI)
     return dataQuery
   }
 }

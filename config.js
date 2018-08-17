@@ -21,8 +21,6 @@
  * a build, at the least to assure all browser-specific adjustments are applied.
  */
 
-import getRouter from '@/main.js' // export getRouter() where you construct router
-
 export default {
   // these two are handy when Vuex along with browser persistence is in use
   storePersistence: 1 / 48, // fraction of day, js formatted, to remember app state
@@ -31,9 +29,11 @@ export default {
   // these control the debug console content. apiDevMode implies lvDevMode
   lvDevMode: true, // light-weight indications which source provides the data
   apiDevMode: false, // very verbose, for Connect development
-  routerDevMode: false, // useful when checking router matchings
+  routerDevMode: false // useful when checking router matchings
 
   // --- below here, don't modify: these will be live-vue required items ---
 
-  getRouter: getRouter // so we can _call_ for router later; it won't be known here
+  // there was a call here to retrieve router from main.js, now eliminated to
+  // facilitate use with react, as it removes dependency on Vue router.
+  // *todo* when we're sure all handling is present for that, remove this comment
 }

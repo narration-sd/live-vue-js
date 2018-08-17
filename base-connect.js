@@ -95,8 +95,7 @@ export default class BaseConnect {
       throw new Error('BaseConnect: must always provide a route')
     }
     this.route = route
-    this.router = config.getRouter() // ready by now
-
+    // decided here not to use router, as that's one more Vue vs. react dependancy
     // n.b. there will be other dynamic properties from methods or children
   }
 
