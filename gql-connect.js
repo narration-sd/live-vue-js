@@ -45,9 +45,8 @@ export default class GqlConnect extends BaseConnect {
       if (response.errors !== undefined) { // errors, in gql
         let errMsg = 'convertLiveVueDiv: original page server reports error: ' +
           JSON.stringify(response.errors)
-        console.log(errMsg)
-        this.reporter(response.error)
-        throw new Error(errMsg)
+        this.reporter(errMsg)
+        throw new Error('halted for error') // a hard stop, before components fail themselves
       } else {
         fullResult = response
       }
