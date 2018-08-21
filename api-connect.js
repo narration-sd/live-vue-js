@@ -143,8 +143,10 @@ export default class ApiConnect extends BaseConnect {
     } else {
       ok = (apiPattern === window.location.pathname)
       this.apiLog(ok
-        ? ('ok to use Live Vue div having: ' + apiPattern + ' vs ' + window.location.pathname)
-        : ('not ok to use Live Vue div having: ' + apiPattern + ' vs ' + window.location.pathname))
+        ? ('ok to use Live Vue div having: ' + apiPattern +
+          ' vs request ' + window.location.pathname)
+        : ('not ok to use Live Vue div having: ' + apiPattern +
+          ' vs request ' + window.location.pathname))
     }
 
     return ok

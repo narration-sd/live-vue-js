@@ -109,9 +109,9 @@ export default class GqlConnect extends BaseConnect {
 
     this.devLog(ok
       ? ('ok to use Live Vue div having: ' + apiPattern +
-        ' vs ' + this.requestPattern)
+        ' vs request ' + this.requestPattern)
       : ('not ok to use Live Vue div having: ' + apiPattern +
-        ' vs ' + this.requestPattern))
+        ' vs request ' + this.requestPattern))
 
     return ok
   }
@@ -121,7 +121,8 @@ export default class GqlConnect extends BaseConnect {
     // see notes in Sources.php resolvedGapiPattern, as we are using a
     // simplest pattern here for reason, with changed approach if need more
     // but really, again, all these need to go to explode with small regexes
-    let pattern = '([\\d-]+)?([\\w-]+)$'
+    // especially as the shape of versions made this particularly tricky.
+    let pattern = '(?:\\/entries\\/[\\w]+)?\\/?(?:[\\d-]+)?([\\w-]+)(?:\\/versions\\/[\\d]+)?$'
     let re = new RegExp(pattern)
     let requestItems = re.exec(source)
     let lastIndex = requestItems.length - 1
