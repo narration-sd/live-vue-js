@@ -99,17 +99,18 @@ export default class ApiConnect extends BaseConnect {
     return dataResult
   }
 
-  okToUseDataDiv (dataResult) {
-    if (dataResult.lvMeta.dataSourceType !== 'element-api') {
-      console.log('api-connect received div data instead from: ' +
-        dataResult.lvMeta.dataSourceType)
+  okToUseDataDiv (fullResult) {
+    // This will help if routes.js or live-vue settings are wrong
+    if (fullResult.lvMeta.dataSourceType !== 'element-api') {
+      console.log('api-connect expected element-api data, ignoring from: ' +
+        fullResult.lvMeta.dataSourceType)
       return false // right away, it's not for this customer
     }
 
-    let apiPattern = dataResult.lvMeta.dataApiPattern
+    let apiPattern = fullResult.lvMeta.dataApiPattern
     let ok = false
 
-    if (dataResult.lvMeta.isLivePreview) {
+    if (fullResult.lvMeta.isLivePreview) {
       // n.b. this is quite like matching resolvedApiPattern() in Sources.php.
       // However, be very careful, as there are many adaptations to js.
       // In particular, even the re pattern differs, due to escapes

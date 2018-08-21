@@ -87,8 +87,9 @@ export default class GqlConnect extends BaseConnect {
   }
 
   okToUseDataDiv (fullResult) {
+    // This will help if routes.js or live-vue settings are wrong
     if (fullResult.lvMeta.dataSourceType !== 'gapi') {
-      console.log('gql-connect received div data instead from: ' +
+      console.log('gql-connect expected gapi data, ignoring from: ' +
         fullResult.lvMeta.dataSourceType)
       return false // right away, it's not for this customer
     }
