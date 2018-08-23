@@ -1,8 +1,8 @@
 import config from '@/live-vue/config'
 
 export default class LVHelpers {
-  // n.b. we stick with making this a instantiated cbject class, rather than
-  // static, as we want two things: that further development can override
+  // n.b. we stick with having this as a instantiated cbject class, rather
+  // than static, as we want two things: that further development can override
   // methods, and to not expand requirement for ES6 abilities which aren't
   // supported for example by Microsoft browsers. First follows second.
 
@@ -11,13 +11,14 @@ export default class LVHelpers {
   //     helpers = new LVKelpers()
   //     let foo = helpers.someFunc(fooOriginal)
 
-  // *todo* also in doc: every jot and tittle -- e.g. why the + vs * on last part
-
   snakeToCamel (str) {
     return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
   }
 
   directAndEditMatchesFor (marker, introducer) {
+    // *todo* put also in intense appendix to doc: every jot and tittle --
+    // e.g. why the + vs * on last part; why the slash required in third part
+
     // This function allows having only one entry for both runtime and edit
     // routes, when there is enough information in the paths.
     //
@@ -30,11 +31,11 @@ export default class LVHelpers {
     // camelCase (from edit), where it will also be prefixed by an admin
     // introducer we don't care to know, plus '/entries'.
     //
-    // These factors guide this matcher, which in turn is used within
-    // vue-router, which in turn operates with the path-to-regexp library,
+    // These factors guide this matcher, which in turn is used within vue
+    // and react routers, which both operate with the path-to-regexp library,
     // intending to be helpful to easier routing matches. This doesn't allow
     // all normal regex abilities, but does provide its own special named
-    // element forms which can be used as if 'or' matchers.
+    // element forms which can be used as if 'or' matchers, as we do here.
     //
     // https://forbeslindesay.github.io/express-route-tester/ set to 2.0 version
     // can be very useful in working out such a matcher.
@@ -42,7 +43,7 @@ export default class LVHelpers {
     let matcher =
       ':discard1(' + marker + '/?)?' + // '(' +
       ':discard2(/[\\w\\d-]+/entries' + this.snakeToCamel(marker) + '/?)?' +
-      ':' + (introducer || 'discard3') + '([\\w\\d-]+)+'
+      ':' + (introducer || 'discard3') + '([/\\w\\d-]+)+'
     this.routerLog('matcher: ' + matcher)
 
     return matcher
