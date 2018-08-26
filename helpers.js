@@ -8,8 +8,10 @@ export default class LVHelpers {
 
   // Thus, use these via e.g.
   //     import LVHelpers from '@/live-vue/helpers.js'
-  //     helpers = new LVKelpers()
+  //     let helpers = new LVHelpers()
   //     let foo = helpers.someFunc(fooOriginal)
+
+  // To use in a template, see notes on sanitizedLink() below
 
   snakeToCamel (str) {
     return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
@@ -62,6 +64,63 @@ export default class LVHelpers {
   routerLog (msg) {
     if (config.routerDevMode) {
       console.log(msg)
+    }
+  }
+
+  /*
+   * this isn't required, but can handle several things that can go wrong in
+   * Vue links. Likely, it's better to be clean about your link forms, unless
+   * that itself becomes too demanding.
+   *
+   * It can useful where router-link would be asked to accept full url links,
+   * which it actually doesn't. The correction to a normal <a></a> link also
+   * avoids a nasty issue, that invalid router-links can make the browser hang,
+   * through a Vue(router)-internal runaway or block that gives no console info.
+   *
+   * For relative links, it's assured that they begin with a slash, as if not,
+   * router-link builds from the current path rather than the base url.
+   *
+   * You'd need to add helpers to your import, if not already there
+   *
+   *     import Helpers from '@/live-vue/helpers'
+   *
+   * Then you can make this available, as part of your component data:
+   *
+   *      data () {
+   *        return {
+   *          helpers: new Helpers()
+   *        }
+   *      }
+   *
+   * Then you could use it via something like this, which will form an <a> link
+   * or <router-link> depending on what's required. Do not forget the disable
+   * for eslint, or you'll be sorry...
+   *
+   *    <!-- eslint-disable-next-line vue/require-component-is -->
+   *    <component v-bind="helpers.sanitizedLink(link.url)">{{ link.title }}</component>
+   *
+   *  For the basic idea, reference posts below:
+   *
+   *      here and https://github.com/vuejs/vue-router/issues/1280#issuecomment-353599914
+   */
+
+  sanitizedLink (url) {
+    if (url.match(/^(http(s)?|ftp):\/\//)) {
+      return {
+        is: 'a',
+        href: url,
+        target: '_blank',
+        rel: 'noopener'
+      }
+    }
+
+    if (url[0] !== '/') {
+      url = '/' + url
+    }
+
+    return {
+      is: 'router-link',
+      to: url
     }
   }
 
