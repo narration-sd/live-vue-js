@@ -80,12 +80,12 @@ export default class BaseConnect {
         sourceBase = parsed.protocol + '//' + parsed.host // these parts
       } else {
         // as noted, you don't want usually to have provided this either
-        sourceBase = this.stripTrailingSlash(config.sourceBase)
+        sourceBase = helpers.stripTrailingSlash(config.sourceBase)
       }
     }
 
-    this.dataApi = this.stripTrailingSlash(sourceBase) + '/' +
-      this.stripTrailingSlash(sourceTag) + '/'
+    this.dataApi = helpers.stripTrailingSlash(sourceBase) + '/' +
+      helpers.stripTrailingSlash(sourceTag) + '/'
     this.apiLog('dataApi: ' + this.dataApi)
 
     // reporter can be a nice modal etc, while we provide a simple default
@@ -209,7 +209,7 @@ export default class BaseConnect {
     // passed via the component pull() or get() from a router prop,
     // having been generated from a route rule
     let pathAdd = this.pathAdd
-      ? this.stripTrailingSlash(this.pathAdd) + '/'
+      ? helpers.stripTrailingSlash(this.pathAdd) + '/'
       : ''
     this.apiLog('composeQuery: original dataQuery: ' + this.dataQuery)
 
@@ -315,10 +315,6 @@ export default class BaseConnect {
 
   isString (obj) { // it's robust
     return (Object.prototype.toString.call(obj) === '[object String]')
-  }
-
-  stripTrailingSlash (url) {
-    return url.replace(/\/$/, '')
   }
 
   isEmpty (obj) {

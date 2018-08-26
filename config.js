@@ -29,7 +29,7 @@ export default {
   // these control the debug console content. apiDevMode implies lvDevMode
   lvDevMode: true, // light-weight indications which source provides the data
   apiDevMode: false, // very verbose, for Connect development
-  routerDevMode: false // useful when checking router matchings
+  routerDevMode: true // useful when checking router matchings
 
   // --- below here, don't modify: these will be live-vue required items ---
 
