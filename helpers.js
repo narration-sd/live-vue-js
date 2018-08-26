@@ -17,35 +17,15 @@ export default class LVHelpers {
     return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
   }
 
-  directAndEditMatchesFor (marker, introducer) {
-    // *todo* put also in intense appendix to doc: every jot and tittle --
-    // e.g. why the + vs * on last part; why the slash required in third part
+  directAndEditMatchesFor (introducer, item = null) {
+    let itemMatch = item
+      ? ':' + item + '(.*)?'
+      : ''
 
-    // This function allows having only one entry for both runtime and edit
-    // routes, when there is enough information in the paths.
-    //
-    // For home pages and their edit, or other cases like this, you'll simply provide a
-    // route config for each, in the normal way.
-    //
-    // What we are interested in here is only the tail of the path -- after
-    // a marker. However, the marker and its predecessors can occur in two
-    // differing ways: in snake-case naturally (from runtime call), or in
-    // camelCase (from edit), where it will also be prefixed by an admin
-    // introducer we don't care to know, plus '/entries'.
-    //
-    // These factors guide this matcher, which in turn is used within vue
-    // and react routers, which both operate with the path-to-regexp library,
-    // intending to be helpful to easier routing matches. This doesn't allow
-    // all normal regex abilities, but does provide its own special named
-    // element forms which can be used as if 'or' matchers, as we do here.
-    //
-    // https://forbeslindesay.github.io/express-route-tester/ set to 2.0 version
-    // can be very useful in working out such a matcher.
+    // *todo* treat the introducer for slash
+    let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
+      '.*|' + introducer + ')' + itemMatch
 
-    let matcher =
-      ':discard1(' + marker + '/?)?' + // '(' +
-      ':discard2(/[\\w\\d-]+/entries' + this.snakeToCamel(marker) + '/?)?' +
-      ':' + (introducer || 'discard3') + '([/\\w\\d-]+)+'
     this.routerLog('matcher: ' + matcher)
 
     return matcher
