@@ -22,7 +22,11 @@ export default class LVHelpers {
       ? ':' + item + '(.*)?'
       : ''
 
-    // *todo* treat the introducer for slash
+    // treat the introducer for slash so it always has a leading slash
+    introducer = '/' + this.stripLeadingSlash(introducer)
+    // and no trailing slash -- combination saves possible user tears
+    introducer = this.stripTrailingSlash(introducer)
+
     let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
       '.*|' + introducer + ')' + itemMatch
 
@@ -32,13 +36,21 @@ export default class LVHelpers {
   }
 
   urlParse (url) {
-    // we could have used new URL(), except IEdoesn't
-    // we could have used a polyfill, except doesn'tforallIE
-    // thus tradional method; let the DOM do it. I ask you, in 2018...
+    // we could have used new URL(), except IE doesn't
+    // we could have used a polyfill, except doesn't for all IE
+    // thus traditional method; let the DOM do it. I ask you, in 2018...
 
     var parser = document.createElement('a')
     parser.href = url
     return parser
+  }
+
+  stripLeadingSlash (url) {
+    return url.replace(/^\//, '')
+  }
+
+  stripTrailingSlash (url) {
+    return url.replace(/\/$/, '')
   }
 
   routerLog (msg) {
