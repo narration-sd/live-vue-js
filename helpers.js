@@ -18,6 +18,27 @@ export default class LVHelpers {
   }
 
   directAndEditMatchesFor (introducer, item = null) {
+    // The purpose here is to provide a matcher that recognizes both the direct
+    // and editing pathinfo, for many given routes, accounting for the Craft
+    // entry path changes between snake and camel case.
+
+    // Matches created should function with both Vue and React, as their routers
+    // use the same regex-based engine, path-to-regexp. Path-to-regexp provides
+    // a 'helpered' environment, thus not allowing some otherwise useful regex
+    // abilities. This accounts for the workable if not entirely precise method
+    // used here.
+
+    // This routine will operate for most route matches. It will not for empty
+    // or non-introduced paths, so use regular regex matches without this routine
+    // for the non-edit version of those:  specifically the home page, and paths
+    // which are read entirely from / root, without a marking introducer. You
+    // may like to use this routine to generate match for the edit route of these.
+
+    // The introducer should be specified with leading slash, if softeners are
+    // present to account for inconsistencies. The item should be specified if
+    // there is one expected by the component launched by the route. See the
+    // examples in the documentation.
+
     let itemMatch = item
       ? ':' + item + '(.*)?'
       : ''
