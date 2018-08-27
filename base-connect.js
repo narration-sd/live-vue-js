@@ -13,8 +13,6 @@ import axios from 'axios'
 import config from '@/live-vue/config.js'
 import Helpers from '@/live-vue/helpers.js'
 
-let helpers = new Helpers() // see helpers.js for why we do this
-
 /*
  * The design premise of the Connect objects is to easily replace
  * existing $http.get() calls while transparently providing momentary
@@ -72,21 +70,23 @@ let helpers = new Helpers() // see helpers.js for why we do this
  */
 export default class BaseConnect {
   constructor (reporter = null, sourceBase = null, sourceTag = 'none') {
+    this.helpers = new Helpers() // always be prepared...
+
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
 
     if (!sourceBase | !this.isString(sourceBase)) { // not to have this is normal
       if (!config.sourceBase) {
-        let parsed = helpers.urlParse(document.location)
+        let parsed = this.helpers.urlParse(document.location)
         sourceBase = parsed.protocol + '//' + parsed.host // these parts
       } else {
         // as noted, you don't want usually to have provided this either
-        sourceBase = helpers.stripTrailingSlash(config.sourceBase)
+        sourceBase = this.helpers.stripTrailingSlash(config.sourceBase)
       }
     }
 
-    this.dataApi = helpers.stripTrailingSlash(sourceBase) + '/' +
-      helpers.stripTrailingSlash(sourceTag) + '/'
-    this.apiLog('dataApi: ' + this.dataApi)
+    this.dataApi = this.helpers.stripTrailingSlash(sourceBase) + '/' +
+      this.helpers.stripTrailingSlash(sourceTag) + '/'
+    this.helpers.apiLog('dataApi: ' + this.dataApi)
 
     // reporter can be a nice modal etc, while we provide a simple default
     this.reporter = (reporter !== null) ? reporter : this.consoleReport
@@ -107,7 +107,7 @@ export default class BaseConnect {
     this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
-      this.devLog('see if Live Vue div has data for ' + dataQuery)
+      this.helpers.devLog('see if Live Vue div has data for ' + dataQuery)
       let fullResult = []
       try {
         fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
@@ -119,17 +119,17 @@ export default class BaseConnect {
       }
 
       if (fullResult && this.okToUseDataDiv(fullResult)) {
-        this.devLog('successful using Live Vue div data for ' + dataQuery)
-        this.apiLog('data for ' + dataQuery +
+        this.helpers.devLog('successful using Live Vue div data for ' + dataQuery)
+        this.helpers.apiLog('data for ' + dataQuery +
           ' from Live Vue div: ' + JSON.stringify(fullResult))
         appDataSaver(fullResult.data)
       } else {
-        this.devLog('div doesn\'t have data for ' + dataQuery +
+        this.helpers.devLog('div doesn\'t have data for ' + dataQuery +
           ', so now trying api data call on server')
         this.pullFromApi(appDataSaver)
       }
     } else {
-      this.devLog('immediate data call on server, as configured')
+      this.helpers.devLog('immediate data call on server, as configured')
       this.formDataUrl() // not yet done in this case
       this.pullFromApi(appDataSaver)
     }
@@ -145,7 +145,7 @@ export default class BaseConnect {
   // version of $http.get() -- and so vue-resource is not needed.
 
   get (dataQuery, appDataSaver, apiPathAdd = '') {
-    this.devLog('direct data call on server for ' +
+    this.helpers.devLog('direct data call on server for ' +
       dataQuery + ', due to Connect.get()')
     this.dataQuery = dataQuery
     this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
@@ -185,12 +185,12 @@ export default class BaseConnect {
     this.formDataUrl()
     this.getOnlineApiData(this.dataUrl, this.remoteConversion)
       .then(fullResult => {
-        this.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
+        this.helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
         appDataSaver(fullResult.data)
-        this.devLog('pullFromAp: successful from ' + this.dataUrl)
+        this.helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
       })
       .catch(error => {
-        this.devLog('pullFromApi: ' + error)
+        this.helpers.devLog('pullFromApi: ' + error)
         this.reporter(error.toString())
       })
   }
@@ -198,7 +198,7 @@ export default class BaseConnect {
   formDataUrl () {
     this.composedQuery = this.composeQuery()
     this.dataUrl = this.dataApi + this.composedQuery
-    this.apiLog('formDataUrl: dataUrl: ' + this.dataUrl)
+    this.helpers.apiLog('formDataUrl: dataUrl: ' + this.dataUrl)
   }
 
   composeQuery () {
@@ -209,9 +209,9 @@ export default class BaseConnect {
     // passed via the component pull() or get() from a router prop,
     // having been generated from a route rule
     let pathAdd = this.pathAdd
-      ? helpers.stripTrailingSlash(this.pathAdd) + '/'
+      ? this.helpers.stripTrailingSlash(this.pathAdd) + '/'
       : ''
-    this.apiLog('composeQuery: original dataQuery: ' + this.dataQuery)
+    this.helpers.apiLog('composeQuery: original dataQuery: ' + this.dataQuery)
 
     // stripping the preceding number code if present from path passed from router
     // we also apply pathAdd if that was present in the router rule
@@ -221,19 +221,19 @@ export default class BaseConnect {
       ? this.dataQuery
       : pathAdd + matched[2]
 
-    this.apiLog('composeQuery: basis dataQuery plus any pathAdd: ' + dataQuery)
+    this.helpers.apiLog('composeQuery: basis dataQuery plus any pathAdd: ' + dataQuery)
 
     // connection type subclasses can provide individualization by over-riding dataQueryNormalize
     dataQuery = this.dataQueryNormalize(dataQuery)
 
-    this.apiLog('composeQuery: normalized dataQuery: ' + dataQuery)
+    this.helpers.apiLog('composeQuery: normalized dataQuery: ' + dataQuery)
 
     // if the endpoint wasn't part of the dataApi, prefix it
     dataQuery = this.dataEndpoint
       ? this.dataEndpoint + dataQuery
       : dataQuery
 
-    this.apiLog('composeQuery: completed dataQuery: ' + dataQuery)
+    this.helpers.apiLog('composeQuery: completed dataQuery: ' + dataQuery)
     return dataQuery
   }
 
@@ -288,7 +288,7 @@ export default class BaseConnect {
       })
       .then(response => {
         if (response) {
-          this.apiLog('Converting')
+          this.helpers.apiLog('Converting')
           return this.convertRemoteApi(response.data)
         } else {
           throw new Error('getOnlineApiData: empty response from ' + src)
@@ -325,23 +325,5 @@ export default class BaseConnect {
   // the initial Connect object construction
   consoleReport (error) {
     console.log('defaultReporter: ' + error)
-  }
-
-  // these are handy to keep console log clean when not developing
-  // note that turning on apiLog in config will also enable devLog(),
-  // which is used to log just high-level activities, especially in
-  // child Connect classes. apiLog() unleashes a flood. Control
-  // these via config/config.js, and rebuild for production change.
-
-  devLog (msg) {
-    if (config.lvDevMode || config.apiDevMode) {
-      console.log(msg)
-    }
-  }
-
-  apiLog (msg) {
-    if (config.apiDevMode) {
-      console.log(msg)
-    }
   }
 }

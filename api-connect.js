@@ -46,7 +46,7 @@ export default class ApiConnect extends BaseConnect {
       let source = sourceBase.innerText // decodes any encoded html
 
       let response = JSON.parse(source)
-      this.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(response))
+      this.helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(response))
 
       let dataResult = {}
 
@@ -63,15 +63,15 @@ export default class ApiConnect extends BaseConnect {
       }
 
       if (!dataResult) {
-        this.devLog('convertLiveVueDiv: Empty data response')
+        this.helpers.devLog('convertLiveVueDiv: Empty data response')
         return null
       }
 
-      this.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(dataResult))
+      this.helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(dataResult))
 
       return dataResult
     } else {
-      this.devLog('no source div, trying remote api')
+      this.helpers.devLog('no source div, trying remote api')
       return null // because we signal with this, so remote can get called
     }
   }
@@ -81,7 +81,7 @@ export default class ApiConnect extends BaseConnect {
     * so we adjust that returned structure for compatibility with gql here.
   */
   convertRemoteApi (response) {
-    this.apiLog('convertRemoteApi data is: ' + JSON.stringify(response))
+    this.helpers.apiLog('convertRemoteApi data is: ' + JSON.stringify(response))
 
     if (response === undefined) {
       console.log('convertRemote: Empty data response')
@@ -95,7 +95,7 @@ export default class ApiConnect extends BaseConnect {
     dataResult.errors = response.error
     dataResult.lvMeta = {}
 
-    this.apiLog('convertRemote result is: ' + JSON.stringify(dataResult))
+    this.helpers.apiLog('convertRemote result is: ' + JSON.stringify(dataResult))
     return dataResult
   }
 
@@ -119,7 +119,7 @@ export default class ApiConnect extends BaseConnect {
       let re = new RegExp(pattern)
       let requestItems = re.exec(source)
 
-      this.apiLog('requestItems: ' + JSON.stringify(requestItems))
+      this.helpers.apiLog('requestItems: ' + JSON.stringify(requestItems))
 
       if (requestItems === null) {
         let msg = 'okToUseDataDiv: no proper uri match on: ' + source
@@ -133,16 +133,16 @@ export default class ApiConnect extends BaseConnect {
         ? '/' + requestItems[2]
         : '/' + requestItems[2] + '/' + requestItems[3]
 
-      this.apiLog('requestPattern: ' + requestPattern)
+      this.helpers.apiLog('requestPattern: ' + requestPattern)
 
       ok = (apiPattern === requestPattern)
 
-      this.apiLog(ok
+      this.helpers.apiLog(ok
         ? ('ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern)
         : ('not ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern))
     } else {
       ok = (apiPattern === window.location.pathname)
-      this.apiLog(ok
+      this.helpers.apiLog(ok
         ? ('ok to use Live Vue div having: ' + apiPattern +
           ' vs request ' + window.location.pathname)
         : ('not ok to use Live Vue div having: ' + apiPattern +

@@ -74,6 +74,24 @@ export default class LVHelpers {
     return url.replace(/\/$/, '')
   }
 
+  // these are handy to keep console log clean when not developing
+  // note that turning on apiLog in config will also enable devLog(),
+  // which is used to log just high-level activities, especially in
+  // child Connect classes. apiLog() unleashes a flood. Control
+  // these via config/config.js, and rebuild for production change.
+
+  devLog (msg) {
+    if (config.lvDevMode || config.apiDevMode) {
+      console.log(msg)
+    }
+  }
+
+  apiLog (msg) {
+    if (config.apiDevMode) {
+      console.log(msg)
+    }
+  }
+
   routerLog (msg) {
     if (config.routerDevMode) {
       console.log(msg)
