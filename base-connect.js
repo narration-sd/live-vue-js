@@ -105,6 +105,7 @@ export default class BaseConnect {
   pull (dataQuery, appDataSaver, apiPathAdd = '') {
     this.dataQuery = dataQuery
     this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
+    this.helpers.devLog('pull dataQuery: ' + dataQuery)
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
       this.helpers.devLog('see if Live Vue div has data for ' + dataQuery)

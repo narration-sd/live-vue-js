@@ -40,8 +40,8 @@ export default class LVHelpers {
     // examples in the documentation.
 
     let itemMatch = item
-      ? ':' + item + '(.*)?'
-      : ''
+      ? ':' + item + '([\\w-]+)?' + ':discard(.*)'
+      : ':discard(.*)'
 
     // treat the introducer for slash so it always has a leading slash
     introducer = '/' + this.stripLeadingSlash(introducer)
@@ -49,7 +49,7 @@ export default class LVHelpers {
     introducer = this.stripTrailingSlash(introducer)
 
     let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
-      '.*|' + introducer + ')' + itemMatch
+      '/[\\d-]*|' + introducer + '/)' + itemMatch
 
     this.routerLog('matcher: ' + matcher)
 
