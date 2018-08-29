@@ -115,11 +115,11 @@ export default class ApiConnect extends BaseConnect {
       // However, be very careful, as there are many adaptations to js.
       // In particular, even the re pattern differs, due to escapes
       let source = window.location.pathname
-      let pattern = '(.*entries\\/)?([\\w-+]+)\\/?[\\d-]*([\\w-+]+)?'
+      let pattern = '(.*entries\\/)?([a-zA-Z-]+)\\/?[\\d-]*([a-zA-Z-+]+)?'
       let re = new RegExp(pattern)
       let requestItems = re.exec(source)
 
-      this.helpers.apiLog('requestItems: ' + JSON.stringify(requestItems))
+      this.helpers.devLog('lv requestItems: ' + JSON.stringify(requestItems))
 
       if (requestItems === null) {
         let msg = 'okToUseDataDiv: no proper uri match on: ' + source
@@ -137,16 +137,37 @@ export default class ApiConnect extends BaseConnect {
 
       ok = (apiPattern === requestPattern)
 
-      this.helpers.apiLog(ok
-        ? ('ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern)
-        : ('not ok to use Live Vue div having: ' + apiPattern + ' vs ' + requestPattern))
-    } else {
-      ok = (apiPattern === window.location.pathname)
-      this.helpers.apiLog(ok
+      this.helpers.devLog(ok
         ? ('ok to use Live Vue div having: ' + apiPattern +
-          ' vs request ' + window.location.pathname)
+          ' vs request ' + requestPattern)
         : ('not ok to use Live Vue div having: ' + apiPattern +
-          ' vs request ' + window.location.pathname))
+          ' vs request ' + requestPattern))
+    } else {
+      let source = window.location.pathname
+      let requestPattern = source // funny, es6, and eslint even more
+
+      if (source !== '/') { // home page is fine as is
+        // drop any /digit[s] paging extension, and any ?-introduced query like debug
+        let pattern = '((\\/[a-zA-Z-]+)+)([/\\d]+)?'
+        let re = new RegExp(pattern)
+        let requestItems = re.exec(source)
+
+        this.helpers.apiLog('non-lv requestItems: ' + JSON.stringify(requestItems))
+
+        if (requestItems === null) {
+          let msg = 'okToUseDataDiv: no proper uri match on: ' + source
+          throw new Error(msg)
+        }
+
+        requestPattern = requestItems[1]
+      }
+
+      ok = (apiPattern === requestPattern)
+      this.helpers.devLog(ok
+        ? ('ok to use Live Vue div having: ' + apiPattern +
+          ' vs request ' + requestPattern)
+        : ('not ok to use Live Vue div having: ' + apiPattern +
+          ' vs request ' + requestPattern))
     }
 
     return ok

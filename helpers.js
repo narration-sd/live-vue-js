@@ -56,6 +56,21 @@ export default class LVHelpers {
     return matcher
   }
 
+  liveAndPreviewMatch (introducer) {
+    // life is simpler as well as more effective, in this third generation
+
+    // treat the introducer for slash so it always has a leading slash
+    introducer = '/' + this.stripLeadingSlash(introducer)
+    // and no trailing slash -- combination saves possible user tears
+    introducer = this.stripTrailingSlash(introducer)
+
+    let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
+      '.*|' + introducer + '/?)'
+
+    this.routerLog('matcher: ' + matcher)
+    return matcher
+  }
+
   urlParse (url) {
     // we could have used new URL(), except IE doesn't
     // we could have used a polyfill, except doesn't for all IE
