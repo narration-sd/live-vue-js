@@ -56,6 +56,20 @@ export default class LVHelpers {
     return matcher
   }
 
+  previewMatch (introducer) {
+    // life is simpler as well as more effective, in this third generation
+
+    // treat the introducer for slash so it always has a leading slash
+    introducer = '/' + this.stripLeadingSlash(introducer)
+    // and no trailing slash -- combination saves possible user tears
+    introducer = this.stripTrailingSlash(introducer)
+
+    let matcher = '(.*/entries' + this.snakeToCamel(introducer) + ')/'
+
+    this.routerLog('previewMatch: ' + matcher)
+    return matcher
+  }
+
   liveAndPreviewMatch (introducer) {
     // life is simpler as well as more effective, in this third generation
 
@@ -67,7 +81,7 @@ export default class LVHelpers {
     let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
       '.*|' + introducer + '/?)'
 
-    this.routerLog('matcher: ' + matcher)
+    this.routerLog('liveAndPreviewMatch: ' + matcher)
     return matcher
   }
 
