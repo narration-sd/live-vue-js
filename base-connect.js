@@ -108,29 +108,34 @@ export default class BaseConnect {
     this.helpers.devLog('pull dataQuery: ' + dataQuery)
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
-      this.helpers.devLog('see if Live Vue div has data for ' + dataQuery)
+      this.helpers.devLog('retrieving liveVue div, if present')
       let fullResult = []
       try {
         fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
       } catch (err) {
-        console.log('Live Vue div or its conversion has errors -- ' +
+        console.log('liveVue div or its conversion has errors -- ' +
           'messages may be out of order, due to asynchronous ' +
           'basis of server connections.')
         throw err
       }
 
-      if (fullResult && this.okToUseDataDiv(fullResult)) {
+      let tryLiveDiv = true
+      if (config.directExceptPreview && !fullResult.lvMeta.isLivePreview) {
+        tryLiveDiv = false
+        this.helpers.devLog('direct pull as configured, since not editing in Live Vue')
+        this.pullFromApi(appDataSaver)
+      } else if (fullResult && tryLiveDiv && this.okToUseDataDiv(fullResult)) {
         this.helpers.devLog('successful using Live Vue div data for ' + dataQuery)
         this.helpers.apiLog('data for ' + dataQuery +
           ' from Live Vue div: ' + JSON.stringify(fullResult))
         appDataSaver(fullResult.data)
       } else {
         this.helpers.devLog('div doesn\'t have data for ' + dataQuery +
-          ', so now trying api data call on server')
+          ' -- trying api data call on server')
         this.pullFromApi(appDataSaver)
       }
     } else {
-      this.helpers.devLog('immediate data call on server, as configured')
+      this.helpers.devLog('making immediate data call on server, as configured')
       this.formDataUrl() // not yet done in this case
       this.pullFromApi(appDataSaver)
     }
