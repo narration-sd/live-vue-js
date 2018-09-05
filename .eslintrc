@@ -1,0 +1,11 @@
+// n.b. this is provided to relax aome of the more egregioius default
+// plumbed into eslint these days. Doing so allows increased code clarity,
+// with practices still able to be made uniform by PhpStorm etc. formatting setting.
+// Or to be parted with where something else works better...
+
+{
+  "rules": {
+    "padded-blocks": "off",
+    "no-trailing-spaces": "off",
+  }
+}

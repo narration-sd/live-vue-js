@@ -24,6 +24,7 @@
 import BaseConnect from './base-connect'
 
 export default class GqlConnect extends BaseConnect {
+
   constructor (reporter = null, sourceBase = null) {
     super(reporter, sourceBase, 'gapi/query') // set the tag for gql query
 

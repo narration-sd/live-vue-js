@@ -34,6 +34,7 @@
 import BaseConnect from '@/live-vue/base-connect'
 
 export default class ApiConnect extends BaseConnect {
+
   constructor (reporter = null, sourceBase = null) {
     super(reporter, sourceBase, 'api') // set the specific api tag
 
@@ -51,8 +52,10 @@ export default class ApiConnect extends BaseConnect {
       let dataResult = {}
 
       if (response.errors !== undefined) {
+
         // we've translated api or other errors as best can, to gql format
         // all elements may not be filled in, for element-api code faults
+
         let errstr = 'convertLiveVueDiv: web page server reports error: ' +
           response.errors.message + ', code: ' + response.errors.code +
           ', file: ' + response.errors.file + ', line: ' + response.errors.line

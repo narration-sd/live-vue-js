@@ -69,13 +69,16 @@ import Helpers from '@/live-vue/helpers.js'
  * based already on the Site actually being edited.
  */
 export default class BaseConnect {
-  constructor (reporter = null, sourceBase = null, sourceTag = 'none') {
-    this.helpers = new Helpers() // always be prepared...
 
+  constructor (reporter = null, sourceBase = null, sourceTag = 'none') {
+
+    this.helpers = new Helpers() // always be prepared...
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
 
-    if (!sourceBase | !this.isString(sourceBase)) { // not to have this is normal
+    if (!sourceBase || !this.isString(sourceBase)) {
+
       if (!config.sourceBase) {
+        // not to have set this argument is normal
         let parsed = this.helpers.urlParse(document.location)
         sourceBase = parsed.protocol + '//' + parsed.host // these parts
       } else {
@@ -84,11 +87,11 @@ export default class BaseConnect {
       }
     }
 
-    this.dataApi = this.helpers.stripTrailingSlash(sourceBase) + '/' +
-      this.helpers.stripTrailingSlash(sourceTag) + '/'
+    this.dataApi = this.helpers.stripTrailingSlash(sourceBase) +
+      '/' + this.helpers.stripTrailingSlash(sourceTag) + '/'
     this.helpers.apiLog('dataApi: ' + this.dataApi)
 
-    // reporter can be a nice modal etc, while we provide a simple default
+    // reporter can be a nice ux modal etc., while we provide a simple default
     this.reporter = (reporter !== null) ? reporter : this.consoleReport
 
     // n.b. there cam be other dynamic properties from methods or children
@@ -99,10 +102,11 @@ export default class BaseConnect {
   // pull() is the common replacement for $http.get(), as it provides all
   // Live Vue abilities, automatically switching from hidden div to wire api
   // calls when required. It provides easier semantics, along with automatic
-  // error handling which includes the ability to raise custom Reporter
-  // responses such as modal alerts, when these are made available.
+  // error handling which includes the ability to raise custom reporter responses
+  // such as modal alerts, when these are made available in the constructor.
 
   pull (dataQuery, appDataSaver, apiPathAdd = '') {
+
     this.dataQuery = dataQuery
     this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
     this.helpers.devLog('pull dataQuery: ' + dataQuery)
@@ -119,12 +123,10 @@ export default class BaseConnect {
         throw err
       }
 
-      let tryLiveDiv = true
       if (config.directExceptPreview && !fullResult.lvMeta.isLivePreview) {
-        tryLiveDiv = false
         this.helpers.devLog('direct pull as configured, since not editing in Live Vue')
         this.pullFromApi(appDataSaver)
-      } else if (fullResult && tryLiveDiv && this.okToUseDataDiv(fullResult)) {
+      } else if (fullResult && this.okToUseDataDiv(fullResult)) {
         this.helpers.devLog('successful using Live Vue div data for ' + dataQuery)
         this.helpers.apiLog('data for ' + dataQuery +
           ' from Live Vue div: ' + JSON.stringify(fullResult))
@@ -181,7 +183,6 @@ export default class BaseConnect {
   dataQueryNormalize (dataQuery) {
     // for element-api, as an example, this is no-op.
     // others such as gql-connect may override
-
     return dataQuery
   }
 
@@ -211,9 +212,10 @@ export default class BaseConnect {
     // This is handling for multiple ways of specifying the query,
     // appropriate to particular apis.
 
-    // the first thing we do is handle a pathAdd, which would be
+    // The first thing we do is handle a pathAdd, which would be
     // passed via the component pull() or get() from a router prop,
     // having been generated from a route rule
+
     let pathAdd = this.pathAdd
       ? this.helpers.stripTrailingSlash(this.pathAdd) + '/'
       : ''
@@ -328,8 +330,8 @@ export default class BaseConnect {
     return Object.getOwnPropertyNames(obj).length === 0
   }
 
-  // this is the default reporter, if one isn't defined for
-  // the initial Connect object construction
+  // this is the default reporter, if one isn't defined for the initial
+  // Connect object construction
   consoleReport (error) {
     console.log('defaultReporter: ' + error)
   }
