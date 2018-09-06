@@ -113,6 +113,7 @@ export default class BaseConnect {
     this.dataQuery = dataQuery
     this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
     this.helpers.devLog('pull dataQuery: ' + dataQuery)
+    this.formDataUrl() // needs to be done first to enable pageQuery checks
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
 
@@ -131,13 +132,14 @@ export default class BaseConnect {
         this.helpers.devLog('direct pull as configured, since not editing in Live Vue')
         this.pullFromApi(appDataSaver)
       } else if (fullResult && this.okToUseDataDiv(fullResult)) {
-        this.helpers.devLog('successful using Live Vue div data for ' + dataQuery)
-        this.helpers.apiLog('data for ' + dataQuery +
+        this.helpers.devLog('successful using Live Vue div data for ' +
+          dataQuery + this.pagingQuery)
+        this.helpers.apiLog('data for ' + dataQuery + this.pagingQuery +
           ' from Live Vue div: ' + JSON.stringify(fullResult))
         appDataSaver(fullResult.data)
       } else {
         this.helpers.devLog('div doesn\'t have data for ' + dataQuery +
-          ' -- trying api data call on server')
+          this.pagingQuery + ' -- trying api data call on server')
         this.pullFromApi(appDataSaver)
       }
     } else {
@@ -161,6 +163,8 @@ export default class BaseConnect {
       dataQuery + ', due to Connect.get()')
     this.dataQuery = dataQuery
     this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
+    this.formDataUrl()
+
     this.pullFromApi(appDataSaver)
   }
 
@@ -193,7 +197,6 @@ export default class BaseConnect {
   // ---- the following are considered internal routines for Connect itself ----
 
   pullFromApi (appDataSaver) {
-    this.formDataUrl()
     this.getOnlineApiData(this.dataUrl, this.remoteConversion)
       .then(fullResult => {
         this.helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))

@@ -136,6 +136,8 @@ export default class ApiConnect extends BaseConnect {
         ? '/' + requestItems[2]
         : '/' + requestItems[2] + '/' + requestItems[3]
 
+      requestPattern += this.pagingQuery
+
       this.helpers.apiLog('requestPattern: ' + requestPattern)
 
       ok = (apiPattern === requestPattern)
@@ -162,7 +164,7 @@ export default class ApiConnect extends BaseConnect {
           throw new Error(msg)
         }
 
-        requestPattern = requestItems[1]
+        requestPattern = requestItems[1] + this.pagingQuery
       }
 
       ok = (apiPattern === requestPattern)
