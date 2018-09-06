@@ -79,7 +79,7 @@ export default class BaseConnect {
 
       if (!config.sourceBase) {
         // not to have set this argument is normal
-        let parsed = this.helpers.urlParse(document.location)
+        let parsed = this.helpers.urlParse(window.location)
         sourceBase = parsed.protocol + '//' + parsed.host // these parts
       } else {
         // as noted, you don't want usually to have provided this either
@@ -90,6 +90,9 @@ export default class BaseConnect {
     this.dataApi = this.helpers.stripTrailingSlash(sourceBase) +
       '/' + this.helpers.stripTrailingSlash(sourceTag) + '/'
     this.helpers.apiLog('dataApi: ' + this.dataApi)
+
+    this.pagingQuery = this.helpers.getPagingQuery(window.location.href)
+    this.helpers.devLog('pagingQuery: ' + JSON.stringify(this.pagingQuery))
 
     // reporter can be a nice ux modal etc., while we provide a simple default
     this.reporter = (reporter !== null) ? reporter : this.consoleReport
@@ -112,7 +115,8 @@ export default class BaseConnect {
     this.helpers.devLog('pull dataQuery: ' + dataQuery)
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
-      this.helpers.devLog('retrieving liveVue div, if present')
+
+      this.helpers.devLog('retrieving liveVue div, with meta for decisioning, if present')
       let fullResult = []
       try {
         fullResult = this.convertLiveVueDiv() // try for LiveVue div, first

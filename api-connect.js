@@ -117,7 +117,7 @@ export default class ApiConnect extends BaseConnect {
       // n.b. this is quite like matching resolvedApiPattern() in Sources.php.
       // However, be very careful, as there are many adaptations to js.
       // In particular, even the re pattern differs, due to escapes
-      let source = document.location.pathname
+      let source = window.location.pathname
       let pattern = '(.*entries\\/)?([a-zA-Z-]+)\\/?[\\d-]*([a-zA-Z-+]+)?'
       let re = new RegExp(pattern)
       let requestItems = re.exec(source)
@@ -146,7 +146,7 @@ export default class ApiConnect extends BaseConnect {
         : ('not ok to use Live Vue div having: ' + apiPattern +
           ' vs request ' + requestPattern))
     } else {
-      let source = document.location.pathname
+      let source = window.location.pathname
       let requestPattern = source // funny, es6, and eslint even more
 
       if (source !== '/') { // home page is fine as is
@@ -174,5 +174,12 @@ export default class ApiConnect extends BaseConnect {
     }
 
     return ok
+  }
+
+  dataQueryNormalize (dataQuery) {
+    this.helpers.apiLog('api dataQuery to normalize: ' + dataQuery)
+    dataQuery = dataQuery + this.pagingQuery // not empty when there is one
+    this.helpers.apiLog('normalized query: ' + dataQuery)
+    return dataQuery
   }
 }

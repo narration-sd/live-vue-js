@@ -26,9 +26,10 @@ export default {
   storePersistence: 1 / 48, // fraction of day, js formatted, to remember app state
   liveVuePathTime: 0, // minutes to hold current spa route when editing - zero is always
 
-  // here are behavioral controls for the js client
+  // here are behavioral controls and constants for the js client
 
-  directExceptPreview: true, // if true, avoid Live Vue speedup on page loads
+  directExceptPreview: false, // if true, avoid Live Vue speedup on page loads
+  pagingQueryName: 'page', // ?name=nn query name you use for paging, if not page
 
   // these control the debug console content. apiDevMode implies lvDevMode
   lvDevMode: true, // light-weight indications which source provides the data

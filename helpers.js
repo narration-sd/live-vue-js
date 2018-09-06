@@ -95,6 +95,34 @@ export default class LVHelpers {
     return parser
   }
 
+  clearUrlParser (parser) {
+    parser.parentNode.removeChild(parser)
+  }
+
+  getPagingQuery (url) {
+    // returns the query if there is one, according to your paging query name
+    // n.b. how paging is necessarilly handled is not simple. See the doc...
+
+    let parser = this.urlParse(url)
+    let queries = parser.search
+    // this.clearUrlParser(parser)
+    let queryName = config.pagingQueryName
+    if (queryName === undefined) {
+      queryName = 'page'
+    }
+
+    if (queries) {
+      let re = new RegExp('[?&]' + queryName + '(=([^&#]*)|&|#|$)')
+      let vals = re.exec(queries)
+
+      return (vals && vals[2])
+        ? '?' + queryName + '=' + vals[2]
+        : ''
+    } else {
+      return ''
+    }
+  }
+
   stripLeadingSlash (url) {
     return url.replace(/^\//, '')
   }
