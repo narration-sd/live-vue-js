@@ -64,7 +64,7 @@ export default class LVHelpers {
     // and no trailing slash -- combination saves possible user tears
     introducer = this.stripTrailingSlash(introducer)
 
-    let matcher = '(.*/entries' + this.snakeToCamel(introducer) + ')/'
+    let matcher = '(.*/entries' + this.snakeToCamel(introducer) + '):discard(.*)/'
 
     this.routerLog('previewMatch: ' + matcher)
     return matcher
