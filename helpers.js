@@ -1,60 +1,10 @@
 import config from '@/live-vue/config'
 
-export default class LVHelpers {
-  // n.b. we stick with having this as a instantiated cbject class, rather
-  // than static, as we want two things: that further development can override
-  // methods, and to not expand requirement for ES6 abilities which aren't
-  // supported for example by Microsoft browsers. First follows second.
-
-  // Thus, use these via e.g.
-  //     import LVHelpers from '@/live-vue/helpers.js'
-  //     let helpers = new LVHelpers()
-  //     let foo = helpers.someFunc(fooOriginal)
-
-  // To use in a template, see notes on sanitizedLink() below
+export default {
 
   snakeToCamel (str) {
     return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
-  }
-
-  directAndEditMatchesFor (introducer, item = null) {
-    // The purpose here is to provide a matcher that recognizes both the direct
-    // and editing pathinfo, for many given routes, accounting for the Craft
-    // entry path changes between snake and camel case.
-
-    // Matches created should function with both Vue and React, as their routers
-    // use the same regex-based engine, path-to-regexp. Path-to-regexp provides
-    // a 'helpered' environment, thus not allowing some otherwise useful regex
-    // abilities. This accounts for the workable if not entirely precise method
-    // used here.
-
-    // This routine will operate for most route matches. It will not for empty
-    // or non-introduced paths, so use regular regex matches without this routine
-    // for the non-edit version of those:  specifically the home page, and paths
-    // which are read entirely from / root, without a marking introducer. You
-    // may like to use this routine to generate match for the edit route of these.
-
-    // The introducer should be specified with leading slash, if softeners are
-    // present to account for inconsistencies. The item should be specified if
-    // there is one expected by the component launched by the route. See the
-    // examples in the documentation.
-
-    let itemMatch = item
-      ? ':' + item + '([\\w-]+)?' + ':discard(.*)'
-      : ':discard(.*)'
-
-    // treat the introducer for slash so it always has a leading slash
-    introducer = '/' + this.stripLeadingSlash(introducer)
-    // and no trailing slash -- combination saves possible user tears
-    introducer = this.stripTrailingSlash(introducer)
-
-    let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
-      '/[\\d-]*|' + introducer + '/)' + itemMatch
-
-    this.routerLog('matcher: ' + matcher)
-
-    return matcher
-  }
+  },
 
   previewMatch (introducer) {
     // life is simpler as well as more effective, in this third generation
@@ -68,7 +18,7 @@ export default class LVHelpers {
 
     this.routerLog('previewMatch: ' + matcher)
     return matcher
-  }
+  },
 
   liveAndPreviewMatch (introducer) {
     // life is simpler as well as more effective, in this third generation
@@ -83,7 +33,7 @@ export default class LVHelpers {
 
     this.routerLog('liveAndPreviewMatch: ' + matcher)
     return matcher
-  }
+  },
 
   urlParse (url) {
     // we could have used new URL(), except IE doesn't
@@ -93,11 +43,11 @@ export default class LVHelpers {
     var parser = document.createElement('a')
     parser.href = url
     return parser
-  }
+  },
 
   clearUrlParser (parser) {
     parser.parentNode.removeChild(parser)
-  }
+  },
 
   getPagingQuery (url) {
     // returns the query if there is one, according to your paging query name
@@ -121,15 +71,15 @@ export default class LVHelpers {
     } else {
       return ''
     }
-  }
+  },
 
   stripLeadingSlash (url) {
     return url.replace(/^\//, '')
-  }
+  },
 
   stripTrailingSlash (url) {
     return url.replace(/\/$/, '')
-  }
+  },
 
   // these are handy to keep console log clean when not developing
   // note that turning on apiLog in config will also enable devLog(),
@@ -141,19 +91,19 @@ export default class LVHelpers {
     if (config.lvDevMode || config.apiDevMode) {
       console.log(msg)
     }
-  }
+  },
 
   apiLog (msg) {
     if (config.apiDevMode) {
       console.log(msg)
     }
-  }
+  },
 
   routerLog (msg) {
     if (config.routerDevMode) {
       console.log(msg)
     }
-  }
+  },
 
   /*
    * this isn't required, but can handle several things that can go wrong in
@@ -170,15 +120,7 @@ export default class LVHelpers {
    *
    * You'd need to add helpers to your import, if not already there
    *
-   *     import Helpers from '@/live-vue/helpers'
-   *
-   * Then you can make this available, as part of your component data:
-   *
-   *      data () {
-   *        return {
-   *          helpers: new Helpers()
-   *        }
-   *      }
+   *     import helpers from '@/live-vue/helpers'
    *
    * Then you could use it via something like this, which will form an <a> link
    * or <router-link> depending on what's required. Do not forget the disable
@@ -210,7 +152,7 @@ export default class LVHelpers {
       is: 'router-link',
       to: url
     }
-  }
+  },
 
   /*
    * This routine is not normally in use for Live Vue, but can be very helpful to have

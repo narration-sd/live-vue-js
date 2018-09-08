@@ -22,6 +22,7 @@
  */
 
 import BaseConnect from './base-connect'
+import helpers from '@/live-vue/helpers.js'
 
 export default class GqlConnect extends BaseConnect {
 
@@ -39,7 +40,7 @@ export default class GqlConnect extends BaseConnect {
       let source = sourceBase.innerText // decodes any encoded html
 
       let response = JSON.parse(source)
-      this.helpers.apiLog('convertLiveVueDiv source is: ' + JSON.stringify(response))
+      helpers.apiLog('convertLiveVueDiv source is: ' + JSON.stringify(response))
 
       let fullResult = {}
 
@@ -53,20 +54,20 @@ export default class GqlConnect extends BaseConnect {
       }
 
       if (!fullResult) {
-        this.helpers.devLog('convertLiveVueDiv: Empty data response')
+        helpers.devLog('convertLiveVueDiv: Empty data response')
         return null
       }
-      this.helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(fullResult))
+      helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(fullResult))
 
       return fullResult
     } else {
-      this.helpers.devLog('no source div, trying remote api')
+      helpers.devLog('no source div, trying remote api')
       return null // because we signal with this, so remote can get called
     }
   }
 
   convertRemoteApi (response) {
-    this.helpers.apiLog('convertRemoteApi gql data is: ' + JSON.stringify(response))
+    helpers.apiLog('convertRemoteApi gql data is: ' + JSON.stringify(response))
 
     let fullResult = {}
 
@@ -82,7 +83,7 @@ export default class GqlConnect extends BaseConnect {
     if (this.isEmpty(fullResult)) {
       throw new Error('convertRemoteApi: gql Empty data response')
     }
-    this.helpers.apiLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResult))
+    helpers.apiLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResult))
 
     return fullResult
   }
@@ -108,7 +109,7 @@ export default class GqlConnect extends BaseConnect {
 
     ok = (apiPattern === this.requestPattern)
 
-    this.helpers.devLog(ok
+    helpers.devLog(ok
       ? ('ok to use Live Vue div having: ' + apiPattern +
         ' vs request ' + this.requestPattern)
       : ('not ok to use Live Vue div having: ' + apiPattern +
@@ -128,20 +129,20 @@ export default class GqlConnect extends BaseConnect {
     let requestItems = re.exec(source)
     let lastIndex = requestItems.length - 1
 
-    this.helpers.apiLog('requestItems: ' + JSON.stringify(requestItems))
+    helpers.apiLog('requestItems: ' + JSON.stringify(requestItems))
     let requestUri = requestItems[lastIndex].length === 0
       ? '(missing)'
       : requestItems[lastIndex]
-    this.helpers.apiLog('formRequestUri: requestUri is: ' + requestUri)
+    helpers.apiLog('formRequestUri: requestUri is: ' + requestUri)
 
     return requestUri
   }
 
   dataQueryNormalize (dataQuery) {
-    this.helpers.apiLog('gql dataQuery to normalize: ' + dataQuery)
+    helpers.apiLog('gql dataQuery to normalize: ' + dataQuery)
     let path = window.location.pathname.substr(1) // lose the slash, for match
     dataQuery = '?script=' + dataQuery + '&uri=' + path
-    this.helpers.apiLog('normalized query: ' + dataQuery)
+    helpers.apiLog('normalized query: ' + dataQuery)
     return dataQuery
   }
 }

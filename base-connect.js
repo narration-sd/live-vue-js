@@ -11,7 +11,7 @@
 
 import axios from 'axios'
 import config from '@/live-vue/config.js'
-import Helpers from '@/live-vue/helpers.js'
+import helpers from '@/live-vue/helpers.js'
 
 /*
  * The design premise of the Connect objects is to easily replace
@@ -72,27 +72,26 @@ export default class BaseConnect {
 
   constructor (reporter = null, sourceBase = null, sourceTag = 'none') {
 
-    this.helpers = new Helpers() // always be prepared...
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
 
     if (!sourceBase || !this.isString(sourceBase)) {
 
       if (!config.sourceBase) {
         // not to have set this argument is normal
-        let parsed = this.helpers.urlParse(window.location)
+        let parsed = helpers.urlParse(window.location)
         sourceBase = parsed.protocol + '//' + parsed.host // these parts
       } else {
         // as noted, you don't want usually to have provided this either
-        sourceBase = this.helpers.stripTrailingSlash(config.sourceBase)
+        sourceBase = helpers.stripTrailingSlash(config.sourceBase)
       }
     }
 
-    this.dataApi = this.helpers.stripTrailingSlash(sourceBase) +
-      '/' + this.helpers.stripTrailingSlash(sourceTag) + '/'
-    this.helpers.apiLog('dataApi: ' + this.dataApi)
+    this.dataApi = helpers.stripTrailingSlash(sourceBase) +
+      '/' + helpers.stripTrailingSlash(sourceTag) + '/'
+    helpers.apiLog('dataApi: ' + this.dataApi)
 
-    this.pagingQuery = this.helpers.getPagingQuery(window.location.href)
-    this.helpers.devLog('pagingQuery: ' + JSON.stringify(this.pagingQuery))
+    this.pagingQuery = helpers.getPagingQuery(window.location.href)
+    helpers.devLog('pagingQuery: ' + JSON.stringify(this.pagingQuery))
 
     // reporter can be a nice ux modal etc., while we provide a simple default
     this.reporter = (reporter !== null) ? reporter : this.consoleReport
@@ -112,12 +111,12 @@ export default class BaseConnect {
 
     this.dataQuery = dataQuery
     this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
-    this.helpers.devLog('pull dataQuery: ' + dataQuery)
+    helpers.devLog('pull dataQuery: ' + dataQuery)
     this.formDataUrl() // needs to be done first to enable pageQuery checks
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
 
-      this.helpers.devLog('retrieving liveVue div, with meta for decisioning, if present')
+      helpers.devLog('retrieving liveVue div, with meta for decisioning, if present')
       let fullResult = []
       try {
         fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
@@ -129,21 +128,21 @@ export default class BaseConnect {
       }
 
       if (config.directExceptPreview && !fullResult.lvMeta.isLivePreview) {
-        this.helpers.devLog('direct pull as configured, since not editing in Live Vue')
+        helpers.devLog('direct pull as configured, since not editing in Live Vue')
         this.pullFromApi(appDataSaver)
       } else if (fullResult && this.okToUseDataDiv(fullResult)) {
-        this.helpers.devLog('successful using Live Vue div data for ' +
+        helpers.devLog('successful using Live Vue div data for ' +
           dataQuery + this.pagingQuery)
-        this.helpers.apiLog('data for ' + dataQuery + this.pagingQuery +
+        helpers.apiLog('data for ' + dataQuery + this.pagingQuery +
           ' from Live Vue div: ' + JSON.stringify(fullResult))
         appDataSaver(fullResult.data)
       } else {
-        this.helpers.devLog('div doesn\'t have data for ' + dataQuery +
+        helpers.devLog('div doesn\'t have data for ' + dataQuery +
           this.pagingQuery + ' -- trying api data call on server')
         this.pullFromApi(appDataSaver)
       }
     } else {
-      this.helpers.devLog('making immediate data call on server, as configured')
+      helpers.devLog('making immediate data call on server, as configured')
       this.formDataUrl() // not yet done in this case
       this.pullFromApi(appDataSaver)
     }
@@ -159,7 +158,7 @@ export default class BaseConnect {
   // version of $http.get() -- and so vue-resource is not needed.
 
   get (dataQuery, appDataSaver, apiPathAdd = '') {
-    this.helpers.devLog('direct data call on server for ' +
+    helpers.devLog('direct data call on server for ' +
       dataQuery + ', due to Connect.get()')
     this.dataQuery = dataQuery
     this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
@@ -199,12 +198,12 @@ export default class BaseConnect {
   pullFromApi (appDataSaver) {
     this.getOnlineApiData(this.dataUrl, this.remoteConversion)
       .then(fullResult => {
-        this.helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
+        helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
         appDataSaver(fullResult.data)
-        this.helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
+        helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
       })
       .catch(error => {
-        this.helpers.devLog('pullFromApi: ' + error)
+        helpers.devLog('pullFromApi: ' + error)
         this.reporter(error.toString())
       })
   }
@@ -212,7 +211,7 @@ export default class BaseConnect {
   formDataUrl () {
     this.composedQuery = this.composeQuery()
     this.dataUrl = this.dataApi + this.composedQuery
-    this.helpers.apiLog('formDataUrl: dataUrl: ' + this.dataUrl)
+    helpers.apiLog('formDataUrl: dataUrl: ' + this.dataUrl)
   }
 
   composeQuery () {
@@ -224,9 +223,9 @@ export default class BaseConnect {
     // having been generated from a route rule
 
     let pathAdd = this.pathAdd
-      ? this.helpers.stripTrailingSlash(this.pathAdd) + '/'
+      ? helpers.stripTrailingSlash(this.pathAdd) + '/'
       : ''
-    this.helpers.apiLog('composeQuery: original dataQuery: ' + this.dataQuery)
+    helpers.apiLog('composeQuery: original dataQuery: ' + this.dataQuery)
 
     // stripping the preceding number code if present from path passed from router
     // we also apply pathAdd if that was present in the router rule
@@ -236,19 +235,19 @@ export default class BaseConnect {
       ? this.dataQuery
       : pathAdd + matched[2]
 
-    this.helpers.apiLog('composeQuery: basis dataQuery plus any pathAdd: ' + dataQuery)
+    helpers.apiLog('composeQuery: basis dataQuery plus any pathAdd: ' + dataQuery)
 
     // connection type subclasses can provide individualization by over-riding dataQueryNormalize
     dataQuery = this.dataQueryNormalize(dataQuery)
 
-    this.helpers.apiLog('composeQuery: normalized dataQuery: ' + dataQuery)
+    helpers.apiLog('composeQuery: normalized dataQuery: ' + dataQuery)
 
     // if the endpoint wasn't part of the dataApi, prefix it
     dataQuery = this.dataEndpoint
       ? this.dataEndpoint + dataQuery
       : dataQuery
 
-    this.helpers.apiLog('composeQuery: completed dataQuery: ' + dataQuery)
+    helpers.apiLog('composeQuery: completed dataQuery: ' + dataQuery)
     return dataQuery
   }
 
@@ -277,7 +276,7 @@ export default class BaseConnect {
     // defaults...
 
     let errMsg = null
-    this.helpers.devLog('getOnlineApiData: src: ' + src)
+    helpers.devLog('getOnlineApiData: src: ' + src)
 
     return axios.get(src)
       .catch((error) => {
@@ -304,7 +303,7 @@ export default class BaseConnect {
       })
       .then(response => {
         if (response) {
-          this.helpers.apiLog('Converting')
+          helpers.apiLog('Converting')
           return this.convertRemoteApi(response.data)
         } else {
           throw new Error('getOnlineApiData: empty response from ' + src)

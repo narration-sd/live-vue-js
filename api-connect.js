@@ -19,9 +19,7 @@
  *
  * As expected, possible use of Live Vue div is verified.  Refer to BaseConnect,
  * for details of automatic handling for Live Vue vs. direct calls.
- */
-
-/*
+ *
  * You'll call ApiConnect in the ways explained in BaseConnect, additionally providing a
  * reporter when you have one.
  *
@@ -32,6 +30,7 @@
  */
 
 import BaseConnect from '@/live-vue/base-connect'
+import helpers from '@/live-vue/helpers.js'
 
 export default class ApiConnect extends BaseConnect {
 
@@ -47,7 +46,7 @@ export default class ApiConnect extends BaseConnect {
       let source = sourceBase.innerText // decodes any encoded html
 
       let response = JSON.parse(source)
-      this.helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(response))
+      helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(response))
 
       let dataResult = {}
 
@@ -66,15 +65,15 @@ export default class ApiConnect extends BaseConnect {
       }
 
       if (!dataResult) {
-        this.helpers.devLog('convertLiveVueDiv: Empty data response')
+        helpers.devLog('convertLiveVueDiv: Empty data response')
         return null
       }
 
-      this.helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(dataResult))
+      helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(dataResult))
 
       return dataResult
     } else {
-      this.helpers.devLog('no source div, trying remote api')
+      helpers.devLog('no source div, trying remote api')
       return null // because we signal with this, so remote can get called
     }
   }
@@ -84,7 +83,7 @@ export default class ApiConnect extends BaseConnect {
     * so we adjust that returned structure for compatibility with gql here.
   */
   convertRemoteApi (response) {
-    this.helpers.apiLog('convertRemoteApi data is: ' + JSON.stringify(response))
+    helpers.apiLog('convertRemoteApi data is: ' + JSON.stringify(response))
 
     if (response === undefined) {
       console.log('convertRemote: Empty data response')
@@ -98,7 +97,7 @@ export default class ApiConnect extends BaseConnect {
     dataResult.errors = response.error
     dataResult.lvMeta = {}
 
-    this.helpers.apiLog('convertRemote result is: ' + JSON.stringify(dataResult))
+    helpers.apiLog('convertRemote result is: ' + JSON.stringify(dataResult))
     return dataResult
   }
 
@@ -122,7 +121,7 @@ export default class ApiConnect extends BaseConnect {
       let re = new RegExp(pattern)
       let requestItems = re.exec(source)
 
-      this.helpers.devLog('lv requestItems: ' + JSON.stringify(requestItems))
+      helpers.devLog('lv requestItems: ' + JSON.stringify(requestItems))
 
       if (requestItems === null) {
         let msg = 'okToUseDataDiv: no proper uri match on: ' + source
@@ -138,11 +137,11 @@ export default class ApiConnect extends BaseConnect {
 
       requestPattern += this.pagingQuery
 
-      this.helpers.apiLog('requestPattern: ' + requestPattern)
+      helpers.apiLog('requestPattern: ' + requestPattern)
 
       ok = (apiPattern === requestPattern)
 
-      this.helpers.devLog(ok
+      helpers.devLog(ok
         ? ('ok to use Live Vue div having: ' + apiPattern +
           ' vs request ' + requestPattern)
         : ('not ok to use Live Vue div having: ' + apiPattern +
@@ -157,7 +156,7 @@ export default class ApiConnect extends BaseConnect {
         let re = new RegExp(pattern)
         let requestItems = re.exec(source)
 
-        this.helpers.apiLog('non-lv requestItems: ' + JSON.stringify(requestItems))
+        helpers.apiLog('non-lv requestItems: ' + JSON.stringify(requestItems))
 
         if (requestItems === null) {
           let msg = 'okToUseDataDiv: no proper uri match on: ' + source
@@ -168,7 +167,7 @@ export default class ApiConnect extends BaseConnect {
       }
 
       ok = (apiPattern === requestPattern)
-      this.helpers.devLog(ok
+      helpers.devLog(ok
         ? ('ok to use Live Vue div having: ' + apiPattern +
           ' vs request ' + requestPattern)
         : ('not ok to use Live Vue div having: ' + apiPattern +
@@ -179,9 +178,9 @@ export default class ApiConnect extends BaseConnect {
   }
 
   dataQueryNormalize (dataQuery) {
-    this.helpers.apiLog('api dataQuery to normalize: ' + dataQuery)
+    helpers.apiLog('api dataQuery to normalize: ' + dataQuery)
     dataQuery = dataQuery + this.pagingQuery // not empty when there is one
-    this.helpers.apiLog('normalized query: ' + dataQuery)
+    helpers.apiLog('normalized query: ' + dataQuery)
     return dataQuery
   }
 }
