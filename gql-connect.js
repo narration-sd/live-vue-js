@@ -124,16 +124,33 @@ export default class GqlConnect extends BaseConnect {
     // simplest pattern here for reason, with changed approach if need more
     // but really, again, all these need to go to explode with small regexes
     // especially as the shape of versions made this particularly tricky.
-    let pattern = '(?:\\/entries\\/[\\w]+)?\\/?(?:[\\d-]+)?([\\w-]+)(?:\\/versions\\/[\\d]+)?$'
-    let re = new RegExp(pattern)
-    let requestItems = re.exec(source)
-    let lastIndex = requestItems.length - 1
 
-    helpers.apiLog('requestItems: ' + JSON.stringify(requestItems))
-    let requestUri = requestItems[lastIndex].length === 0
-      ? '(missing)'
-      : requestItems[lastIndex]
-    helpers.apiLog('formRequestUri: requestUri is: ' + requestUri)
+    // this has  become a bit complex, but matches Craft cases, used as in switch
+    // we have direct, introduced, versions, and sites to contend with.
+    // let pattern = '((?:\\/entries\\/[\\w]+)?\\/?(?:[\\d-]+)([A-Za-z-]+)(?:\\/(?:versions[\\/\\d]*|[A-Za-z-])+))|([^0-9-][\\/A-Za-z-]+)$'
+    // It got as bad as this, which works on tester but not on live Chrome
+    // segmenting seems a lto better even than splitting this up, as also would work
+
+    let pattern = '(?:\\d+-)(.*)'
+
+    let segments = source.split('/')
+    let requestUri = null
+    helpers.devLog('segments: ' + JSON.stringify(segments))
+
+    for (let segment of segments) {
+      let re = new RegExp(pattern) // or it would advance each time
+      let segmentItems = re.exec(segment)
+      helpers.devLog('segment: ' + segment + ', segmentItems: ' + JSON.stringify(segmentItems))
+      if (segmentItems) {
+        requestUri = segmentItems[1]
+        break
+      }
+    }
+
+    if (!requestUri) {
+      requestUri = source
+    }
+    helpers.devLog('formRequestUri: requestUri is: ' + requestUri)
 
     return requestUri
   }
