@@ -135,7 +135,6 @@ export default class GqlConnect extends BaseConnect {
 
     let segments = source.split('/')
     let requestUri = null
-    helpers.devLog('segments: ' + JSON.stringify(segments))
 
     for (let segment of segments) {
       let re = new RegExp(pattern) // or it would advance each time
@@ -148,7 +147,7 @@ export default class GqlConnect extends BaseConnect {
     }
 
     if (!requestUri) {
-      requestUri = source
+      requestUri = source // take the full path; it's not an edit
     }
     helpers.devLog('formRequestUri: requestUri is: ' + requestUri)
 
