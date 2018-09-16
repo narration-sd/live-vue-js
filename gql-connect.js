@@ -119,17 +119,17 @@ export default class GqlConnect extends BaseConnect {
   }
 
   formRequestUri () {
-    let source = window.location.pathname.substr(1) // lose the slash, for match
-    // see notes in Sources.php resolvedGapiPattern, as we are using a
-    // simplest pattern here for reason, with changed approach if need more
-    // but really, again, all these need to go to explode with small regexes
-    // especially as the shape of versions made this particularly tricky.
+    let source = window.location.pathname
 
-    // this has  become a bit complex, but matches Craft cases, used as in switch
-    // we have direct, introduced, versions, and sites to contend with.
-    // let pattern = '((?:\\/entries\\/[\\w]+)?\\/?(?:[\\d-]+)([A-Za-z-]+)(?:\\/(?:versions[\\/\\d]*|[A-Za-z-])+))|([^0-9-][\\/A-Za-z-]+)$'
-    // It got as bad as this, which works on tester but not on live Chrome
-    // segmenting seems a lto better even than splitting this up, as also would work
+    if (source === '/') {
+      return source // special case matched in php Sources
+    }
+
+    // otherwise, we carry on with simplest possible signture extractor
+    // trust that solving with full or even split case regex goes out of
+    // bounds rapidly...
+
+    source = source.substr(1) // lose the slash, for match
 
     let pattern = '(?:\\d+-)(.*)'
 
