@@ -146,7 +146,6 @@ export default class BaseConnect {
       this.formDataUrl() // not yet done in this case
       this.pullFromApi(appDataSaver)
     }
-    helpers.callModal('here we are')
   }
 
   // pull() is the primary call form replacing $http.get()
