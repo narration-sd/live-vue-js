@@ -50,14 +50,14 @@ export default class ApiConnect extends BaseConnect {
 
       let dataResult = {}
 
-      if (response.errors !== undefined) {
+      if (response.error !== undefined) {
 
         // we've translated api or other errors as best can, to gql format
         // all elements may not be filled in, for element-api code faults
 
         let errstr = 'convertLiveVueDiv: web page server reports error: ' +
-          response.errors.message + ', code: ' + response.errors.code +
-          ', file: ' + response.errors.file + ', line: ' + response.errors.line
+          response.error.message + ', code: ' + response.error.code +
+          ', file: ' + response.error.file + ', line: ' + response.error.line
         this.reporter(errstr) // for a notifier if present, default console
         throw new Error('halted for error') // a hard stop, before components fail themselves
       } else {
@@ -65,12 +65,11 @@ export default class ApiConnect extends BaseConnect {
       }
 
       if (!dataResult) {
-        helpers.devLog('convertLiveVueDiv: Empty data response')
-        return null
+        helpers.devLog('convertLiveVueDiv: Empty data response; likely api endPoint fault')
+        return []
       }
 
       helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(dataResult))
-
       return dataResult
     } else {
       helpers.devLog('no source div, trying remote api')
@@ -92,9 +91,7 @@ export default class ApiConnect extends BaseConnect {
 
     let dataResult = {}
 
-    // direct api responses are flat, but need to look like gql responses
-    dataResult.data = response
-    dataResult.errors = response.error
+    dataResult = response
     dataResult.lvMeta = {}
 
     helpers.apiLog('convertRemote result is: ' + JSON.stringify(dataResult))

@@ -117,15 +117,9 @@ export default class BaseConnect {
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
 
       helpers.devLog('retrieving liveVue div, with meta for decisioning, if present')
-      let fullResult = []
-      try {
-        fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
-      } catch (err) {
-        console.log('liveVue div or its conversion has errors -- ' +
-          'messages may be out of order, due to asynchronous ' +
-          'basis of server connections.')
-        throw err
-      }
+
+      // an Exception will be thrown if div reports errors
+      let fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
 
       if (config.directExceptPreview && !fullResult.lvMeta.isLivePreview) {
         helpers.devLog('direct pull as configured, since not editing in Live Vue')
@@ -135,7 +129,7 @@ export default class BaseConnect {
           dataQuery + this.pagingQuery)
         helpers.apiLog('data for ' + dataQuery + this.pagingQuery +
           ' from Live Vue div: ' + JSON.stringify(fullResult))
-        appDataSaver(fullResult.data)
+        appDataSaver(fullResult)
       } else {
         helpers.devLog('div doesn\'t have data for ' + dataQuery +
           this.pagingQuery + ' -- trying api data call on server')
@@ -199,7 +193,7 @@ export default class BaseConnect {
     this.getOnlineApiData(this.dataUrl, this.remoteConversion)
       .then(fullResult => {
         helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
-        appDataSaver(fullResult.data)
+        appDataSaver(fullResult)
         helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
       })
       .catch(error => {
