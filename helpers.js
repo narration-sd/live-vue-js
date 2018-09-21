@@ -1,6 +1,29 @@
 import config from '@/live-vue/config'
+import { vm } from '@/main.js'
 
 export default {
+  vmReport (msg) {
+    // vm.$modal.show('hello-world')
+    vm.$modal.show('dialog', {
+      title: 'Alert!',
+      text: msg,
+      buttons: [
+        {
+          title: 'Deal with it',
+          handler: () => { alert('Woot!') }
+        },
+        {
+          title: '', // Button title
+          default: true, // Will be triggered by default if 'Enter' pressed.
+          handler: () => {} // Button click handler
+        },
+        {
+          title: 'Close'
+        }
+      ]
+    })
+  },
+
   snakeToCamel (str) {
     return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
   },
