@@ -29,9 +29,8 @@ export default class GqlConnect extends BaseConnect {
   constructor (reporter = null, sourceBase = null) {
     super(reporter, sourceBase, 'gapi/query') // set the tag for gql query
 
-    // here define any dynamic post-construction properties for BaseConnect
-
-    this.requestUri = this.formRequestUri()
+    // here define any dynamic post-construction properties
+    // required, beyond those provided by BaseConnect
   }
 
   convertLiveVueDiv () {
@@ -96,8 +95,7 @@ export default class GqlConnect extends BaseConnect {
       return false // right away, it's not for this customer
     }
 
-    this.requestUri = this.formRequestUri()
-
+    let requestSignature = this.formRequestSignature()
     let apiPattern = fullResult.lvMeta.dataApiPattern
     let ok = false
 
@@ -105,20 +103,17 @@ export default class GqlConnect extends BaseConnect {
     // equally for Live Vue's no-round-trip speedup on spa opening
 
     // handy to base error reporting if we make this a dynamic property
-    this.requestPattern = '?script=' + this.dataQuery + '&uri=' + this.requestUri
+    this.requestPattern = '?script=' + this.dataQuery + '&uri=' + this.requestSignature
 
-    ok = (apiPattern === this.requestPattern)
+    ok = (apiPattern === requestSignature)
 
-    helpers.devLog(ok
-      ? ('ok to use Live Vue div having: ' + apiPattern +
-        ' vs request ' + this.requestPattern)
-      : ('not ok to use Live Vue div having: ' + apiPattern +
-        ' vs request ' + this.requestPattern))
+    helpers.devLog((ok ? '' : 'not') + ' ok to use Live Vue div having: ' +
+      apiPattern + ' vs request ' + requestSignature)
 
     return ok
   }
 
-  formRequestUri () {
+  formRequestSignature () {
     let source = window.location.pathname
 
     if (source === '/') {
@@ -134,24 +129,25 @@ export default class GqlConnect extends BaseConnect {
     let pattern = '(?:\\d+-)(.*)'
 
     let segments = source.split('/')
-    let requestUri = null
+    let requestSignature = null
 
+    // a first segment that matches will contain the edit handle, if this is edit
     for (let segment of segments) {
       let re = new RegExp(pattern) // or it would advance each time
       let segmentItems = re.exec(segment)
-      helpers.devLog('segment: ' + segment + ', segmentItems: ' + JSON.stringify(segmentItems))
+      helpers.apiLog('segment: ' + segment + ', segmentItems: ' + JSON.stringify(segmentItems))
       if (segmentItems) {
-        requestUri = segmentItems[1]
+        requestSignature = segmentItems[1] // [1] is the second portion of the match
         break
       }
     }
 
-    if (!requestUri) {
-      requestUri = source // take the full path; it's not an edit
+    if (!requestSignature) { // then it's not an edit
+      requestSignature = source // so take the full path for the signature
     }
-    helpers.devLog('formRequestUri: requestUri is: ' + requestUri)
+    helpers.devLog('formRequestSignature: result is: ' + requestSignature)
 
-    return requestUri
+    return requestSignature
   }
 
   dataQueryNormalize (dataQuery) {

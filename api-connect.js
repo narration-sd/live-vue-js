@@ -37,7 +37,8 @@ export default class ApiConnect extends BaseConnect {
   constructor (reporter = null, sourceBase = null) {
     super(reporter, sourceBase, 'api') // set the specific api tag
 
-    // here define any dynamic post-construction properties for BaseConnect
+    // here define any dynamic post-construction properties
+    // required, beyond those provided by BaseConnect
   }
 
   convertLiveVueDiv () {
@@ -108,6 +109,7 @@ export default class ApiConnect extends BaseConnect {
 
     let apiPattern = fullResult.lvMeta.dataApiPattern
     let ok = false
+    let requestSignature = ''
 
     if (fullResult.lvMeta.isLivePreview) {
       // n.b. this is quite like matching resolvedApiPattern() in Sources.php.
@@ -128,24 +130,18 @@ export default class ApiConnect extends BaseConnect {
       // we always have to assert the leading / in this branch, so apiPattern
       // can be common to both. See note in Sources.php as to why we couldn't
       // just re group it in.
-      let requestPattern = requestItems[3].length === 0
+      requestSignature = requestItems[3].length === 0
         ? '/' + requestItems[2]
         : '/' + requestItems[2] + '/' + requestItems[3]
 
-      requestPattern += this.pagingQuery
+      requestSignature += this.pagingQuery
 
-      helpers.apiLog('requestPattern: ' + requestPattern)
+      helpers.apiLog('requestSignature: ' + requestSignature)
 
-      ok = (apiPattern === requestPattern)
-
-      helpers.devLog(ok
-        ? ('ok to use Live Vue div having: ' + apiPattern +
-          ' vs request ' + requestPattern)
-        : ('not ok to use Live Vue div having: ' + apiPattern +
-          ' vs request ' + requestPattern))
+      ok = (apiPattern === requestSignature)
     } else {
       let source = window.location.pathname
-      let requestPattern = source // funny, es6, and eslint even more
+      requestSignature = source // funny, es6, and eslint even more, about assigns
 
       if (source !== '/') { // home page is fine as is
         // drop any /digit[s] paging extension, and any ?-introduced query like debug
@@ -160,16 +156,14 @@ export default class ApiConnect extends BaseConnect {
           throw new Error(msg)
         }
 
-        requestPattern = requestItems[1] + this.pagingQuery
+        requestSignature = requestItems[1] + this.pagingQuery
       }
 
-      ok = (apiPattern === requestPattern)
-      helpers.devLog(ok
-        ? ('ok to use Live Vue div having: ' + apiPattern +
-          ' vs request ' + requestPattern)
-        : ('not ok to use Live Vue div having: ' + apiPattern +
-          ' vs request ' + requestPattern))
+      ok = (apiPattern === requestSignature)
     }
+
+    helpers.devLog((ok ? '' : 'not') + ' ok to use Live Vue div having: ' +
+      apiPattern + ' vs request ' + requestSignature)
 
     return ok
   }

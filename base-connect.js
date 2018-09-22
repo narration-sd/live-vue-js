@@ -70,7 +70,7 @@ import helpers from '@/live-vue/helpers.js'
  */
 export default class BaseConnect {
 
-  constructor (reporter = null, sourceBase = null, sourceTag = 'none') {
+  constructor (reporter = null, sourceBase = null, sourceTag = null) {
 
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
 
@@ -86,8 +86,11 @@ export default class BaseConnect {
       }
     }
 
-    this.dataApi = helpers.stripTrailingSlash(sourceBase) +
-      '/' + helpers.stripTrailingSlash(sourceTag) + '/'
+    this.dataApi = helpers.stripTrailingSlash(sourceBase) + '/'
+    if (sourceTag) { // child provides if source uses, such as api, gapi, etc.
+      this.dataApi += helpers.stripTrailingSlash(sourceTag) + '/'
+    }
+
     helpers.apiLog('dataApi: ' + this.dataApi)
 
     this.pagingQuery = helpers.getPagingQuery(window.location.href)
@@ -107,11 +110,12 @@ export default class BaseConnect {
   // error handling which includes the ability to raise custom reporter responses
   // such as modal alerts, when these are made available in the constructor.
 
-  pull (dataQuery, appDataSaver, apiPathAdd = '') {
-
+  pull (dataQuery, appDataSaver, ...extraParams) {
     this.dataQuery = dataQuery
-    this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
     helpers.devLog('pull dataQuery: ' + dataQuery)
+
+    // for later feature or children; spread so zero or multiple possible
+    this.extraParams = extraParams
     this.formDataUrl() // needs to be done first to enable pageQuery checks
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
@@ -137,7 +141,6 @@ export default class BaseConnect {
       }
     } else {
       helpers.devLog('making immediate data call on server, as configured')
-      this.formDataUrl() // not yet done in this case
       this.pullFromApi(appDataSaver)
     }
   }
@@ -151,13 +154,15 @@ export default class BaseConnect {
   // as pull does, so it is still a simplified and more powerful
   // version of $http.get() -- and so vue-resource is not needed.
 
-  get (dataQuery, appDataSaver, apiPathAdd = '') {
+  get (dataQuery, appDataSaver, ...extraParams) {
+    this.dataQuery = dataQuery
+
+    // for later feature or children; spread so zero or multiple possible
+    this.extraParams = extraParams
+
     helpers.devLog('direct data call on server for ' +
       dataQuery + ', due to Connect.get()')
-    this.dataQuery = dataQuery
-    this.pathAdd = apiPathAdd === undefined ? '' : apiPathAdd
     this.formDataUrl()
-
     this.pullFromApi(appDataSaver)
   }
 
