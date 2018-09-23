@@ -109,6 +109,17 @@ export default class ApiConnect extends BaseConnect {
 
     let apiPattern = fullResult.lvMeta.dataApiPattern
     let ok = false
+    let requestSignature = this.formRequestSignature(fullResult)
+
+    ok = (apiPattern === requestSignature)
+
+    helpers.devLog((ok ? '' : 'not') + ' ok to use Live Vue div having: ' +
+      apiPattern + ' vs request ' + requestSignature)
+
+    return ok
+  }
+
+  formRequestSignature (fullResult) {
     let requestSignature = ''
 
     if (fullResult.lvMeta.isLivePreview) {
@@ -120,7 +131,8 @@ export default class ApiConnect extends BaseConnect {
       let re = new RegExp(pattern)
       let requestItems = re.exec(source)
 
-      helpers.devLog('lv requestItems: ' + JSON.stringify(requestItems))
+      // this discovery, apropos for apiLog? But a hint to other Connect dev...
+      helpers.apiLog('lv requestItems: ' + JSON.stringify(requestItems))
 
       if (requestItems === null) {
         let msg = 'okToUseDataDiv: no proper uri match on: ' + source
@@ -136,9 +148,6 @@ export default class ApiConnect extends BaseConnect {
 
       requestSignature += this.pagingQuery
 
-      helpers.apiLog('requestSignature: ' + requestSignature)
-
-      ok = (apiPattern === requestSignature)
     } else {
       let source = window.location.pathname
       requestSignature = source // funny, es6, and eslint even more, about assigns
@@ -158,14 +167,10 @@ export default class ApiConnect extends BaseConnect {
 
         requestSignature = requestItems[1] + this.pagingQuery
       }
-
-      ok = (apiPattern === requestSignature)
     }
 
-    helpers.devLog((ok ? '' : 'not') + ' ok to use Live Vue div having: ' +
-      apiPattern + ' vs request ' + requestSignature)
-
-    return ok
+    helpers.apiLog('requestSignature: ' + requestSignature)
+    return requestSignature
   }
 
   dataQueryNormalize (dataQuery) {

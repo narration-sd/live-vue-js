@@ -99,16 +99,14 @@ export default class GqlConnect extends BaseConnect {
     let apiPattern = fullResult.lvMeta.dataApiPattern
     let ok = false
 
-    // n.b. we could be using this for actual Live Vue/Prevue, or
+    // n.b. we would be using this for actual Live Vue/Prevue, or
     // equally for Live Vue's no-round-trip speedup on spa opening
+    let requestPattern = '?script=' + this.dataQuery + '&uri=' + requestSignature
 
-    // handy to base error reporting if we make this a dynamic property
-    this.requestPattern = '?script=' + this.dataQuery + '&uri=' + this.requestSignature
+    ok = (apiPattern === requestPattern)
 
-    ok = (apiPattern === requestSignature)
-
-    helpers.devLog((ok ? '' : 'not') + ' ok to use Live Vue div having: ' +
-      apiPattern + ' vs request ' + requestSignature)
+    helpers.devLog((ok ? '' : 'not ') + 'ok to use Live Vue div having: ' +
+      apiPattern + ' vs request ' + requestPattern)
 
     return ok
   }
