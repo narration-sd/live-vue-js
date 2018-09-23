@@ -105,7 +105,7 @@ export default class GqlConnect extends BaseConnect {
 
     ok = (apiPattern === requestPattern)
 
-    helpers.devLog((ok ? '' : 'not ') + 'ok to use Live Vue div having: ' +
+    helpers.devLog((ok ? '' : 'Not ') + 'ok to use Live Vue div having: ' +
       apiPattern + ' vs request ' + requestPattern)
 
     return ok

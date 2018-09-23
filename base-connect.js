@@ -197,9 +197,9 @@ export default class BaseConnect {
   pullFromApi (appDataSaver) {
     this.getOnlineApiData(this.dataUrl, this.remoteConversion)
       .then(fullResult => {
+        helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
         helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
         appDataSaver(fullResult)
-        helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
       })
       .catch(error => {
         helpers.devLog('pullFromApi: ' + error)

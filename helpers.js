@@ -1,21 +1,16 @@
 import config from '@/live-vue/config'
 
 export default {
-  snakeToCamel (str) {
-    return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
-  },
-
   previewMatch (introducer) {
     // life is simpler as well as more effective, in this third generation
 
     // treat the introducer for slash so it always has a leading slash
-    introducer = '/' + this.stripLeadingSlash(introducer)
     // and no trailing slash -- combination saves possible user tears
-    introducer = this.stripTrailingSlash(introducer)
+    introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
 
     let matcher = '(.*/entries' + this.snakeToCamel(introducer) + '):discard(.*)/'
 
-    this.routerLog('previewMatch: ' + matcher)
+    this.apiLog('previewMatch: ' + matcher)
     return matcher
   },
 
@@ -23,14 +18,13 @@ export default {
     // life is simpler as well as more effective, in this third generation
 
     // treat the introducer for slash so it always has a leading slash
-    introducer = '/' + this.stripLeadingSlash(introducer)
     // and no trailing slash -- combination saves possible user tears
-    introducer = this.stripTrailingSlash(introducer)
+    introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
 
     let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
       '.*|' + introducer + '/?)'
 
-    this.routerLog('liveAndPreviewMatch: ' + matcher)
+    this.apiLog('liveAndPreviewMatch: ' + matcher)
     return matcher
   },
 
@@ -38,14 +32,13 @@ export default {
     // life is simpler as well as more effective, in this third generation
 
     // treat the introducer for slash so it always has a leading slash
-    introducer = '/' + this.stripLeadingSlash(introducer)
     // and no trailing slash -- combination saves possible user tears
-    introducer = this.stripTrailingSlash(introducer)
+    introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
 
     let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
       '.*|' + introducer + '/?)'
 
-    this.routerLog('liveAndPreviewMatch: ' + matcher)
+    this.devLog('liveAndPreviewMatch: ' + matcher)
     return matcher
   },
 
@@ -87,12 +80,20 @@ export default {
     }
   },
 
+  snakeToCamel (str) {
+    return str.replace(/(-\w)/g, function (m) { return m[1].toUpperCase() })
+  },
+
   stripLeadingSlash (url) {
     return url.replace(/^\//, '')
   },
 
   stripTrailingSlash (url) {
     return url.replace(/\/$/, '')
+  },
+
+  stripLeadingTrailingSlashes (url) {
+    return this.stripTrailingSlash(this.stripLeadingSlash(url))
   },
 
   // these are handy to keep console log clean when not developing
