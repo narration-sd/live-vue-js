@@ -94,7 +94,7 @@ export default class BaseConnect {
     helpers.apiLog('dataApi: ' + this.dataApi)
 
     this.pagingQuery = helpers.getPagingQuery(window.location.href)
-    helpers.devLog('pagingQuery: ' + JSON.stringify(this.pagingQuery))
+    helpers.apiLog('pagingQuery: ' + JSON.stringify(this.pagingQuery))
 
     // reporter can be a nice ux modal etc., while we provide a simple default
     this.reporter = (reporter !== null) ? reporter : this.consoleReport
@@ -112,7 +112,7 @@ export default class BaseConnect {
 
   pull (dataQuery, appDataSaver, ...extraParams) {
     this.dataQuery = dataQuery
-    helpers.devLog('pull dataQuery: ' + dataQuery)
+    helpers.apiLog('pull dataQuery: ' + dataQuery)
 
     // for later feature or children; spread so zero or multiple possible
     this.extraParams = extraParams
@@ -120,7 +120,7 @@ export default class BaseConnect {
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
 
-      helpers.devLog('retrieving liveVue div, with meta for decisioning, if present')
+      helpers.apiLog('retrieving liveVue div, with meta for decisioning, if present')
 
       // an Exception will be thrown if div reports errors
       let fullResult = this.convertLiveVueDiv() // try for LiveVue div, first

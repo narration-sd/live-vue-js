@@ -82,6 +82,19 @@ export default {
     return matcher
   },
 
+  routerReport (to) {
+    if (to.matched.length === 0) {
+      const error = 'Error in router definitions: No matching route for path: ' + to.path
+      throw new Error(error) // no notifier available unless route to page with it
+    } else if (to.name === 'default') {
+      this.routerLog('n.b.: Routing matched on default') // just a dev attention if useful
+    } else {
+      const name = to.name ? ('name: ' + to.name) : 'un-named'
+      const match = to.matched[0].path
+      this.routerLog('\nroute resolved on: ' + match + ', ' + name)
+    }
+  },
+
   urlParse (url) {
     // we could have used new URL(), except IE doesn't
     // we could have used a polyfill, except doesn't for all IE
