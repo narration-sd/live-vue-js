@@ -143,7 +143,7 @@ export default class GqlConnect extends BaseConnect {
     if (!requestSignature) { // then it's not an edit
       requestSignature = source // so take the full path for the signature
     }
-    helpers.devLog('formRequestSignature: result is: ' + requestSignature)
+    helpers.apiLog('formRequestSignature: result is: ' + requestSignature)
 
     return requestSignature
   }
