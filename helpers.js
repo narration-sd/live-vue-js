@@ -1,23 +1,16 @@
 import config from '@/live-vue/config'
 
 export default {
-  previewMatch (introducer) {
-    // life is simpler as well as more effective, in this third generation
-
-    // treat the introducer for slash so it always has a leading slash
-    // and no trailing slash -- combination saves possible user tears
-    introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
-
-    let matcher = '(.*/entries' + this.snakeToCamel(introducer) + '):discard(.*)/'
-
-    this.apiLog('previewMatch: ' + matcher)
-    return matcher
-  },
-
   liveAndPreviewMatch (introducer) {
-    // life is simpler as well as more effective, in this third generation
+    // life is simpler as well as more effective, in this third generation.
 
-    // treat the introducer for slash so it always has a leading slash
+    // However, this multiple matcher, while helpful in many simple cases,
+    // can't be used when params are present.
+
+    // Explanation is in the notes on liveWithParamsMatch() below, and we
+    // provide it and previewMatch() to make many more easier matchers.
+
+    // We treat the introducer for slash so it always has a leading slash
     // and no trailing slash -- combination saves possible user tears
     introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
 
@@ -28,36 +21,40 @@ export default {
     return matcher
   },
 
-  livePreviewAndParamMatch (introducer, ...params) {
+  liveWithParamsMatch (introducer, ...params) {
+    // We can't make a multiple-route-type matcher due to path-to-regexp
+    // limitations. It's used by Vue and React routers among others, and
+    // does deliberate escapes when it modifies input match strings, quite
+    // apparently filling out author-stated intentions by fully disallowing
+    // multiple alternative matches in a single route, when there are params.
 
-    // BUT - this doesn't work either, as path-to-regex also escapes parens
-    // after a first ?-optional group. Big intent not to allow multiple matchers
-    // for anything complex and that is how it is. Holding this as git branch
-    
-    // Life may be simpler as well as more effective, in this third generation;
-    // however, this portion isn't. We can't use '|' to make a proper or'ed
-    // regex, as path-rom-regexp which everyone uses for routing will escape
-    // it when paren'd expressions like params are used. Fun. So, we back off
-    // to making the Preview match optional -- which works.
+    // We can still help by providing previewMatch and this liveWithParamsMatch,
+    // which can simplify building many preview and live routes.
     //
     // multiple params can be used if each ends with a '?' appropriately. This
-    // is not automated as you may want to make the last param non-optional
+    // is not automated, as you may want to make the last param non-optional
     // to limit the match.
     //
     // Params themselves can be just named, or include their paren'd own matcher,
     // which is required when they need to include paths with '-', for instance,
     // or when the param needs to include '/' for including /multiple/seg/ments.
     //
-    // Beyond what we can do here, you should just use two routes: previewMatch()
-    // for editing, and an explicit path-to-regex which is as detailed as you
-    // need for live pages.
+    // if you are writing for a route with no introducer,
+    // use '', '/', or null for function call
 
-    // treat the introducer for slash so it always has a leading slash
+    // Beyond what we can do here, you should just write an explicit path-to-regex
+    // which is as detailed as you need for the live page.
+
+    // We treat the introducer for slash so it always has a leading slash
     // and no trailing slash -- combination saves possible user tears
-    introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
 
-    let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
-      '.*)?' + '(' + introducer
+    if (introducer === null || introducer === '/' || introducer === '') {
+      introducer = ''
+    } else {
+      introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
+    }
+
+    let matcher = introducer
 
     this.apiLog('params: ' + params.length + ', ' + JSON.stringify(params))
     if (params.length > 0) {
@@ -66,9 +63,22 @@ export default {
       }
     }
 
-    matcher += '/?)?' // don't forget to close, always allowing direct a trailing /
+    // add close with /? would fail, as path-to-regexp already optioning this
 
-    this.devLog('liveParamsAndPreviewMatch: ' + matcher)
+    this.apiLog('liveWithParamsMatch: ' + matcher)
+    return matcher
+  },
+
+  previewMatch (introducer) {
+    // See note above on liveWithParamsMatch for why we need this
+
+    // We treat the introducer for slash so it always has a leading slash
+    // and no trailing slash -- combination saves possible user tears
+    introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
+
+    let matcher = '(.*/entries' + this.snakeToCamel(introducer) + '):discard(.*)/'
+
+    this.apiLog('previewMatch: ' + matcher)
     return matcher
   },
 
