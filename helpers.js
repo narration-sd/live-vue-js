@@ -28,17 +28,47 @@ export default {
     return matcher
   },
 
-  liveParamsAndPreviewMatch (introducer, ...params) {
-    // life is simpler as well as more effective, in this third generation
+  livePreviewAndParamMatch (introducer, ...params) {
+
+    // BUT - this doesn't work either, as path-to-regex also escapes parens
+    // after a first ?-optional group. Big intent not to allow multiple matchers
+    // for anything complex and that is how it is. Holding this as git branch
+    
+    // Life may be simpler as well as more effective, in this third generation;
+    // however, this portion isn't. We can't use '|' to make a proper or'ed
+    // regex, as path-rom-regexp which everyone uses for routing will escape
+    // it when paren'd expressions like params are used. Fun. So, we back off
+    // to making the Preview match optional -- which works.
+    //
+    // multiple params can be used if each ends with a '?' appropriately. This
+    // is not automated as you may want to make the last param non-optional
+    // to limit the match.
+    //
+    // Params themselves can be just named, or include their paren'd own matcher,
+    // which is required when they need to include paths with '-', for instance,
+    // or when the param needs to include '/' for including /multiple/seg/ments.
+    //
+    // Beyond what we can do here, you should just use two routes: previewMatch()
+    // for editing, and an explicit path-to-regex which is as detailed as you
+    // need for live pages.
 
     // treat the introducer for slash so it always has a leading slash
     // and no trailing slash -- combination saves possible user tears
     introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
 
     let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
-      '.*|' + introducer + '/?)'
+      '.*)?' + '(' + introducer
 
-    this.devLog('liveAndPreviewMatch: ' + matcher)
+    this.apiLog('params: ' + params.length + ', ' + JSON.stringify(params))
+    if (params.length > 0) {
+      for (let param of params) {
+        matcher += '/:' + param
+      }
+    }
+
+    matcher += '/?)?' // don't forget to close, always allowing direct a trailing /
+
+    this.devLog('liveParamsAndPreviewMatch: ' + matcher)
     return matcher
   },
 
