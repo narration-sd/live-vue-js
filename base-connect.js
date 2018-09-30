@@ -99,10 +99,14 @@ export default class BaseConnect {
     // reporter can be a nice ux modal etc., while we provide a simple default
     this.reporter = (reporter !== null) ? reporter : this.consoleReport
 
+    this.lvMeta = null
+
     // n.b. there cam be other dynamic properties from methods or children
   }
 
-  // The following two calls, pull() and get(), are the primary interface for Connects.
+  // ----- This section holds the usage api for Connects ----- //
+
+  // The first two calls, pull() and get(), are the primary interface.
 
   // pull() is the common replacement for $http.get(), as it provides all
   // Live Vue abilities, automatically switching from hidden div to wire api
@@ -122,8 +126,10 @@ export default class BaseConnect {
 
       helpers.apiLog('retrieving liveVue div, with meta for decisioning, if present')
 
-      // an Exception will be thrown if div reports errors
+      // an Exception will be thrown if div reports errors, so we can move directly
       let fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
+
+      this.lvMeta = fullResult.lvMeta
 
       if (config.directExceptPreview && !fullResult.lvMeta.isLivePreview) {
         helpers.devLog('direct pull as configured, since not editing in Live Vue')
@@ -164,6 +170,32 @@ export default class BaseConnect {
       dataQuery + ', due to Connect.get()')
     this.formDataUrl()
     this.pullFromApi(appDataSaver)
+  }
+
+  // These calls provide values from Live Vue settings
+  // Settings are available when the Live Vue div is present,
+  // So we automate defaults
+
+  isLivePreview () {
+    return this.lvMeta ? this.lvMeta.isLivePreview : false
+  }
+
+  persistTimeFence () {
+    return this.lvMeta ? this.lvMeta.persistTimeFence : 600
+  }
+
+  pageErrorHandler () {
+    return this.lvMeta ? this.lvMeta.pageErrorHandler : 'vue'
+  }
+
+  // these two allow using fundamentals -- which may change...
+
+  isLiveVueDelivery () { // this allows logic on the basics
+    return this.lvMeta !== null
+  }
+
+  getLVMets () {
+    return this.lvMeta ? this.lvMeta : {}
   }
 
   // ---- these methods must be defined in actual Connect classes inheriting from BaseConnect ----
