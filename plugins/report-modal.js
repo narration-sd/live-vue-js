@@ -1,4 +1,4 @@
-import helpers from '@/live-vue/helpers.js'
+import helpers from '@/live-vue-js/helpers.js'
 export const ReportModal = {
   // requires npm install vue-js-modal
   // uses liveVue prefix to stay out of other packages

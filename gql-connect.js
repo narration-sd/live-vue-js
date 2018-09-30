@@ -22,7 +22,7 @@
  */
 
 import BaseConnect from './base-connect'
-import helpers from '@/live-vue/helpers.js'
+import helpers from '@/live-vue-js/helpers.js'
 
 export default class GqlConnect extends BaseConnect {
 

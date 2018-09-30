@@ -1,4 +1,4 @@
-import config from '@/live-vue/config'
+import config from '@/live-vue-js/config'
 
 export default {
   liveAndPreviewMatch (introducer) {
@@ -188,7 +188,7 @@ export default {
    *
    * You'd need to add helpers to your import, if not already there
    *
-   *     import helpers from '@/live-vue/helpers'
+   *     import helpers from '@/live-vue-js/helpers.js'
    *
    * Then you could use it via something like this, which will form an <a> link
    * or <router-link> depending on what's required. Do not forget the disable
@@ -232,11 +232,6 @@ export default {
    *
    * This code is courtesy of Guy Mograbi, https://stackoverflow.com/users/1068746/guy-mograbi,
    * via his StackExchange post https://stackoverflow.com/a/17773553/2113528
-   *
-   * to  use it anywhere, just include the reference this way, and retrieve a string lising
-   * by calling stringifyOnce(yourVariable); e.g. console.log(stringifyOnce(yourVar)
-   *
-   *     import stringifyOnce from '@/live-vue/stringify-once'
   */
 
   stringifyOnce (obj, replacer, indent) {
