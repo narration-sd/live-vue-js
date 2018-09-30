@@ -29,8 +29,8 @@
  * and that argument is probably going to be removed soon.
  */
 
-import BaseConnect from '@/live-vue/base-connect'
-import helpers from '@/live-vue/helpers.js'
+import BaseConnect from '@/live-vue-js/base-connect'
+import helpers from '@/live-vue-js/helpers.js'
 
 export default class ApiConnect extends BaseConnect {
 
