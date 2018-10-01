@@ -143,6 +143,7 @@ export default class GqlConnect extends BaseConnect {
     if (!requestSignature) { // then it's not an edit
       requestSignature = source // so take the full path for the signature
     }
+
     helpers.apiLog('formRequestSignature: result is: ' + requestSignature)
 
     return requestSignature
@@ -151,7 +152,15 @@ export default class GqlConnect extends BaseConnect {
   dataQueryNormalize (dataQuery) {
     helpers.apiLog('gql dataQuery to normalize: ' + dataQuery)
     let path = window.location.pathname.substr(1) // lose the slash, for match
-    dataQuery = '?script=' + dataQuery + '&uri=' + path
+    dataQuery = '?script=' + dataQuery
+
+    if (this.skipUri !== undefined && this.skipUri) {
+      dataQuery += '&skipUri'
+    }
+    else {
+      dataQuery += '&uri=' + path
+    }
+
     helpers.apiLog('normalized query: ' + dataQuery)
     return dataQuery
   }

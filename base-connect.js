@@ -73,6 +73,7 @@ export default class BaseConnect {
   constructor (reporter = null, sourceBase = null, sourceTag = null) {
 
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
+    this.sourceTag = sourceTag // we use it elsewhere
 
     if (!sourceBase || !this.isString(sourceBase)) {
 
@@ -129,7 +130,10 @@ export default class BaseConnect {
       // an Exception will be thrown if div reports errors, so we can move directly
       let fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
 
-      this.lvMeta = fullResult.lvMeta
+      if ((fullResult)) {
+        // we'd like this always, when it exists
+        this.lvMeta = fullResult.lvMeta
+      }
 
       if (config.directExceptPreview && !fullResult.lvMeta.isLivePreview) {
         helpers.devLog('direct pull as configured, since not editing in Live Vue')
@@ -170,6 +174,25 @@ export default class BaseConnect {
       dataQuery + ', due to Connect.get()')
     this.formDataUrl()
     this.pullFromApi(appDataSaver)
+  }
+
+  // Normally you won't need this, as it's set automatically from the
+  // current site url, or occasionally from live-vue-js/config's sourceBase
+  // However, for setup aids, etc., can be handy
+  setSourceBase (url) {
+
+    this.dataApi = helpers.stripTrailingSlash(url) + '/'
+    if (this.sourceTag) { // child provides if source uses, such as api, gapi, etc.
+      this.dataApi += helpers.stripTrailingSlash(this.sourceTag) + '/'
+    }
+
+    helpers.apiLog('dataApi: ' + this.dataApi)
+  }
+
+  // this also can be useful for setup aids, and not normally
+
+  setSkipUri () {
+    this.skipUri = true
   }
 
   // These calls provide values from Live Vue settings
