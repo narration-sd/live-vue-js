@@ -176,6 +176,16 @@ export default class BaseConnect {
     this.pullFromApi(appDataSaver)
   }
 
+  // direct() allows you to send your query and variables directly
+  // in JSON to a compliant server. It has the advantage of displaying
+  // errors with the Connect reporter, consistently with Live Vue calls.
+  // It will use POST as default, and a server you specify in config
+  // unless the server parameter is filled in.
+
+  direct (queryJson, usePost = true, server = null) {
+    // *tbd*
+  }
+
   // Normally you won't need this, as it's set automatically from the
   // current site url, or occasionally from live-vue-js/config's sourceBase
   // However, for setup aids, etc., can be handy
