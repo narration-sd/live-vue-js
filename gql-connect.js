@@ -156,8 +156,7 @@ export default class GqlConnect extends BaseConnect {
 
     if (this.skipUri !== undefined && this.skipUri) {
       dataQuery += '&skipUri'
-    }
-    else {
+    } else {
       dataQuery += '&uri=' + path
     }
 
