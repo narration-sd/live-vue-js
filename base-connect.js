@@ -199,17 +199,17 @@ export default class BaseConnect {
     // but don't forget to set it before this connect.direct() call
 
     // tokens?
-    let requestHeaders = headers
+    let requestConfig = headers
       ? { headers: headers }
       : {}
 
     helpers.devLog('Connect:direct: data call on ' +
       this.dataApi + ' for ' + JSON.stringify(this.dataQuery))
-    helpers.devLog('requestHeaders: ' + JSON.stringify(requestHeaders))
+    helpers.apiLog('requestConfig: ' + JSON.stringify(requestConfig))
 
     const reporter = this.reporter // avoid a tricky case of this, stripped class?
 
-    axios.post(this.dataApi, this.dataQuery, requestHeaders)
+    axios.post(this.dataApi, this.dataQuery, requestConfig)
       .then(function (response) {
         if (response.data.errors) {
           reporter('Api Error: ' + JSON.stringify(response.data.errors))
@@ -295,11 +295,7 @@ export default class BaseConnect {
   // ---- the following are considered internal routines for Connect itself ----
 
   pullFromApi (appDataSaver, usePost = false) {
-    this.method = usePost
-      ? this.postOnlineApiData
-      : this.getOnlineApiData
-
-    this.method(this.dataUrl, this.remoteConversion)
+    this.getOnlineApiData(this.dataUrl, usePost)
       .then(fullResult => {
         helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
         helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
@@ -354,7 +350,7 @@ export default class BaseConnect {
     return dataQuery
   }
 
-  getOnlineApiData (src) {
+  getOnlineApiData (src, usePost = false) {
     // Here we isolate the axios call in case we want to use
     // another communication library later.
 
@@ -377,6 +373,14 @@ export default class BaseConnect {
     // coding in your editor will allow separating code from comments. The
     // unpleasant layout throughout you can blame on 'new standard' Lint
     // defaults...
+
+    // *todo* verified possible for later, and then lose the get from function name
+    // also would/will need headers? But we cover auth in scripts so far
+    // while args and signatures would have to be different as well, as
+    // this path is used for Live Vue both live and preview
+    // const method = usePost
+    //   ? this.postOnlineApiData
+    //   : this.getOnlineApiData
 
     let errMsg = null
     helpers.devLog('getOnlineApiData: src: ' + src)
