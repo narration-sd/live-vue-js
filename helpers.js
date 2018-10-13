@@ -173,6 +173,10 @@ export default {
     }
   },
 
+  getConfig () {
+    return config
+  },
+
   /*
    * this isn't required, but can handle several things that can go wrong in
    * Vue links. Likely, it's better to be clean about your link forms, unless

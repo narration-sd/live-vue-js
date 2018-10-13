@@ -185,7 +185,7 @@ export default class BaseConnect {
   //
   // direct() replaces $http.get() for raw, with the Connect advantages
 
-  direct (queryJson, appDataSaver, ...extraParams) {
+  direct (queryJson, appDataSaver, headers = null, ...extraParams) {
     // direct() is straightforward as it doesn't need to do data conversions,
     // while it does continue to support any kind of result reporting.
     // Likely we don't ever want to do this except via POST
@@ -198,12 +198,18 @@ export default class BaseConnect {
     // we don't add anything to the dataApi in this case,
     // but don't forget to set it before this connect.direct() call
 
+    // tokens?
+    let requestHeaders = headers
+      ? { headers: headers }
+      : {}
+
     helpers.devLog('Connect:direct: data call on ' +
       this.dataApi + ' for ' + JSON.stringify(this.dataQuery))
+    helpers.devLog('requestHeaders: ' + JSON.stringify(requestHeaders))
 
     const reporter = this.reporter // avoid a tricky case of this, stripped class?
 
-    axios.post(this.dataApi, this.dataQuery)
+    axios.post(this.dataApi, this.dataQuery, requestHeaders)
       .then(function (response) {
         if (response.data.errors) {
           reporter('Api Error: ' + JSON.stringify(response.data.errors))

@@ -34,7 +34,12 @@ export default {
   // these control the debug console content. apiDevMode implies lvDevMode
   lvDevMode: true, // light-weight indications which source provides the data
   apiDevMode: false, // very verbose, for Connect development
-  routerDevMode: true // useful when checking router matchings
+  routerDevMode: true, // useful when checking router matchings
+
+  // --- you might want to add items of your own, for an applicationo ---
+
+  // with CraftQL, there can be tokens
+  tokens: 'S2XedNbHI_QeON3J2RZ4YxstCTkBA7HxBk7n2FmecH0gsxGRe4wHao3E350Vdb3g'
 
   // --- below here, don't modify: these will be live-vue required items ---
 }
