@@ -157,12 +157,13 @@ export default class BaseConnect {
 
   // pull() is the primary call form replacing $http.get()
 
-  // use Connect.get() only when you want to force a direct wire call,
-  // omitting all Live Vue functionality.
+  // use Connect.get() only when you want to force a  wire call to
+  // the Live Vue presentation of an api, with its meta information
+  // and data conversion. Use direct() below to call an api with
+  // no interventioni, just presenting appDataSaver with raw json.
   //
   // get() provides the same call semantics and automatic error handling
-  // as pull does, so it is still a simplified and more powerful
-  // version of $http.get() -- and so vue-resource is not needed.
+  // as pull does.
 
   get (dataQuery, appDataSaver, ...extraParams) {
     this.dataQuery = dataQuery
@@ -170,8 +171,8 @@ export default class BaseConnect {
     // for later feature or children; spread so zero or multiple possible
     this.extraParams = extraParams
 
-    helpers.devLog('direct data call on server for ' +
-      dataQuery + ', due to Connect.get()')
+    helpers.devLog('get data call on server for ' +
+      this.dataQuery + ', due to Connect.get()')
     this.formDataUrl()
     this.pullFromApi(appDataSaver)
   }
@@ -181,25 +182,53 @@ export default class BaseConnect {
   // errors with the Connect reporter, consistently with Live Vue calls.
   // It will use POST as default, and a server you specify in config
   // unless the server parameter is filled in.
+  //
+  // direct() replaces $http.get() for raw, with the Connect advantages
 
-  direct (queryJson, usePost = true, server = null) {
-    // *tbd*
+  direct (queryJson, appDataSaver, ...extraParams) {
+    // direct() is straightforward as it doesn't need to do data conversions,
+    // while it does continue to support any kind of result reporting.
+    // Likely we don't ever want to do this except via POST
+
+    this.dataQuery = queryJson
+
+    // for later feature or children; spread so zero or multiple possible
+    this.extraParams = extraParams
+
+    // we don't add anything to the dataApi in this case,
+    // but don't forget to set it before this connect.direct() call
+
+    helpers.devLog('Connect:direct: data call on ' +
+      this.dataApi + ' for ' + JSON.stringify(this.dataQuery))
+
+    const reporter = this.reporter // avoid a tricky case of this, stripped class?
+
+    axios.post(this.dataApi, this.dataQuery)
+      .then(function (response) {
+        if (response.data.errors) {
+          reporter('Api Error: ' + JSON.stringify(response.data.errors))
+        }
+        appDataSaver(response)
+      })
+      .catch(function (error) {
+        reporter('Connection Error: ' + error.toString())
+      })
   }
 
   // Normally you won't need this, as it's set automatically from the
   // current site url, or occasionally from live-vue-js/config's sourceBase
-  // However, for setup aids, etc., can be handy
-  setSourceBase (url) {
+  // However, for setup aids, test utilities, etc., can be handy
+  setSourceBase (url, addTag = true) {
 
     this.dataApi = helpers.stripTrailingSlash(url) + '/'
-    if (this.sourceTag) { // child provides if source uses, such as api, gapi, etc.
+    if (addTag && this.sourceTag) { // child provides if source uses, such as api, gapi, etc.
       this.dataApi += helpers.stripTrailingSlash(this.sourceTag) + '/'
     }
 
     helpers.apiLog('dataApi: ' + this.dataApi)
   }
 
-  // this also can be useful for setup aids, and not normally
+  // this also can be useful for test utilities, and not normally
 
   setSkipUri () {
     this.skipUri = true
@@ -259,8 +288,12 @@ export default class BaseConnect {
 
   // ---- the following are considered internal routines for Connect itself ----
 
-  pullFromApi (appDataSaver) {
-    this.getOnlineApiData(this.dataUrl, this.remoteConversion)
+  pullFromApi (appDataSaver, usePost = false) {
+    this.method = usePost
+      ? this.postOnlineApiData
+      : this.getOnlineApiData
+
+    this.method(this.dataUrl, this.remoteConversion)
       .then(fullResult => {
         helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
         helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
@@ -357,7 +390,7 @@ export default class BaseConnect {
             (error.request.length > 0 ? (' Request: ' + JSON.stringify(error.request)) : '')
         } else {
           // Something happened in setting up the request that triggered an Error
-          errMsg = 'Error: ' + error.message
+          errMsg = 'Error: ' + error
         }
 
         errMsg = 'getOnlineApiData: connection failed from ' +

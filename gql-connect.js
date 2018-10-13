@@ -72,7 +72,6 @@ export default class GqlConnect extends BaseConnect {
 
     if (response.errors !== undefined) {
       let errMsg = 'convertRemoteApi: gql server reports: ' +
-        // this.dataUrl + ': ' +
         JSON.stringify(response.errors)
       throw new Error(errMsg)
     } else {
@@ -155,7 +154,7 @@ export default class GqlConnect extends BaseConnect {
     dataQuery = '?script=' + dataQuery
 
     if (this.skipUri !== undefined && this.skipUri) {
-      dataQuery += '&skipUri'
+      dataQuery += '&skipUri' // visible for unset uri -- not used by Live Vue plugin
     } else {
       dataQuery += '&uri=' + path
     }
