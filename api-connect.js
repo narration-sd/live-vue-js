@@ -41,7 +41,7 @@ export default class ApiConnect extends BaseConnect {
     // required, beyond those provided by BaseConnect
   }
 
-  convertLiveVueDiv () {
+  convertLiveVueDiv (haltOnError = true) {
     let sourceBase = document.getElementById('liveVue')
     if (sourceBase) {
       let source = sourceBase.innerText // decodes any encoded html
@@ -51,7 +51,7 @@ export default class ApiConnect extends BaseConnect {
 
       let dataResult = {}
 
-      if (response.error !== undefined) {
+      if (haltOnError && response.error !== undefined) {
 
         // we've translated api or other errors as best can, to gql format
         // all elements may not be filled in, for element-api code faults
@@ -60,9 +60,10 @@ export default class ApiConnect extends BaseConnect {
           response.error.message + ', code: ' + response.error.code +
           ', file: ' + response.error.file + ', line: ' + response.error.line
         this.reporter(errstr) // for a notifier if present, default console
-        throw new Error('halted for error') // a hard stop, before components fail themselves
+        throw new Error('halted to view error, by live-vue-js') // a hard stop, before components fail themselves
       } else {
         dataResult = response
+        this.lvMeta = response.lvMeta // must always provide for base-connect getLvMeta()
       }
 
       if (!dataResult) {

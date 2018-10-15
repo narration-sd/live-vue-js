@@ -186,9 +186,9 @@ export default class BaseConnect {
   // direct() replaces $http.get() for raw, with the Connect advantages
 
   direct (queryJson, appDataSaver, headers = null, ...extraParams) {
-    // direct() is straightforward as it doesn't need to do data conversions,
-    // while it does continue to support any kind of result reporting.
-    // Likely we don't ever want to do this except via POST
+    // direct() is straightforward as it doesn't need to do data conversions
+    // or signature validations, while it does continue to support any kind of
+    // result reporting. Likely we don't ever want to do this except via POST
 
     this.dataQuery = queryJson
 
@@ -237,38 +237,47 @@ export default class BaseConnect {
   // this also can be useful for test utilities, and not normally
 
   setSkipUri () {
+    // means don't make uri part of signature, when Live-vue plugin won't
     this.skipUri = true
   }
 
-  // These calls provide values from Live Vue settings
-  // Settings are available when the Live Vue div is present,
-  // So we automate defaults
+  // These calls provide values from Live Vue lvMeta, whenever possible.
+  // These are available when the Live Vue div is present, thus defaults.
+
+  isLiveVueDelivery () {
+    return this.getLvMeta() !== null
+  }
 
   isLivePreview () {
-    return this.lvMeta ? this.lvMeta.isLivePreview : false
+    let lvMeta = this.getLvMeta()
+    return lvMeta && lvMeta.isLivePreview
   }
 
   persistTimeFence () {
-    return this.lvMeta ? this.lvMeta.persistTimeFence : 600
+    let lvMeta = this.getLvMeta()
+    return lvMeta ? lvMeta.persistTimeFence : 600
   }
 
   pageErrorHandler () {
-    return this.lvMeta ? this.lvMeta.pageErrorHandler : 'vue'
+    let lvMeta = this.getLvMeta()
+    return lvMeta ? lvMeta.pageErrorHandler : 'browser'
   }
 
-  // these two allow using fundamentals -- which may change...
-
-  isLiveVueDelivery () { // this allows logic on the basics
-    return this.lvMeta !== null
+  browserHandle404 () {
+    return this.pageErrorHandler() === 'browser'
   }
 
-  getLVMets () {
-    return this.lvMeta ? this.lvMeta : {}
+  getLvMeta () { // can be used for other lvMeta
+    if (!this.lvMeta) {
+      this.convertLiveVueDiv(false) // develop lvMeta; each kind of connect must provide
+      console.log('lvMeta: ' + this.lvMeta)
+    }
+    return this.lvMeta || null // idiom on undefined
   }
 
   // ---- these methods must be defined in actual Connect classes inheriting from BaseConnect ----
 
-  convertLiveVueDiv () {
+  convertLiveVueDiv (haltOnError = true) {
     console.log('BaseConnect: NO LIVE CONVERSION')
     throw new Error('BaseConnect: must provide actual converLiveVueDiv() in inheriting Connect class...')
   }

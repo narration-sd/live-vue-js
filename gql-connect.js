@@ -33,7 +33,7 @@ export default class GqlConnect extends BaseConnect {
     // required, beyond those provided by BaseConnect
   }
 
-  convertLiveVueDiv () {
+  convertLiveVueDiv (haltOnError = true) {
     let sourceBase = document.getElementById('liveVue')
     if (sourceBase) {
       let source = sourceBase.innerText // decodes any encoded html
@@ -43,13 +43,14 @@ export default class GqlConnect extends BaseConnect {
 
       let fullResult = {}
 
-      if (response.errors !== undefined) { // errors, in gql
+      if (haltOnError && response.errors !== undefined) { // errors, in gql
         let errMsg = 'convertLiveVueDiv: original page server reports error: ' +
           JSON.stringify(response.errors)
         this.reporter(errMsg)
-        throw new Error('halted for error') // a hard stop, before components fail themselves
+        throw new Error('halted to view error, by live-vue-js') // a hard stop, before components fail themselves
       } else {
         fullResult = response
+        this.lvMeta = response.lvMeta // must always provide for base-connect getLvMeta()
       }
 
       if (!fullResult) {
