@@ -15,6 +15,15 @@ export const ReportModal = {
         'liveVueReportModalMsg' () {
           this.$_liveVueReportModal(this.liveVueReportModalMsg)
         }
+      },
+      methods: {
+        lvQuit () {
+          // this.$emit('close')
+          // console.log('modal: ' + JSON.stringify(this.$liveVueReportErr))
+          // this.$_liveVueReportModal.toggle(false)
+          // this.$_liveVueReportModal.hide(this.liveVueReportModalMsg())
+          alert('me')
+        }
       }
     })
 

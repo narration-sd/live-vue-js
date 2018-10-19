@@ -41,25 +41,18 @@ export default class GqlConnect extends BaseConnect {
       let response = JSON.parse(source)
       helpers.apiLog('convertLiveVueDiv source is: ' + JSON.stringify(response))
 
-      let fullResult = {}
-
       if (haltOnError && response.errors !== undefined) { // errors, in gql
         let errMsg = 'convertLiveVueDiv: original page server reports error: ' +
           JSON.stringify(response.errors)
         this.reporter(errMsg)
         throw new Error('halted to view error, by live-vue-js') // a hard stop, before components fail themselves
-      } else {
-        fullResult = response
-        this.lvMeta = response.lvMeta // must always provide for base-connect getLvMeta()
-      }
-
-      if (!fullResult) {
+      } else if (!response) {
         helpers.devLog('convertLiveVueDiv: Empty data response')
         return null
       }
-      helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(fullResult))
+      helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(response))
 
-      return fullResult
+      return response
     } else {
       helpers.devLog('no source div, trying remote api')
       return null // because we signal with this, so remote can get called
@@ -69,34 +62,35 @@ export default class GqlConnect extends BaseConnect {
   convertRemoteApi (response) {
     helpers.apiLog('convertRemoteApi gql data is: ' + JSON.stringify(response))
 
-    let fullResult = {}
+    if (this.isEmpty(response)) {
+      throw new Error('convertRemoteApi: gql Empty data response')
+    }
+
+    let fullResponse = {}
 
     if (response.errors !== undefined) {
       let errMsg = 'convertRemoteApi: gql server reports: ' +
         JSON.stringify(response.errors)
       throw new Error(errMsg)
     } else {
-      fullResult = response
+      fullResponse = response
     }
+    helpers.devLog('convertRemoteApi gql result is: ' + fullResponse)
+    helpers.apiLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResponse))
 
-    if (this.isEmpty(fullResult)) {
-      throw new Error('convertRemoteApi: gql Empty data response')
-    }
-    helpers.apiLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResult))
-
-    return fullResult
+    return fullResponse
   }
 
-  okToUseDataDiv (fullResult) {
+  okToUseDataDiv (response, haltOnError = true) {
     // This will help if routes.js or live-vue settings are wrong
-    if (fullResult.lvMeta.dataSourceType !== 'gapi') {
+    if (response.lvMeta.dataSourceType !== 'gapi') {
       console.log('gql-connect expected gapi data, ignoring from: ' +
-        fullResult.lvMeta.dataSourceType)
+        response.lvMeta.dataSourceType)
       return false // right away, it's not for this customer
     }
 
     let requestSignature = this.formRequestSignature()
-    let apiPattern = fullResult.lvMeta.dataApiPattern
+    let apiPattern = response.lvMeta.dataApiPattern
     let ok = false
 
     // n.b. we would be using this for actual Live Vue/Prevue, or
@@ -104,6 +98,15 @@ export default class GqlConnect extends BaseConnect {
     let requestPattern = '?script=' + this.dataQuery + '&uri=' + requestSignature
 
     ok = (apiPattern === requestPattern)
+
+    // we don't check this if not ok, as there may be an error
+    // left over in the div from a previous served app page load
+    if (ok && haltOnError && response.errors !== undefined) { // errors, in gql
+      let errMsg = 'convertLiveVueDiv: server div reports error: ' +
+        JSON.stringify(response.errors)
+      this.reporter(errMsg)
+      throw new Error('halted with stack trace, for error message above') // a hard stop, before components fail themselves
+    }
 
     helpers.devLog((ok ? '' : 'Not ') + 'ok to use Live Vue div having: ' +
       apiPattern + ' vs request ' + requestPattern)

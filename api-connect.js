@@ -41,7 +41,7 @@ export default class ApiConnect extends BaseConnect {
     // required, beyond those provided by BaseConnect
   }
 
-  convertLiveVueDiv (haltOnError = true) {
+  convertLiveVueDiv () {
     let sourceBase = document.getElementById('liveVue')
     if (sourceBase) {
       let source = sourceBase.innerText // decodes any encoded html
@@ -60,7 +60,7 @@ export default class ApiConnect extends BaseConnect {
           response.error.message + ', code: ' + response.error.code +
           ', file: ' + response.error.file + ', line: ' + response.error.line
         this.reporter(errstr) // for a notifier if present, default console
-        throw new Error('halted to view error, by live-vue-js') // a hard stop, before components fail themselves
+        throw new Error('halted with stack trace, for error message above') // a hard stop, before components fail themselves
       } else {
         dataResult = response
         this.lvMeta = response.lvMeta // must always provide for base-connect getLvMeta()
