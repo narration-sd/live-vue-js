@@ -60,7 +60,7 @@ export default class ApiConnect extends BaseConnect {
           response.error.message + ', code: ' + response.error.code +
           ', file: ' + response.error.file + ', line: ' + response.error.line
         this.reporter(errstr) // for a notifier if present, default console
-        throw new Error('halted with stack trace, for error message above') // a hard stop, before components fail themselves
+        throw new Error('halted with stack trace for error message above') // a hard stop, before components fail themselves
       } else {
         dataResult = response
         this.lvMeta = response.lvMeta // must always provide for base-connect getLvMeta()

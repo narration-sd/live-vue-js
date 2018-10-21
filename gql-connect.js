@@ -105,7 +105,7 @@ export default class GqlConnect extends BaseConnect {
       let errMsg = 'convertLiveVueDiv: server div reports error: ' +
         JSON.stringify(response.errors)
       this.reporter(errMsg)
-      throw new Error('halted with stack trace, for error message above') // a hard stop, before components fail themselves
+      throw new Error('halted with stack trace for error message above') // a hard stop, before components fail themselves
     }
 
     helpers.devLog((ok ? '' : 'Not ') + 'ok to use Live Vue div having: ' +
