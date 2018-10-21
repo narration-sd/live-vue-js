@@ -45,7 +45,7 @@ export default class GqlConnect extends BaseConnect {
         let errMsg = 'convertLiveVueDiv: original page server reports error: ' +
           JSON.stringify(response.errors)
         this.reporter(errMsg)
-        throw new Error('halted to view error, by live-vue-js') // a hard stop, before components fail themselves
+        throw new Error('halted with stack trace for error message above') // a hard stop, before components fail themselves
       } else if (!response) {
         helpers.devLog('convertLiveVueDiv: Empty data response')
         return null
@@ -81,16 +81,20 @@ export default class GqlConnect extends BaseConnect {
     return fullResponse
   }
 
-  okToUseDataDiv (response, haltOnError = true) {
+  okToUseDataDiv (fullResult, haltOnError = true) {
+    if (!fullResult) {
+      helpers.devLog('okToUseDataDiv: Empty data fullResult')
+      return null
+    }
     // This will help if routes.js or live-vue settings are wrong
-    if (response.lvMeta.dataSourceType !== 'gapi') {
-      console.log('gql-connect expected gapi data, ignoring from: ' +
-        response.lvMeta.dataSourceType)
+    if (fullResult.lvMeta.dataSourceType !== 'gapi') {
+      helpers.apiLog('gql-connect expected gapi data, ignoring from: ' +
+        fullResult.lvMeta.dataSourceType)
       return false // right away, it's not for this customer
     }
 
     let requestSignature = this.formRequestSignature()
-    let apiPattern = response.lvMeta.dataApiPattern
+    let apiPattern = fullResult.lvMeta.dataApiPattern
     let ok = false
 
     // n.b. we would be using this for actual Live Vue/Prevue, or
@@ -101,11 +105,12 @@ export default class GqlConnect extends BaseConnect {
 
     // we don't check this if not ok, as there may be an error
     // left over in the div from a previous served app page load
-    if (ok && haltOnError && response.errors !== undefined) { // errors, in gql
+    if (ok && haltOnError && fullResult.errors !== undefined) { // errors, in gql
       let errMsg = 'convertLiveVueDiv: server div reports error: ' +
-        JSON.stringify(response.errors)
+        JSON.stringify(fullResult.errors)
       this.reporter(errMsg)
-      throw new Error('halted with stack trace for error message above') // a hard stop, before components fail themselves
+      // a hard stop, before components fail themselves
+      throw new Error('halted with stack trace for error message above')
     }
 
     helpers.devLog((ok ? '' : 'Not ') + 'ok to use Live Vue div having: ' +

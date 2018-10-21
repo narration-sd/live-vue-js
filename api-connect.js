@@ -41,7 +41,7 @@ export default class ApiConnect extends BaseConnect {
     // required, beyond those provided by BaseConnect
   }
 
-  convertLiveVueDiv () {
+  convertLiveVueDiv (haltOnError = true) {
     let sourceBase = document.getElementById('liveVue')
     if (sourceBase) {
       let source = sourceBase.innerText // decodes any encoded html
@@ -100,10 +100,14 @@ export default class ApiConnect extends BaseConnect {
     return dataResult
   }
 
-  okToUseDataDiv (fullResult) {
+  okToUseDataDiv (fullResult, haltOnError = true) {
+    if (!fullResult) {
+      helpers.devLog('okToUseDataDiv: Empty data response')
+      return null
+    }
     // This will help if routes.js or live-vue settings are wrong
     if (fullResult.lvMeta.dataSourceType !== 'element-api') {
-      console.log('api-connect expected element-api data, ignoring from: ' +
+      helpers.apiLog('api-connect expected element-api data, ignoring from: ' +
         fullResult.lvMeta.dataSourceType)
       return false // right away, it's not for this customer
     }
@@ -113,6 +117,14 @@ export default class ApiConnect extends BaseConnect {
     let requestSignature = this.formRequestSignature(fullResult)
 
     ok = (apiPattern === requestSignature)
+
+    if (ok && haltOnError && fullResult.error !== undefined) { // errors, in gql
+      let errMsg = 'convertLiveVueDiv: original page server reports error: ' +
+        JSON.stringify(fullResult.error)
+      this.reporter(errMsg)
+      // a hard stop, before components fail themselves
+      throw new Error('halted with stack trace for error message above')
+    }
 
     helpers.devLog((ok ? '' : 'Not ') + 'ok to use Live Vue div having: ' +
       apiPattern + ' vs request ' + requestSignature)
