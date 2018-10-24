@@ -22,7 +22,7 @@ export const ReportModal = {
           // console.log('modal: ' + JSON.stringify(this.$liveVueReportErr))
           // this.$_liveVueReportModal.toggle(false)
           // this.$_liveVueReportModal.hide(this.liveVueReportModalMsg())
-          alert('me')
+          alert('me lvQuit')
         }
       }
     })
@@ -42,6 +42,10 @@ export const ReportModal = {
           this.liveVueReportModalBtn
         ]
       })
+    }
+
+    Vue.prototype.$liveVueReportModalClose = function () {
+      this.$modal.hide('dialog')
     }
   }
 }
