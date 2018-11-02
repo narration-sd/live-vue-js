@@ -15,17 +15,17 @@ import helpers from '@/live-vue-js/helpers.js'
 
 /*
  * The design premise of the Connect objects is to easily replace
- * existing $http.get() calls while transparently providing momentary
- * Live Vue data when the app is run in Craft Live Preview.
+ * existing calls such as $http.get(), also transparently providing
+ * Live Vue data when the app is run in Craft Live Preview. As well,
+ * comprehensive error handling is implemented, along with a default
+ * modal notifier, providing confident app presentation.
  *
- * General app startup speed is also often improved, as Live Vue
+ * General app startup speed is often improved, as Live Vue
  * similarly provides primary initial data along with the app page
- * in many cases, cutting down the number of actual wire calls.
+ * in many cases, cutting down the number of wire calls.
  *
- * Additionally, wire error handling is internal, simplifying app code
- * and easy use of a common Reporter mechanism such as an alert component,
- * if that's provided. A default Reporter writes errors to the browser
- * console.
+ * More general data calls are provided as well, in particular for
+ * remote GraphQL servers, or for mutations.
  *
  * BaseConnect provides these portions of the architecture, while
  * data composition is unified by subclasses with their own
@@ -33,7 +33,7 @@ import helpers from '@/live-vue-js/helpers.js'
  * error reporting structure with various possible sources.
  *
  * The provided ApiConnect and GqlConnect classes provide for present
- * element-api and GraphQL sources with this transparency for apps.
+ * element-api and CraftQL sources with this transparency for apps.
  *
  * The config/config.js file provides configuration, in particular
  *
@@ -42,32 +42,58 @@ import helpers from '@/live-vue-js/helpers.js'
  * LVHelpers.stringifyOnce() can be very useful in developing a fresh Connect type.
  * You can turn them on and off in the config/config.js file -- remember
  * to npm run build when you are changing these for staging or production.
-*/
-
-/*
- * n.b. You very probably don't want to set sourceBase. If you do, then api or
- * GraphQL queries will operate only on that url -- and thus won't occur on the
- * actual Craft Site as expected for multi-site. It's provided mainly as legacy,
- * and may soon go out.
  *
- * Also, sourceTag is for internal-use only. It will remain.
+ * --- usage notes --
  *
+ * Normal usage for any of the Connects is as follows:
  *
- * Thus, usual usage for any of the Connects, given usual $route on compo ent, is:
- *     connectVar = new Api/GqlConnect(this.$route)
+ * in imports,
+ *     import GqlConnect from '@/live-vue-js/api-connect'
  * or
- *     connectVar = new Api/GqlConnect(this.$route, this.report)
+ *     import GqlConnect from '@/live-vue-js/gql-connect'
  *
- *     where reporter would be your failure reporting method, usually calling
- *     up a modal alert component for the information. If you don't provide one,
- *     fail reports will just go to the browser console automatically.
+ * in your component data object, indicating the default Reporter
+ *     connector: new apiConnect(this.lvReporter),
+ * or
+ *     connector: new gqlConnect(this.lvReporter),
  *
- * n.b. further: For the case where there's a separated api or gql server, it's
- * poasible to set a config.sourceBase. If you do that, you'll need to pass Site
- * informationyourself, and use it in the query, so that you get the correct data.
- * This should be automatic within Live View itself, as the altered data is given
- * based already on the Site actually being edited.
+ * followed by default data which supports v-if:
+ *     connectData = null,
+ *
+ *     You can alternatively substitute your own this.reporter(error) function,
+ *     or use none, which would default error reporting to console log only.
+ *
+ * Finally, call the connector, typically at component creation, defining
+ * the query by api endpoint or CraftQL script for your data:
+ *
+ *     let dataQuery = 'Cards'
+ *     this.connector.pull(dataQuery, (theData) => {
+ *       this.connectData = theData.data
+ *     })
+ *
+ *   You have some useful available modifiers you can apply to the connector to
+ *   modify how the final pull() call retrieves the data.
+ *
+ *   This call sets data source url when the Live Vue div is not present or may
+ *   hold a now-inappropriate initial. This is defaulted normally to the server
+ *   your page comes from, but the call will be needed when you do rapid UX
+ *   development via webpack-devserver, or when querying a remote data server:
+ *
+ *     this.connector.setSourceBase('https://lv-demo.test/')
+ *
+ *   When you are querying for an 'index page', listing more than one data page,
+ *   add this call so that a uri isn't used to select only one:
+ *
+ *     this.connector.setSkipUri() // no selecting uri present; all cards request
+ *
+ *  N.b. Please be sure always to use an arrow function for the pull() etc.
+ *  connector calls. This allows you to set your component data because the
+ *  'this' will be properly preserved. Es6 thus is needed, which you'll provide
+ *  for older serviceable browsers likely via automatic babel/browserslist
+ *
+ *  For details and the other useful calls, please refer to the documentation.
  */
+
 export default class BaseConnect {
 
   constructor (reporter = null, sourceBase = null, sourceTag = null) {
@@ -210,11 +236,11 @@ export default class BaseConnect {
     const reporter = this.reporter // avoid a tricky case of this, stripped class?
 
     axios.post(this.dataApi, this.dataQuery, requestConfig)
-      .then(function (response) {
+      .then(function (fullResult) {
         if (response.data.errors) {
-          reporter('Api Error: ' + JSON.stringify(response.data.errors))
+          reporter('Api Error: ' + JSON.stringify(fullResult.data.errors))
         }
-        appDataSaver(response)
+        appDataSaver(fullResult)
       })
       .catch(function (error) {
         reporter('Connection Error: ' + error.toString())
@@ -241,38 +267,50 @@ export default class BaseConnect {
     this.skipUri = true
   }
 
-  // These calls provide values from Live Vue lvMeta, whenever possible.
+  // --- Connect utilities -- //
+
+  // These provide values from Live Vue lvMeta, whenever possible.
   // These are available when the Live Vue div is present, thus defaults.
+  // note use of double-!, around js abso peculiar truthy treatement of null
 
-  isLiveVueDelivery () {
-    return this.getLvMeta() !== null
-  }
-
+  // Data is actual Live Preview, which is a fact that can be used to halt
+  // movement or other action during this edit, such as carousel rotation.
+  // Also holding current position could be useful, and could be provided
+  // via Vuex combined with npm vuex-persist. Or, Craft Solo could be
+  // implemented, to provide more general focus ability -- and then
+  // any persistence scheme would need to recognize this.
   isLivePreview () {
     let lvMeta = this.getLvMeta()
-    return lvMeta && lvMeta.isLivePreview
+    return !!lvMeta && (lvMeta.isLivePreview != null)
   }
 
   persistTimeFence () {
     let lvMeta = this.getLvMeta()
-    return lvMeta ? lvMeta.persistTimeFence : 600
+    return !!lvMeta ? lvMeta.persistTimeFence : 600
   }
 
   pageErrorHandler () {
     let lvMeta = this.getLvMeta()
-    return lvMeta ? lvMeta.pageErrorHandler : 'browser'
+    return !!lvMeta ? lvMeta.pageErrorHandler : 'browser'
   }
 
   browserHandle404 () {
     return this.pageErrorHandler() === 'browser'
   }
 
-  getLvMeta () { // can be used for other lvMeta
+  getLvMeta () { // basis, and could be used for other lvMeta
     if (!this.lvMeta) {
-      this.convertLiveVueDiv(false) // develop lvMeta; each kind of connect must provide
-      console.log('lvMeta: ' + this.lvMeta)
+      // develop lvMeta; as ever, each kind of connect must provide
+      this.convertLiveVueDiv(false)
     }
-    return this.lvMeta || null // idiom on undefined
+    // well, using the js peculiarity undefined/falsey
+    return this.lvMeta || null
+  }
+
+  // Data is via div, while may or not be a Live Vue preview
+  // not normally used, but provided for completeness
+  isLiveVueDataDelivery () {
+    return this.getLvMeta() !== null
   }
 
   // ---- these methods must be defined in actual Connect classes inheriting from BaseConnect ----

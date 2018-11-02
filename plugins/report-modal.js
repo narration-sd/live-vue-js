@@ -4,9 +4,12 @@ export const ReportModal = {
     Vue.mixin({
       data () {
         return {
-          liveVueReportModalTitle: '',
-          liveVueReportModalMsg: '',
-          liveVueReportModalBtn: { title: 'Ok' }
+          lvStatus: 'Ready...',
+          lvStatusLoading: 'Loading...',
+          lvStatusFailed: 'Loading Failed...',
+          lvReportModalTitle: '',
+          lvReportModalMsg: '',
+          lvReportModalBtn: { title: 'Ok' }
         }
       },
       methods: {
@@ -23,14 +26,20 @@ export const ReportModal = {
           this.$modal.hide('dialog')
         },
         lvReporter (error) {
-          console.log('lvReporter: Error: ' + error)
-          this.status = 'Loading failed...'
+          this.lvStatus = this.lvStatusFailed
           this.lvShowErrorNotifier(
             'Loading failed...',
             error,
             {
               title: 'Accept'
             })
+        },
+        lvSetMessages (loading, failed) {
+          // for languages etc., and you'll eet both
+          // must do before first call against connector
+          this.lvStatusLoading = loading
+          this.lvStatus = loading
+          this.lvStatusFailed = failed
         }
       },
       beforeDestroy () {
