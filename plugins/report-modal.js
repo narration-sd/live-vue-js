@@ -21,7 +21,21 @@ export const ReportModal = {
         },
         lvCloseErrorNotifier () {
           this.$modal.hide('dialog')
+        },
+        lvReporter (error) {
+          console.log('lvReporter: Error: ' + error)
+          this.status = 'Loading failed...'
+          this.lvShowErrorNotifier(
+            'Loading failed...',
+            error,
+            {
+              title: 'Accept'
+            })
         }
+      },
+      beforeDestroy () {
+        // if it was showing, close on switching views: e.g. browser back button
+        this.lvCloseErrorNotifier()
       }
     })
   }

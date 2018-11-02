@@ -163,7 +163,7 @@ export default class GqlConnect extends BaseConnect {
     dataQuery = '?script=' + dataQuery
 
     if (this.skipUri !== undefined && this.skipUri) {
-      dataQuery += '&skipUri' // visible for unset uri -- not used by Live Vue plugin
+      dataQuery += '&skipUri' // visible flag for no uri; not used by LV plugin
     } else {
       dataQuery += '&uri=' + path
     }

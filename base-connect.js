@@ -98,7 +98,7 @@ export default class BaseConnect {
     helpers.apiLog('pagingQuery: ' + JSON.stringify(this.pagingQuery))
 
     // reporter can be a nice ux modal etc., while we provide a simple default
-    this.reporter = (reporter !== null) ? reporter : this.consoleReport
+    this.reporter = (reporter !== null) ? reporter : this.consoleReporter
 
     this.lvMeta = null
 
@@ -454,7 +454,7 @@ export default class BaseConnect {
 
   // this is the default reporter, if one isn't defined for the initial
   // Connect object construction
-  consoleReport (error) {
+  consoleReporter (error) {
     console.log('defaultReporter: ' + error)
   }
 }
