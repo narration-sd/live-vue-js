@@ -237,7 +237,7 @@ export default class BaseConnect {
 
     axios.post(this.dataApi, this.dataQuery, requestConfig)
       .then(function (fullResult) {
-        if (response.data.errors) {
+        if (fullResult.data.errors) {
           reporter('Api Error: ' + JSON.stringify(fullResult.data.errors))
         }
         appDataSaver(fullResult)
@@ -271,7 +271,6 @@ export default class BaseConnect {
 
   // These provide values from Live Vue lvMeta, whenever possible.
   // These are available when the Live Vue div is present, thus defaults.
-  // note use of double-!, around js abso peculiar truthy treatement of null
 
   // Data is actual Live Preview, which is a fact that can be used to halt
   // movement or other action during this edit, such as carousel rotation.
@@ -281,21 +280,22 @@ export default class BaseConnect {
   // any persistence scheme would need to recognize this.
   isLivePreview () {
     let lvMeta = this.getLvMeta()
+    // note use of double-!, around js abso peculiar truthy treatement of null
     return !!lvMeta && (lvMeta.isLivePreview != null)
   }
 
   persistTimeFence () {
     let lvMeta = this.getLvMeta()
-    return !!lvMeta ? lvMeta.persistTimeFence : 600
-  }
-
-  pageErrorHandler () {
-    let lvMeta = this.getLvMeta()
-    return !!lvMeta ? lvMeta.pageErrorHandler : 'browser'
+    return lvMeta ? lvMeta.persistTimeFence : 600
   }
 
   browserHandle404 () {
     return this.pageErrorHandler() === 'browser'
+  }
+
+  pageErrorHandler () {
+    let lvMeta = this.getLvMeta()
+    return lvMeta ? lvMeta.pageErrorHandler : 'browser'
   }
 
   getLvMeta () { // basis, and could be used for other lvMeta
