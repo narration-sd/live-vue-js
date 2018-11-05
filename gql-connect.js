@@ -33,6 +33,18 @@ export default class GqlConnect extends BaseConnect {
     // required, beyond those provided by BaseConnect
   }
 
+  // These are small but important, and unique to gql-connect: they install
+  // literal GraphQL script and headers, so that base Connect will use them,
+  // when you want to call a Gql server with specific query code.
+
+  setGqlDirectQuery (query) {
+    this.gqlQuery = query
+  }
+
+  setGqlDirectHeaders (headers) {
+    this.gqlHeaders = headers
+  }
+
   convertLiveVueDiv (haltOnError = true) {
     let sourceBase = document.getElementById('liveVue')
     if (sourceBase) {

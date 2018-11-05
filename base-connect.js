@@ -181,7 +181,7 @@ export default class BaseConnect {
     }
   }
 
-  // pull() is the primary call form replacing $http.get()
+  // pull() above is the primary call form replacing $http.get()
 
   // use Connect.get() only when you want to force a  wire call to
   // the Live Vue presentation of an api, with its meta information
@@ -203,17 +203,17 @@ export default class BaseConnect {
     this.pullFromApi(appDataSaver)
   }
 
-  // postDirect() allows you to send your GraphQL query and variables directly
+  // gqlPostDirect() allows you to send your GraphQL query and variables directly
   // in JSON to a compliant server. It has the advantage of displaying
   // errors with the Connect reporter, consistently with Live Vue calls.
   // It will use POST, and either a server you specify with setSourceBase()
   // or as default, one you have provided in config.
 
-  // postDirect() is straightforward as it doesn't need to do data conversions
+  // gqlPostDirect() is straightforward as it doesn't need to do data conversions
   // or signature validations, while it does continue to support any kind of
   // result reporting.
 
-  postDirect (queryJson, appDataSaver, headers = null, ...extraParams) {
+  gqlPostDirect (queryJson, appDataSaver, headers = null, ...extraParams) {
     this.dataQuery = queryJson
 
     // for later feature or children; spread so zero or multiple possible
@@ -224,22 +224,20 @@ export default class BaseConnect {
       ? { headers: headers }
       : {}
 
-    helpers.devLog('postDirect: data call on ' +
+    helpers.devLog('gqlPostDirect: data call on ' +
       this.dataApi + ' for ' + JSON.stringify(this.dataQuery))
     helpers.apiLog('requestConfig: ' + JSON.stringify(requestConfig))
 
-    const reporter = this.reporter // avoid a tricky case of this, stripped class?
-
     axios.post(this.dataApi, this.dataQuery, requestConfig)
-      .then(function (fullResult) {
+      .then((fullResult) => {
         if (fullResult.data.errors) {
-          reporter('Api Error: ' + JSON.stringify(fullResult.data.errors))
+          this.reporter('Api Error: ' + JSON.stringify(fullResult.data.errors))
         }
-        appDataSaver(fullResult)
+        appDataSaver(fullResult.data)
       })
       .catch((error) => {
-        let errMsg = this.reportAxios(this.dataApi, error, reporter, 'postDirect')
-        reporter(errMsg)
+        let errMsg = this.reportAxios(this.dataApi, error, 'gqlPostDirect')
+        this.reporter(errMsg)
       })
   }
 
@@ -337,17 +335,25 @@ export default class BaseConnect {
 
   // ---- the following are considered internal routines for Connect itself ----
 
-  pullFromApi (appDataSaver, usePost = false) {
-    this.getOnlineApiData(this.dataUrl, usePost)
-      .then(fullResult => {
-        helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
-        helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
-        appDataSaver(fullResult)
-      })
-      .catch(error => {
-        helpers.devLog('pullFromApi: ' + error)
-        this.reporter(error.toString())
-      })
+  pullFromApi (appDataSaver, usePostForApi = false) {
+    if (this.gqlQuery === undefined) {
+      this.getOnlineApiData(this.dataUrl, usePostForApi)
+        .then(fullResult => {
+          helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
+          helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
+          appDataSaver(fullResult)
+        })
+        .catch(error => {
+          helpers.devLog('pullFromApi: ' + error)
+          this.reporter(error.toString())
+        })
+    } else {
+      let headers = this.gqlHeaders === undefined
+        ? null
+        : this.gqlHeaders
+
+      this.gqlPostDirect(this.gqlQuery, appDataSaver, headers)
+    }
   }
 
   formDataUrl () {
@@ -430,7 +436,7 @@ export default class BaseConnect {
 
     return axios.get(src)
       .catch((error) => {
-        let errMsg = this.reportAxios(src, error, reporter, 'getOnlineApiData')
+        let errMsg = this.reportAxios(src, error, 'getOnlineApiData')
         throw new Error(errMsg)
       })
       .then(response => {
@@ -453,7 +459,7 @@ export default class BaseConnect {
       })
   }
 
-  reportAxios (server, error, reporter, routine) {
+  reportAxios (server, error, routine) {
     let errMsg = null
 
     if (error.response) {
@@ -464,7 +470,7 @@ export default class BaseConnect {
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser.
-      errMsg = 'Error: ' + error.message + ' (is your data server down?' +
+      errMsg = 'Error: ' + error.message + ' (is your data server down? See console log for details)' +
         (error.request.length > 0 ? (' Request: ' + JSON.stringify(error.request)) : '')
     } else {
       // Something happened in setting up the request that triggered an Error
