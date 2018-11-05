@@ -101,7 +101,7 @@ export default class BaseConnect {
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
     this.sourceTag = sourceTag // we use it elsewhere
 
-    if (!sourceBase || !this.isString(sourceBase)) {
+    if (!sourceBase || !helpers.isString(sourceBase)) {
 
       if (!config.sourceBase) {
         // not to have set this argument is normal
@@ -203,33 +203,28 @@ export default class BaseConnect {
     this.pullFromApi(appDataSaver)
   }
 
-  // direct() allows you to send your query and variables directly
+  // postDirect() allows you to send your GraphQL query and variables directly
   // in JSON to a compliant server. It has the advantage of displaying
   // errors with the Connect reporter, consistently with Live Vue calls.
-  // It will use POST as default, and a server you specify in config
-  // unless the server parameter is filled in.
-  //
-  // direct() replaces $http.get() for raw, with the Connect advantages
+  // It will use POST, and either a server you specify with setSourceBase()
+  // or as default, one you have provided in config.
 
-  direct (queryJson, appDataSaver, headers = null, ...extraParams) {
-    // direct() is straightforward as it doesn't need to do data conversions
-    // or signature validations, while it does continue to support any kind of
-    // result reporting. Likely we don't ever want to do this except via POST
+  // postDirect() is straightforward as it doesn't need to do data conversions
+  // or signature validations, while it does continue to support any kind of
+  // result reporting.
 
+  postDirect (queryJson, appDataSaver, headers = null, ...extraParams) {
     this.dataQuery = queryJson
 
     // for later feature or children; spread so zero or multiple possible
     this.extraParams = extraParams
-
-    // we don't add anything to the dataApi in this case,
-    // but don't forget to set it before this connect.direct() call
 
     // tokens?
     let requestConfig = headers
       ? { headers: headers }
       : {}
 
-    helpers.devLog('Connect:direct: data call on ' +
+    helpers.devLog('postDirect: data call on ' +
       this.dataApi + ' for ' + JSON.stringify(this.dataQuery))
     helpers.apiLog('requestConfig: ' + JSON.stringify(requestConfig))
 
@@ -242,8 +237,9 @@ export default class BaseConnect {
         }
         appDataSaver(fullResult)
       })
-      .catch(function (error) {
-        reporter('Connection Error: ' + error.toString())
+      .catch((error) => {
+        let errMsg = this.reportAxios(this.dataApi, error, reporter, 'postDirect')
+        reporter(errMsg)
       })
   }
 
@@ -434,25 +430,7 @@ export default class BaseConnect {
 
     return axios.get(src)
       .catch((error) => {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          errMsg = ' data: ' + JSON.stringify(error.response.data)
-          errMsg += ', status: ' + error.response.status
-        } else if (error.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser,
-          // while an instance of http.ClientRequest in node.js
-          errMsg = 'Error: ' + error.message + ' (is your data server down?' +
-            (error.request.length > 0 ? (' Request: ' + JSON.stringify(error.request)) : '')
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          errMsg = 'Error: ' + error
-        }
-
-        errMsg = 'getOnlineApiData: connection failed from ' +
-          src + ', ' + errMsg
-
+        let errMsg = this.reportAxios(src, error, reporter, 'getOnlineApiData')
         throw new Error(errMsg)
       })
       .then(response => {
@@ -475,19 +453,35 @@ export default class BaseConnect {
       })
   }
 
+  reportAxios (server, error, reporter, routine) {
+    let errMsg = null
+
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      errMsg = ' response: ' + JSON.stringify(error.response.data)
+      errMsg += ', status: ' + error.response.status
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser.
+      errMsg = 'Error: ' + error.message + ' (is your data server down?' +
+        (error.request.length > 0 ? (' Request: ' + JSON.stringify(error.request)) : '')
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      errMsg = 'Error: ' + error
+    }
+
+    errMsg = routine + ': connection failed from ' +
+      server + ', ' + errMsg
+
+    return 'Connection Error: ' + errMsg
+  }
+
   // --- some utilities,  ---
 
   // this is a call for appDataSaver to use when a Vuex store is present
   storeAppData (context, fullResult) {
     context.commit('setAppData', fullResult)
-  }
-
-  isString (obj) { // it's robust
-    return (Object.prototype.toString.call(obj) === '[object String]')
-  }
-
-  isEmpty (obj) {
-    return Object.getOwnPropertyNames(obj).length === 0
   }
 
   // this is the default reporter, if one isn't defined for the initial

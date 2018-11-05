@@ -62,7 +62,7 @@ export default class GqlConnect extends BaseConnect {
   convertRemoteApi (response) {
     helpers.apiLog('convertRemoteApi gql data is: ' + JSON.stringify(response))
 
-    if (this.isEmpty(response)) {
+    if (helpers.isEmpty(response)) {
       throw new Error('convertRemoteApi: gql Empty data response')
     }
 

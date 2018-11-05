@@ -226,6 +226,14 @@ export default {
     }
   },
 
+  isString (obj) { // it's robust
+    return (Object.prototype.toString.call(obj) === '[object String]')
+  },
+
+  isEmpty (obj) {
+    return Object.getOwnPropertyNames(obj).length === 0
+  },
+
   /*
    * This routine is not normally in use for Live Vue, but can be very helpful to have
    * available in the kit for debugging, as it deals well with circular data references,
