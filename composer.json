@@ -1,5 +1,6 @@
 {
   "name": "live-vue-js",
+  "version": "0.9.21",
   "description": "Provide Craft Live View on Vue or similar components",
   "minimum-stability": "beta",
   "require": {
