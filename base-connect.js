@@ -40,58 +40,13 @@ import helpers from '@/live-vue-js/helpers.js'
  * n.b. You may notice an ample distribution of conditional console logging,
  * the apiLog(), and devLog() calls. These and the presence of
  * LVHelpers.stringifyOnce() can be very useful in developing a fresh Connect type.
- * You can turn them on and off in the config/config.js file -- remember
- * to npm run build when you are changing these for staging or production.
+ * You can turn them on and off in the config/config.js file. In practice,
+ * it's often useful to only turn on dev logging, and then edit a useful
+ * apiLot to use devLog, while you need to see that result. Remember
+ * to npm run build when you are changing these for staging or production,
+ * and afterwards to clean up logging changes and again build for completed work.
  *
- * --- usage notes --
- *
- * Normal usage for any of the Connects is as follows:
- *
- * in imports,
- *     import GqlConnect from '@/live-vue-js/api-connect'
- * or
- *     import GqlConnect from '@/live-vue-js/gql-connect'
- *
- * in your component data object, indicating the default Reporter
- *     connector: new apiConnect(this.lvReporter),
- * or
- *     connector: new gqlConnect(this.lvReporter),
- *
- * followed by default data which supports v-if:
- *     connectData = null,
- *
- *     You can alternatively substitute your own this.reporter(error) function,
- *     or use none, which would default error reporting to console log only.
- *
- * Finally, call the connector, typically at component creation, defining
- * the query by api endpoint or CraftQL script for your data:
- *
- *     let dataQuery = 'Cards'
- *     this.connector.pull(dataQuery, (theData) => {
- *       this.connectData = theData.data
- *     })
- *
- *   You have some useful available modifiers you can apply to the connector to
- *   modify how the final pull() call retrieves the data.
- *
- *   This call sets data source url when the Live Vue div is not present or may
- *   hold a now-inappropriate initial. This is defaulted normally to the server
- *   your page comes from, but the call will be needed when you do rapid UX
- *   development via webpack-devserver, or when querying a remote data server:
- *
- *     this.connector.setSourceBase('https://lv-demo.test/')
- *
- *   When you are querying for an 'index page', listing more than one data page,
- *   add this call so that a uri isn't used to select only one:
- *
- *     this.connector.setSkipUri() // no selecting uri present; all cards request
- *
- *  N.b. Please be sure always to use an arrow function for the pull() etc.
- *  connector calls. This allows you to set your component data because the
- *  'this' will be properly preserved. Es6 thus is needed, which you'll provide
- *  for older serviceable browsers likely via automatic babel/browserslist
- *
- *  For details and the other useful calls, please refer to the documentation.
+ *  For usage and details, please refer to the documentation.
  */
 
 export default class BaseConnect {
@@ -156,13 +111,19 @@ export default class BaseConnect {
       // an Exception will be thrown if div reports errors, so we can move directly
       let fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
 
-      if ((fullResult)) {
+      if (fullResult) {
         // we'd like this always, when it exists
         this.lvMeta = fullResult.lvMeta
       }
 
-      if (config.directExceptPreview && !fullResult.lvMeta.isLivePreview) {
+      // the several general situations enabled...
+
+      if (config.directExceptPreview && !this.lvMeta.isLivePreview) {
         helpers.devLog('direct pull as configured, since not editing in Live Vue')
+        this.pullFromApi(appDataSaver)
+      } else if (fullResult && this.lvMeta.skipLiveVueDiv) {
+        helpers.devLog('acceleration disabled for ' + dataQuery +
+          this.pagingQuery + ' -- using direct data call on server')
         this.pullFromApi(appDataSaver)
       } else if (fullResult && this.okToUseDataDiv(fullResult)) {
         helpers.devLog('successful using Live Vue div data for ' +
@@ -172,7 +133,7 @@ export default class BaseConnect {
         appDataSaver(fullResult)
       } else {
         helpers.devLog('div doesn\'t have data for ' + dataQuery +
-          this.pagingQuery + ' -- trying api data call on server')
+          this.pagingQuery + ' -- trying direct data call on server')
         this.pullFromApi(appDataSaver)
       }
     } else {
