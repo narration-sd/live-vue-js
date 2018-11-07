@@ -1,4 +1,4 @@
-import config from '@/live-vue-js/config'
+import config from '@/config/live-vue.js'
 
 export default {
   liveAndPreviewMatch (introducer) {
@@ -153,7 +153,7 @@ export default {
   // note that turning on apiLog in config will also enable devLog(),
   // which is used to log just high-level activities, especially in
   // child Connect classes. apiLog() unleashes a flood. Control
-  // these via config/config.js, and rebuild for production change.
+  // these via config/live-vue.js, and rebuild for production change.
 
   devLog (msg) {
     if (config.lvDevMode || config.apiDevMode) {

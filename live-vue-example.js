@@ -10,6 +10,13 @@
  */
 
 /*
+ * This is an example file -- copy it to src/config, renaming to live-vue.js.
+ *
+ * The debug logging is set as may be useful for developing your routings and
+ * your app. You will want to turn these off before delivery.
+ *
+ * As always, npm run build to have any config implemented for production.
+ *
  * This configuration file affects various Live VUe possible functions.
  *
  * Some are used only with Vuex architectures, for example, while the debug

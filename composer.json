@@ -1,7 +1,6 @@
 {
   "name": "narrationsd/live-vue-js",
   "description": "ES6 library for Craft Live View on Vue or similar components",
-  "version": "0.9.24",
   "minimum-stability": "beta",
   "extra": {
     "documentationUrl": "https://narrationsd.com/docs/live-vue",

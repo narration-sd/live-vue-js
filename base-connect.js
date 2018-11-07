@@ -10,7 +10,7 @@
  */
 
 import axios from 'axios'
-import config from '@/live-vue-js/config.js'
+import config from '@/config/live-vue.js'
 import helpers from '@/live-vue-js/helpers.js'
 
 /*
@@ -35,12 +35,12 @@ import helpers from '@/live-vue-js/helpers.js'
  * The provided ApiConnect and GqlConnect classes provide for present
  * element-api and CraftQL sources with this transparency for apps.
  *
- * The config/config.js file provides configuration, in particular
+ * The config/live-vue.js file provides configuration, in particular
  *
  * n.b. You may notice an ample distribution of conditional console logging,
  * the apiLog(), and devLog() calls. These and the presence of
  * LVHelpers.stringifyOnce() can be very useful in developing a fresh Connect type.
- * You can turn them on and off in the config/config.js file. In practice,
+ * You can turn them on and off in the config/live-vue.js file. In practice,
  * it's often useful to only turn on dev logging, and then edit a useful
  * apiLot to use devLog, while you need to see that result. Remember
  * to npm run build when you are changing these for staging or production,
