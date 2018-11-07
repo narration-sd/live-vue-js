@@ -1,8 +1,11 @@
 {
-  "name": "live-vue-js",
+  "name": "narrationsd/live-vue-js",
   "description": "Provide Craft Live View on Vue or similar components",
   "version": "0.9.22",
   "minimum-stability": "beta",
+  "require-dev": {
+    "composer/installers": "~1.0"
+  },
   "extra": {
     "documentationUrl": "https://narrationsd.com/docs/live-vue",
     "developer": "Narration SD",
