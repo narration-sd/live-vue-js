@@ -102,7 +102,48 @@ export default class BaseConnect {
 
     // for later feature or children; spread so zero or multiple possible
     this.extraParams = extraParams
-    this.formDataUrl() // needs to be done first to enable pageQuery checks
+
+    let fullResult = this.livePreviewData(dataQuery)
+
+    if (fullResult) {
+      appDataSaver(fullResult)
+    } else {
+      helpers.devLog('making immediate data call on server, as configured')
+      this.pullFromApi(appDataSaver)
+    }
+  }
+
+  // livePreviewData () is the heart of Connect's data retrieval from
+  // Craft via the Live Vue plugin, discovering and providing the data
+  // for each editing moment's Live Preview screen update.
+  //
+  // Thus it's also true that you could use for a quick way to Live Vue
+  // enable a current component with Live Preview, via a aimple if-else
+  // on its data return, which will be null if Live Vue isn't present.
+  // You'd configure the Connect so it passes only Live Vue in this case.
+  //
+  // However, going this way, you'd miss the element-api and CraftQL
+  // integration of Connect.pull(), along with its easy call/callback
+  // framework including comprehensive error reporting and notifier.
+
+  // For performance, you'd equally miss the acceleration: Live Vue's inclusion
+  // of first-screen data with the page that holds your Vue etc. component,
+  // instead accumulating the latency of a second round-trip ajax call at some
+  // time rupoint in the component's own build.
+
+  // for livePreviewData() to work independently, you'll need to pass in the
+  // dataQuery identifying the gql Script or api/endpoint
+
+  livePreviewData (dataQuery = null) {
+
+    let checkSignature = true
+
+    if (dataQuery) {
+      this.formDataUrl() // needs to be done first to enable pageQuery checks
+    } else {
+      this.dataQuery = '(no query)'
+      checkSignature = false
+    }
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
 
@@ -114,40 +155,41 @@ export default class BaseConnect {
       if (fullResult) {
         // we'd like this always, when it exists
         this.lvMeta = fullResult.lvMeta
+      } else {
+        this.lvMeta = null
       }
 
-      // the several general situations enabled...
+      // several general situations handled and logged...
 
-      if (config.directExceptPreview && !this.lvMeta.isLivePreview) {
-        helpers.devLog('direct pull as configured, since not editing in Live Vue')
-        this.pullFromApi(appDataSaver)
-      } else if (fullResult && this.lvMeta.skipLiveVueDiv) {
-        helpers.devLog('acceleration disabled for ' + dataQuery +
+      if (config.directExceptPreview && (!this.lvMeta || !this.lvMeta.isLivePreview)) {
+        helpers.devLog('direct pull as configured, since not previewing in Live Vue')
+        return null
+      } else if (fullResult && (this.lvMeta && this.lvMeta.skipLiveVueDiv)) {
+        helpers.devLog('acceleration disabled for ' + this.dataQuery +
           this.pagingQuery + ' -- using direct data call on server')
-        this.pullFromApi(appDataSaver)
+        return null
+      } else if (fullResult && !checkSignature) {
+        helpers.devLog('Live Vue div data returned without signature check')
+        helpers.apiLog('data from Live Vue div w/o signature ck: ' +
+          JSON.stringify(fullResult))
+        return fullResult
       } else if (fullResult && this.okToUseDataDiv(fullResult)) {
         helpers.devLog('successful using Live Vue div data for ' +
           dataQuery + this.pagingQuery)
         helpers.apiLog('data for ' + dataQuery + this.pagingQuery +
           ' from Live Vue div: ' + JSON.stringify(fullResult))
-        appDataSaver(fullResult)
+        return fullResult
       } else {
-        helpers.devLog('div doesn\'t have data for ' + dataQuery +
+        helpers.devLog('div doesn\'t have data for ' + this.dataQuery +
           this.pagingQuery + ' -- trying direct data call on server')
-        this.pullFromApi(appDataSaver)
+        return null
       }
-    } else {
-      helpers.devLog('making immediate data call on server, as configured')
-      this.pullFromApi(appDataSaver)
     }
   }
 
-  // pull() above is the primary call form replacing $http.get()
-
-  // use Connect.get() only when you want to force a  wire call to
-  // the Live Vue presentation of an api, with its meta information
-  // and data conversion. Use direct() below to call an api with
-  // no interventioni, just presenting appDataSaver with raw json.
+  // use Connect.get() only when you want to force a wire call to
+  // an api, while keeping the advantage of Connect's error handling,
+  // error reporter with optional notifier, and data conversion.
   //
   // get() provides the same call semantics and automatic error handling
   // as pull does.
