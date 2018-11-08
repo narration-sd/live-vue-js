@@ -169,7 +169,7 @@ export default class BaseConnect {
           this.pagingQuery + ' -- using direct data call on server')
         return null
       } else if (fullResult && !checkSignature) {
-        helpers.devLog('Live Vue div data returned without signature check')
+        helpers.devLog('Live Vue div data trusted w/o signature check')
         helpers.apiLog('data from Live Vue div w/o signature ck: ' +
           JSON.stringify(fullResult))
         return fullResult
