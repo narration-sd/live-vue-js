@@ -278,7 +278,7 @@ export default class BaseConnect {
   isLivePreview () {
     let lvMeta = this.getLvMeta()
     // note use of double-!, around js abso peculiar truthy treatement of null
-    return !!lvMeta && (lvMeta.isLivePreview != null)
+    return lvMeta && lvMeta.isLivePreview
   }
 
   persistTimeFence () {
