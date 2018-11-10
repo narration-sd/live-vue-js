@@ -103,12 +103,24 @@ export default class BaseConnect {
     // for later feature or children; spread so zero or multiple possible
     this.extraParams = extraParams
 
-    let fullResult = this.livePreviewData(dataQuery)
+    let fullResult = null
 
-    if (fullResult) {
-      appDataSaver(fullResult)
+    if (this.pullBefore) {
+      this.lvMeta = null // clear to keep valid, as we won't refresh it
+      helpers.devLog('clearing lvMeta, assuring data from server, after initial pull')
     } else {
-      helpers.devLog('making immediate data call on server, as configured')
+      // Don't allow potentially stale div re-use. This will
+      // never happen on Live Preview, but could in general app.
+      // This way, we allow pull() to be used multiple times, rather
+      // than needing to be replaced with get().
+      fullResult = this.livePreviewData(dataQuery)
+    }
+
+    if (fullResult && !this.pullBefore) { // belt and suspenders, clear semantics
+      this.pullBefore = true
+      appDataSaver(fullResult) // no need for Promise on direct from div
+    } else {
+      helpers.devLog('making data call on server, as conditioned or configured')
       this.pullFromApi(appDataSaver)
     }
   }
@@ -192,7 +204,9 @@ export default class BaseConnect {
   // error reporter with optional notifier, and data conversion.
   //
   // get() provides the same call semantics and automatic error handling
-  // as pull does.
+  // as pull does. Because pull() will effectively work as a get() when
+  // there's no div data, or after it's been first used, probably you
+  // won't often need get(). It's here for completeness.
 
   get (dataQuery, appDataSaver, ...extraParams) {
     this.dataQuery = dataQuery
