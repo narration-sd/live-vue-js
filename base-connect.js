@@ -151,9 +151,11 @@ export default class BaseConnect {
     let checkSignature = true
 
     if (dataQuery) {
+      this.dataQuery = dataQuery // for solo livePreviewData use (legacy pattern)
       this.formDataUrl() // needs to be done first to enable pageQuery checks
     } else {
-      this.dataQuery = '(no query)'
+      // *todo* do we really want to allow this, if can be a fast-start convenience?
+      this.dataQuery = '(no query provided)'
       checkSignature = false
     }
 
