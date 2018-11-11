@@ -138,8 +138,8 @@ export default class GqlConnect extends BaseConnect {
     }
 
     // otherwise, we carry on with simplest possible signature extractor
-    // trust that solving with full or even split case regex goes out of
-    // bounds rapidly...
+    // one may trust that the alternative, solving with full or even split
+    // case regex, goes out of bounds rapidly...
 
     // source wants to be bare for all match comparisons
     source = helpers.stripLeadingTrailingSlashes(source)
