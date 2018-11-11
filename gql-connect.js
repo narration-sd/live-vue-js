@@ -87,8 +87,7 @@ export default class GqlConnect extends BaseConnect {
     } else {
       fullResponse = response
     }
-    helpers.devLog('convertRemoteApi gql result is: ' + fullResponse)
-    helpers.apiLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResponse))
+    helpers.devLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResponse))
 
     return fullResponse
   }
@@ -138,11 +137,12 @@ export default class GqlConnect extends BaseConnect {
       return source // special case matched in php Sources
     }
 
-    // otherwise, we carry on with simplest possible signture extractor
+    // otherwise, we carry on with simplest possible signature extractor
     // trust that solving with full or even split case regex goes out of
     // bounds rapidly...
 
-    source = source.substr(1) // lose the slash, for match
+    // source wants to be bare for all match comparisons
+    source = helpers.stripLeadingTrailingSlashes(source)
 
     let pattern = '(?:\\d+-)(.*)'
 
