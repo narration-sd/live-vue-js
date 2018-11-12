@@ -106,13 +106,14 @@ export default class BaseConnect {
     let fullResult = null
 
     if (this.pullBefore) {
-      this.lvMeta = null // clear to keep valid, as we won't refresh it
-      helpers.devLog('clearing lvMeta, assuring data from server, after initial pull')
-    } else {
       // Don't allow potentially stale div re-use. This will
       // never happen on Live Preview, but could in general app.
       // This way, we allow pull() to be used multiple times, rather
       // than needing to be replaced with get().
+
+      this.lvMeta = null // clear to keep valid, as we won't refresh it
+      helpers.devLog('clearing lvMeta, assuring data from server, after initial pull')
+    } else {
       fullResult = this.livePreviewData(dataQuery)
     }
 
@@ -141,7 +142,7 @@ export default class BaseConnect {
   // For performance, you'd equally miss the acceleration: Live Vue's inclusion
   // of first-screen data with the page that holds your Vue etc. component,
   // instead accumulating the latency of a second round-trip ajax call at some
-  // time rupoint in the component's own build.
+  // time point in the component's own initiation.
 
   // for livePreviewData() to work independently, you'll need to pass in the
   // dataQuery identifying the gql Script or api/endpoint
@@ -149,6 +150,8 @@ export default class BaseConnect {
   livePreviewData (dataQuery = null) {
 
     let checkSignature = true
+    let signatureOk = true
+    let rawResult = this.convertLiveVueDiv()
 
     if (dataQuery) {
       this.dataQuery = dataQuery // for solo livePreviewData use (legacy pattern)
@@ -163,31 +166,37 @@ export default class BaseConnect {
 
       helpers.apiLog('retrieving liveVue div, with meta for decisioning, if present')
 
-      // an Exception will be thrown if div reports errors, so we can move directly
-      let fullResult = this.convertLiveVueDiv() // try for LiveVue div, first
-
-      if (fullResult) {
+      if (rawResult && rawResult.lvMeta) {
         // we'd like this always, when it exists
-        this.lvMeta = fullResult.lvMeta
+        this.lvMeta = rawResult.lvMeta
       } else {
+        // shouldn't happen, as this is Live Vue Div data
         this.lvMeta = null
+        throw new Error('development error: no lvMeta in Live Vue Div!')
       }
 
-      // several general situations handled and logged...
+      // pre-conversion situations handled and logged...
 
       if (config.directExceptPreview && (!this.lvMeta || !this.lvMeta.isLivePreview)) {
         helpers.devLog('direct pull as configured, since not previewing in Live Vue')
         return null
-      } else if (fullResult && (this.lvMeta && this.lvMeta.skipLiveVueDiv)) {
+      } else if (this.lvMeta && this.lvMeta.skipLiveVueDiv) {
         helpers.devLog('acceleration disabled for ' + this.dataQuery +
           this.pagingQuery + ' -- using direct data call on server')
         return null
-      } else if (fullResult && !checkSignature) {
+      }
+
+      // now we convert accordingly, and act on return
+      // an Exception will be thrown if div reports errors, so we can move directly
+
+      if (!checkSignature) {
         helpers.devLog('Live Vue div data trusted w/o signature check')
+        let fullResult = this.validateLiveVueDiv(rawResult, false)
         helpers.apiLog('data from Live Vue div w/o signature ck: ' +
           JSON.stringify(fullResult))
         return fullResult
-      } else if (fullResult && this.okToUseDataDiv(fullResult)) {
+      } else if (this.okToUseDataDiv(rawResult)) {
+        let fullResult = this.validateLiveVueDiv(rawResult, true)
         helpers.devLog('successful using Live Vue div data for ' +
           dataQuery + this.pagingQuery)
         helpers.apiLog('data for ' + dataQuery + this.pagingQuery +
@@ -314,7 +323,8 @@ export default class BaseConnect {
   getLvMeta () { // basis, and could be used for other lvMeta
     if (!this.lvMeta) {
       // develop lvMeta; as ever, each kind of connect must provide
-      this.convertLiveVueDiv(false)
+      let rawResult = this.convertLiveVueDiv()
+      this.validateLiveVueDiv(rawResult, false)
     }
     // well, using the js peculiarity undefined/falsey
     return this.lvMeta || null
@@ -328,9 +338,9 @@ export default class BaseConnect {
 
   // ---- these methods must be defined in actual Connect classes inheriting from BaseConnect ----
 
-  convertLiveVueDiv (haltOnError = true) {
-    console.log('BaseConnect: NO LIVE CONVERSION')
-    throw new Error('BaseConnect: must provide actual converLiveVueDiv() in inheriting Connect class...')
+  validateLiveVueDiv (haltOnError = true) {
+    console.log('BaseConnect: NO LIVE VALIDATION')
+    throw new Error('BaseConnect: must provide actual validateLiveVueDiv() in inheriting Connect class...')
   }
 
   convertRemoteApi () {
@@ -353,6 +363,20 @@ export default class BaseConnect {
   }
 
   // ---- the following are considered internal routines for Connect itself ----
+
+  convertLiveVueDiv (haltOnError = true) {
+    let sourceBase = document.getElementById('liveVue')
+    if (sourceBase) {
+      let source = sourceBase.innerText // decodes any encoded html
+
+      let response = JSON.parse(source)
+      helpers.apiLog('convertLiveVueDiv source is: ' + JSON.stringify(response))
+      return response
+    } else {
+      helpers.devLog('no source div, trying remote api')
+      return null // because we signal with this, so remote can get called
+    }
+  }
 
   pullFromApi (appDataSaver, usePostForApi = false) {
     if (this.gqlQuery === undefined) {

@@ -41,42 +41,26 @@ export default class ApiConnect extends BaseConnect {
     // required, beyond those provided by BaseConnect
   }
 
-  convertLiveVueDiv (haltOnError = true) {
-    let sourceBase = document.getElementById('liveVue')
-    if (sourceBase) {
-      let source = sourceBase.innerText // decodes any encoded html
+  validateLiveVueDiv (response, haltOnError = true) {
+    // these are usually similar but differing, for inheriting connects
 
-      let response = JSON.parse(source)
-      helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(response))
+    if (haltOnError && response.error !== undefined) {
 
-      let dataResult = {}
+      // we've translated api or other errors as best can, to gql format
+      // all elements may not be filled in, for element-api code faults
 
-      if (haltOnError && response.error !== undefined) {
-
-        // we've translated api or other errors as best can, to gql format
-        // all elements may not be filled in, for element-api code faults
-
-        let errstr = 'convertLiveVueDiv: web page server reports error: ' +
-          response.error.message + ', code: ' + response.error.code +
-          ', file: ' + response.error.file + ', line: ' + response.error.line
-        this.reporter(errstr) // for a notifier if present, default console
-        throw new Error('halted with stack trace for error message above') // a hard stop, before components fail themselves
-      } else {
-        dataResult = response
-        this.lvMeta = response.lvMeta // must always provide for base-connect getLvMeta()
-      }
-
-      if (!dataResult) {
-        helpers.devLog('convertLiveVueDiv: Empty data response; likely api endPoint fault')
-        return []
-      }
-
-      helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(dataResult))
-      return dataResult
-    } else {
-      helpers.devLog('no source div, trying remote api')
-      return null // because we signal with this, so remote can get called
+      let errMsg = 'convertLiveVueDiv: web page server reports error: ' +
+        response.error.message + ', code: ' + response.error.code +
+        ', file: ' + response.error.file + ', line: ' + response.error.line
+      this.reporter(errMsg) // for a notifier if present, default console
+      throw new Error(errMsg) // a hard stop, before components fail themselves
+    } else if (!response) {
+      helpers.devLog('convertLiveVueDiv: Empty data response')
+      return null
     }
+
+    helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(response))
+    return response
   }
 
   /*
