@@ -166,7 +166,7 @@ export default class ApiConnect extends BaseConnect {
       }
     }
 
-    helpers.apiLog('requestSignature: ' + requestSignature)
+    helpers.apiLog('formRequestSignature: result is: ' + requestSignature)
     return requestSignature
   }
 
