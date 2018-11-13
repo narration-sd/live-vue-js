@@ -92,7 +92,7 @@ export default class ApiConnect extends BaseConnect {
       helpers.devLog('okToUseDataDiv: Empty data response')
       return null
     }
-    // This will help if routes.js or live-vue settings are wrong
+    // This will help if component Connect or live-vue settings are wrong
     if (fullResult.lvMeta.dataSourceType !== 'element-api') {
       helpers.apiLog('api-connect expected element-api data, ignoring from: ' +
         fullResult.lvMeta.dataSourceType)
@@ -105,15 +105,18 @@ export default class ApiConnect extends BaseConnect {
 
     ok = (apiPattern === requestSignature)
 
+    // we don't check this if not ok, as there may be an error
+    // left over in the div from a previous served app page load
     if (ok && haltOnError && fullResult.error !== undefined) { // errors, in gql
-      let errMsg = 'convertLiveVueDiv: original page server reports error: ' +
+      let errMsg = 'okToUseDataDiv: original page server reports error: ' +
         JSON.stringify(fullResult.error)
       this.reporter(errMsg)
       // a hard stop, before components fail themselves
       throw new Error('halted with stack trace for error message above')
     }
 
-    helpers.devLog((ok ? '' : 'Not ') + 'ok to use Live Vue div having: ' +
+    helpers.devLog('okToUseDataDiv: ' +
+      (ok ? '' : 'Not ') + 'ok to use Live Vue div marked: ' +
       apiPattern + ' vs request ' + requestSignature)
 
     return ok

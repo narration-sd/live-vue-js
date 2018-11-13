@@ -109,7 +109,7 @@ export default class GqlConnect extends BaseConnect {
     // we don't check this if not ok, as there may be an error
     // left over in the div from a previous served app page load
     if (ok && haltOnError && divContent.errors !== undefined) { // errors, in gql
-      let errMsg = 'convertLiveVueDiv: server div reports error: ' +
+      let errMsg = 'okToUseDataDiv: server div reports error: ' +
         JSON.stringify(divContent.errors)
       this.reporter(errMsg)
       // a hard stop, before components fail themselves
@@ -117,7 +117,8 @@ export default class GqlConnect extends BaseConnect {
       throw new Error('halted with stack trace for error message')
     }
 
-    helpers.devLog((ok ? '' : 'Not ') + 'ok to use Live Vue div having: ' +
+    helpers.devLog('okToUseDataDiv: ' +
+      (ok ? '' : 'Not ') + 'ok to use Live Vue div marked: ' +
       apiPattern + ' vs request ' + requestPattern)
 
     return ok
