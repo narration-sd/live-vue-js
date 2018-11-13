@@ -50,15 +50,15 @@ export default class GqlConnect extends BaseConnect {
     // these are usually similar but differing, for inheriting connects
 
     if (haltOnError && response.errors !== undefined) { // errors, in gql
-      let errMsg = 'convertLiveVueDiv: original page server reports error: ' +
+      let errMsg = 'validateLiveVueDiv: original page server reports error: ' +
         JSON.stringify(response.errors)
       this.reporter(errMsg)
       throw new Error(errMsg) // a hard stop, before components fail themselves
     } else if (!response) {
-      helpers.devLog('convertLiveVueDiv: Empty data response')
+      helpers.devLog('validateLiveVueDiv: Empty data response')
       return null
     }
-    helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(response))
+    helpers.apiLog('validateLiveVueDiv response is: ' + JSON.stringify(response))
 
     return response
   }
@@ -97,7 +97,7 @@ export default class GqlConnect extends BaseConnect {
     }
 
     let requestSignature = this.formRequestSignature()
-    let apiPattern = divContent.lvMeta.dataApiPattern
+    let apiPattern = divContent.lvMeta.dataSignature
     let ok = false
 
     // n.b. we would be using this for actual Live Vue/Prevue, or

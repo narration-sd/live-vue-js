@@ -43,23 +43,26 @@ export default class ApiConnect extends BaseConnect {
 
   validateLiveVueDiv (response, haltOnError = true) {
     // these are usually similar but differing, for inheriting connects
-
-    if (haltOnError && response.error !== undefined) {
+    if (!response) {
+      helpers.devLog('validateLiveVueDiv: Empty data response')
+      return null
+    } else if (response.error !== undefined) {
 
       // we've translated api or other errors as best can, to gql format
       // all elements may not be filled in, for element-api code faults
 
-      let errMsg = 'convertLiveVueDiv: web page server reports error: ' +
+      let errMsg = 'validateLiveVueDiv: web page server reports error: ' +
         response.error.message + ', code: ' + response.error.code +
         ', file: ' + response.error.file + ', line: ' + response.error.line
       this.reporter(errMsg) // for a notifier if present, default console
-      throw new Error(errMsg) // a hard stop, before components fail themselves
-    } else if (!response) {
-      helpers.devLog('convertLiveVueDiv: Empty data response')
+      helpers.devLog(errMsg)
+      if (haltOnError) {
+        throw new Error(errMsg) // a hard stop, before components fail themselves
+      }
       return null
     }
 
-    helpers.apiLog('convertLiveVueDiv response is: ' + JSON.stringify(response))
+    helpers.apiLog('validateLiveVueDiv response is: ' + JSON.stringify(response))
     return response
   }
 
@@ -96,7 +99,7 @@ export default class ApiConnect extends BaseConnect {
       return false // right away, it's not for this customer
     }
 
-    let apiPattern = fullResult.lvMeta.dataApiPattern
+    let apiPattern = fullResult.lvMeta.dataSignature
     let ok = false
     let requestSignature = this.formRequestSignature(fullResult)
 
@@ -166,7 +169,7 @@ export default class ApiConnect extends BaseConnect {
       }
     }
 
-    helpers.apiLog('formRequestSignature: result is: ' + requestSignature)
+    helpers.apiLog('requestSignature: ' + requestSignature)
     return requestSignature
   }
 
