@@ -67,7 +67,9 @@ export default class GqlConnect extends BaseConnect {
     helpers.apiLog('convertRemoteApi gql data is: ' + JSON.stringify(response))
 
     if (helpers.isEmpty(response)) {
-      throw new Error('convertRemoteApi: gql Empty data response')
+      let errMsg = 'convertRemoteApi: gql Empty data response'
+      helpers.devLog(response.errors)
+      throw new Error(errMsg)
     }
 
     let fullResponse = {}
@@ -75,11 +77,12 @@ export default class GqlConnect extends BaseConnect {
     if (response.errors !== undefined) {
       let errMsg = 'convertRemoteApi: gql server reports: ' +
         JSON.stringify(response.errors)
+      helpers.devLog(response.errors)
       throw new Error(errMsg)
     } else {
       fullResponse = response
     }
-    helpers.devLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResponse))
+    helpers.apiLog('convertRemoteApi gql result is: ' + JSON.stringify(fullResponse))
 
     return fullResponse
   }

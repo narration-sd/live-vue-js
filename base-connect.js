@@ -382,7 +382,7 @@ export default class BaseConnect {
     if (this.gqlQuery === undefined) {
       this.getOnlineApiData(this.dataUrl, usePostForApi)
         .then(fullResult => {
-          helpers.devLog('pullFromAp: successful from ' + this.dataUrl)
+          helpers.devLog('pullFromApi: successful from ' + this.dataUrl)
           helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
           appDataSaver(fullResult)
         })
