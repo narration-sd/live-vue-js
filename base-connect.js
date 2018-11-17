@@ -114,7 +114,7 @@ export default class BaseConnect {
       this.lvMeta = null // clear to keep valid, as we won't refresh it
       helpers.devLog('clearing lvMeta, assuring data from server, after initial pull')
     } else {
-      fullResult = this.livePreviewData(dataQuery)
+      fullResult = this.preview(dataQuery)
     }
 
     if (fullResult && !this.pullBefore) { // belt and suspenders, clear semantics
@@ -126,7 +126,7 @@ export default class BaseConnect {
     }
   }
 
-  // livePreviewData () is the heart of Connect's data retrieval from
+  // preview() is the heart of Connect's data retrieval from
   // Craft via the Live Vue plugin, discovering and providing the data
   // for each editing moment's Live Preview screen update.
   //
@@ -147,19 +147,21 @@ export default class BaseConnect {
   // for livePreviewData() to work independently, you'll need to pass in the
   // dataQuery identifying the gql Script or api/endpoint
 
-  livePreviewData (dataQuery = null) {
+  preview (dataQuery) {
 
     let checkSignature = true
     let signatureOk = true
     let rawResult = this.convertLiveVueDiv()
 
     if (dataQuery) {
-      this.dataQuery = dataQuery // for solo livePreviewData use (legacy pattern)
+      this.dataQuery = dataQuery // for use in solo preview (legacy pattern)
       this.formDataUrl() // needs to be done first to enable pageQuery checks
     } else {
       // *todo* do we really want to allow this, if can be a fast-start convenience?
-      this.dataQuery = '(no query provided)'
-      checkSignature = false
+      // I don't think so. Then let's report a proper error to aid development
+      // this.dataQuery = '(no query provided)'
+      // checkSignature = false
+      throw new Error('Attempted preview() without a dataQuery to match')
     }
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
