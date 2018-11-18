@@ -168,8 +168,31 @@ export default {
   },
 
   routerLog (msg) {
-    if (config.routerDevMode) {
+    if (config.routerDevMode || config.apiDevMode) {
       console.log(msg)
+    }
+  },
+
+  // here we may adjust config including logging when there is a live-vue cookie
+  configFromLvCookie () {
+    let cookiearray = document.cookie.split(';')
+    let cookie = cookiearray.reduce((accum, currentVal, i, arr) => {
+      // yes, Array.find() could have been used. Interesting
+      // though, to see how to halt a reduce()
+      let split = currentVal.split('=')
+      if (split[0] === 'live-vue') {
+        arr.splice(1) // truncate remaining thus halt
+        return JSON.parse(decodeURIComponent(split[1]))
+      }
+    }, null) // the null deals with missing cookie, as running from webpack serve
+
+    if (cookie) {
+      if (cookie.apiDevMode) {
+        console.log('live-vue cookie: ' + JSON.stringify(cookie))
+      }
+      config.lvDevMode = cookie.lvDevMode
+      config.routerDevMode = true // cookie.routerDevMode
+      config.apiDevMode = cookie.apiDevMode
     }
   },
 

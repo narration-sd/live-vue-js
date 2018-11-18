@@ -84,6 +84,7 @@ export default class BaseConnect {
     this.lvMeta = null
 
     // n.b. there cam be other dynamic properties from methods or children
+
   }
 
   // ----- This section holds the usage api for Connects ----- //
@@ -106,7 +107,7 @@ export default class BaseConnect {
     let fullResult = null
 
     if (this.pullBefore) {
-      // Don't allow potentially stale div re-use. This will
+      // Don't allow potentially stale div re-use. This should
       // never happen on Live Preview, but could in general app.
       // This way, we allow pull() to be used multiple times, rather
       // than needing to be replaced with get().
@@ -122,15 +123,15 @@ export default class BaseConnect {
       appDataSaver(fullResult) // no need for Promise on direct from div
     } else {
       helpers.devLog('making data call on server, as conditioned or configured')
-      this.pullFromApi(appDataSaver)
+      this.pullFromServer(appDataSaver)
     }
   }
 
-  // preview() is the heart of Connect's data retrieval from
-  // Craft via the Live Vue plugin, discovering and providing the data
-  // for each editing moment's Live Preview screen update.
+  // preview() is the heart of Connect's data retrieval from Craft, via
+  // the Live Vue plugin's hidden data div. Fundamentally, it provides the
+  // information from each edit moment's Live Preview for JS app screen update.
   //
-  // Thus it's also true that you could use for a quick way to Live Vue
+  // Thus it's also true that you may use it for a quick way to Live Vue
   // enable a current component with Live Preview, via a aimple if-else
   // on its data return, which will be null if Live Vue isn't present.
   // You'd configure the Connect so it passes only Live Vue in this case.
@@ -156,11 +157,11 @@ export default class BaseConnect {
     if (dataQuery) {
       this.dataQuery = dataQuery // for use in solo preview (legacy pattern)
       this.formDataUrl() // needs to be done first to enable pageQuery checks
-    } else {
-      // *todo* do we really want to allow this, if can be a fast-start convenience?
-      // I don't think so. Then let's report a proper error to aid development
-      // this.dataQuery = '(no query provided)'
-      // checkSignature = false
+    } else if (!this.noDataQueryOk) {
+      // Generally, we don't want to allow the div without a matchable dataQuery.
+      // We do need to skip this check with calls which wouldn't involve dataQuery,
+      // as a GqlGonnect direct call. In those circumstances, set this.noDataQueryOk
+
       throw new Error('Attempted preview() without a dataQuery to match')
     }
 
@@ -168,14 +169,9 @@ export default class BaseConnect {
 
       helpers.apiLog('retrieving liveVue div, with meta for decisioning, if present')
 
-      if (rawResult && rawResult.lvMeta) {
-        // we'd like this always, when it exists
-        this.lvMeta = rawResult.lvMeta
-      } else {
-        // shouldn't happen, as this is Live Vue Div data
-        this.lvMeta = null
-        throw new Error('development error: no lvMeta in Live Vue Div!')
-      }
+      this.lvMeta = rawResult && rawResult.lvMeta
+        ? rawResult.lvMeta
+        : null
 
       // pre-conversion situations handled and logged...
 
@@ -230,45 +226,7 @@ export default class BaseConnect {
     helpers.devLog('get data call on server for ' +
       this.dataQuery + ', due to Connect.get()')
     this.formDataUrl()
-    this.pullFromApi(appDataSaver)
-  }
-
-  // gqlPostDirect() allows you to send your GraphQL query and variables directly
-  // in JSON to a compliant server. It has the advantage of displaying
-  // errors with the Connect reporter, consistently with Live Vue calls.
-  // It will use POST, and either a server you specify with setSourceBase()
-  // or as default, one you have provided in config.
-
-  // gqlPostDirect() is straightforward as it doesn't need to do data conversions
-  // or signature validations, while it does continue to support any kind of
-  // result reporting.
-
-  gqlPostDirect (queryJson, appDataSaver, headers = null, ...extraParams) {
-    this.dataQuery = queryJson
-
-    // for later feature or children; spread so zero or multiple possible
-    this.extraParams = extraParams
-
-    // tokens?
-    let requestConfig = headers
-      ? { headers: headers }
-      : {}
-
-    helpers.devLog('gqlPostDirect: data call on ' +
-      this.dataApi + ' for ' + JSON.stringify(this.dataQuery))
-    helpers.apiLog('requestConfig: ' + JSON.stringify(requestConfig))
-
-    axios.post(this.dataApi, this.dataQuery, requestConfig)
-      .then((fullResult) => {
-        if (fullResult.data.errors) {
-          this.reporter('Api Error: ' + JSON.stringify(fullResult.data.errors))
-        }
-        appDataSaver(fullResult.data)
-      })
-      .catch((error) => {
-        let errMsg = this.reportAxios(this.dataApi, error, 'gqlPostDirect')
-        this.reporter(errMsg)
-      })
+    this.pullFromServer(appDataSaver)
   }
 
   // Normally you won't need this, as it's set automatically from the
@@ -364,6 +322,14 @@ export default class BaseConnect {
     return dataQuery
   }
 
+  // postDirect() is available for Connects which can send actual
+  // queries, such as GqlConnect.
+
+  postDirect (queryJson, appDataSaver, headers = null, ...extraParams) {
+    throw new Error('BaseConnect: postDirect() not available for ' +
+      ' the inheriting Connect class in use...')
+  }
+
   // ---- the following are considered internal routines for Connect itself ----
 
   convertLiveVueDiv (haltOnError = true) {
@@ -380,16 +346,16 @@ export default class BaseConnect {
     }
   }
 
-  pullFromApi (appDataSaver, usePostForApi = false) {
+  pullFromServer (appDataSaver, usePostForApi = false) {
     if (this.gqlQuery === undefined) {
       this.getOnlineApiData(this.dataUrl, usePostForApi)
         .then(fullResult => {
-          helpers.devLog('pullFromApi: successful from ' + this.dataUrl)
-          helpers.apiLog('pullFromApi fullResult: ' + JSON.stringify(fullResult))
+          helpers.devLog('pullFromServer: successful from ' + this.dataUrl)
+          helpers.apiLog('pullFromServer fullResult: ' + JSON.stringify(fullResult))
           appDataSaver(fullResult)
         })
         .catch(error => {
-          helpers.devLog('pullFromApi: ' + error)
+          helpers.devLog('pullFromServer: ' + error)
           this.reporter(error.toString())
         })
     } else {
@@ -397,7 +363,7 @@ export default class BaseConnect {
         ? null
         : this.gqlHeaders
 
-      this.gqlPostDirect(this.gqlQuery, appDataSaver, headers)
+      this.postDirect(this.gqlQuery, appDataSaver, headers)
     }
   }
 

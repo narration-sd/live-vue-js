@@ -23,6 +23,7 @@
 
 import BaseConnect from './base-connect'
 import helpers from '@/live-vue-js/helpers.js'
+import axios from 'axios'
 
 export default class GqlConnect extends BaseConnect {
 
@@ -32,6 +33,46 @@ export default class GqlConnect extends BaseConnect {
     // here define any dynamic post-construction properties
     // required, beyond those provided by BaseConnect
   }
+  // postDirect() allows you to send your GraphQL query and variables directly
+  // in JSON to a compliant server. It has the advantage of displaying
+  // errors with the Connect reporter, consistently with Live Vue calls.
+  // It will use POST, and either a server you specify with setSourceBase()
+  // or as default, one you have provided in config.
+
+  // postDirect() is straightforward as it doesn't need to do data conversions
+  // or signature validations, while it does continue to support any kind of
+  // result reporting. It's available only on Connects which can post
+  // their own queries -- presently GraphQl
+
+  postDirect (queryJson, appDataSaver, headers = null, ...extraParams) {
+    this.dataQuery = queryJson
+
+    // for later feature or children; spread so zero or multiple possible
+    this.extraParams = extraParams
+
+    // tokens?
+    let requestConfig = headers
+      ? { headers: headers }
+      : {}
+
+    helpers.devLog('postDirect: data call on ' +
+      this.dataApi + ' for ' + JSON.stringify(this.dataQuery))
+    helpers.apiLog('postDirect: requestConfig: ' + JSON.stringify(requestConfig))
+
+    axios.post(this.dataApi, this.dataQuery, requestConfig)
+      .then((fullResult) => {
+        if (fullResult.data.errors) {
+          this.reporter('postDirect Error: ' + JSON.stringify(fullResult.data.errors))
+        }
+        helpers.devLog('postDirect: successful from ' + this.dataUrl)
+        helpers.apiLog('postDirect fullResult: ' + JSON.stringify(fullResult))
+        appDataSaver(fullResult.data)
+      })
+      .catch((error) => {
+        let errMsg = this.reportAxios(this.dataApi, error, 'postDirect')
+        this.reporter(errMsg)
+      })
+  }
 
   // These are small but important, and unique to gql-connect: they install
   // literal GraphQL script and headers, so that base Connect will use them,
@@ -39,14 +80,14 @@ export default class GqlConnect extends BaseConnect {
 
   setGqlDirectQuery (query) {
     this.gqlQuery = query
+    this.noDataQueryOk = true
   }
 
   setGqlDirectHeaders (headers) {
     this.gqlHeaders = headers
   }
 
-  validateLiveVueDiv (response, haltOnError = true)
-  {
+  validateLiveVueDiv (response, haltOnError = true) {
     // these are usually similar but differing, for inheriting connects
 
     if (haltOnError && response.errors !== undefined) { // errors, in gql
@@ -89,7 +130,7 @@ export default class GqlConnect extends BaseConnect {
 
   okToUseDataDiv (divContent, haltOnError = true) {
     if (!divContent) {
-      helpers.devLog('okToUseDataDiv: Empty data divContent')
+      helpers.devLog('okToUseDataDiv: Empty data div Content')
       return null
     }
     // This will help if routes.js or live-vue settings are wrong
