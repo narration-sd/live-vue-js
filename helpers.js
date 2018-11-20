@@ -1,17 +1,25 @@
 import config from '@/config/live-vue.js'
 
 export default {
-  liveAndPreviewMatch (introducer) {
-    // life is simpler as well as more effective, in this third generation.
+  // --- These are match builders, to simplify routes for edit and runtime --- //
+  // Comment notes here are for their development.
+  // For usage, please see the documentation.
 
-    // However, this multiple matcher, while helpful in many simple cases,
-    // can't be used when params are present.
+  // Beyond what we can do here, you should just write an explicit path-to-regex,
+  // which can be as detailed as you need for the live page. Remember to place
+  // the routes in most complex to simplest match order.
+
+  liveAndPreviewMatch (introducer) {
+    // This multiple matcher nicely covers simple cases, where you have a single
+    // introducer which names the page. Where it can't be used is when there will
+    // be multiple named pages, which for routing means params are present.
 
     // Explanation is in the notes on liveWithParamsMatch() below, and we
-    // provide it and previewMatch() to make many more easier matchers.
+    // provide it and previewMatch() as a combination to handle this and
+    // thus make many more easy matchers.
 
     // We treat the introducer for slash so it always has a leading slash
-    // and no trailing slash -- combination saves possible user tears
+    // and no trailing slash. This combination saves possible user tears
     introducer = '/' + this.stripLeadingTrailingSlashes(introducer)
 
     let matcher = '(.+/entries' + this.snakeToCamel(introducer) +
@@ -22,14 +30,14 @@ export default {
   },
 
   liveWithParamsMatch (introducer, ...params) {
-    // We can't make a multiple-route-type matcher due to path-to-regexp
+    // We can't make a multiple-route-type matcher due to path-to-regexp lib
     // limitations. It's used by Vue and React routers among others, and
     // does deliberate escapes when it modifies input match strings, quite
     // apparently filling out author-stated intentions by fully disallowing
     // multiple alternative matches in a single route, when there are params.
 
-    // We can still help by providing previewMatch and this liveWithParamsMatch,
-    // which can simplify building many preview and live routes.
+    // Our combination then, of previewMatch() and this liveWithParamsMatch(),
+    // can simplify building many preview and live routes.
     //
     // multiple params can be used if each ends with a '?' appropriately. This
     // is not automated, as you may want to make the last param non-optional
@@ -40,10 +48,7 @@ export default {
     // or when the param needs to include '/' for including /multiple/seg/ments.
     //
     // if you are writing for a route with no introducer,
-    // use '', '/', or null for function call
-
-    // Beyond what we can do here, you should just write an explicit path-to-regex
-    // which is as detailed as you need for the live page.
+    // use '', '/', or null for introducer in the function call
 
     // We treat the introducer for slash so it always has a leading slash
     // and no trailing slash -- combination saves possible user tears
@@ -63,7 +68,7 @@ export default {
       }
     }
 
-    // add close with /? would fail, as path-to-regexp already optioning this
+    // add close with /? would fail, as path-to-regexp already handles this
 
     this.apiLog('liveWithParamsMatch: ' + matcher)
     return matcher

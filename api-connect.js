@@ -111,6 +111,7 @@ export default class ApiConnect extends BaseConnect {
       let errMsg = 'okToUseDataDiv: original page server reports error: ' +
         JSON.stringify(fullResult.error)
       this.reporter(errMsg)
+      helpers.devLog(errMsg)
       // a hard stop, before components fail themselves
       throw new Error('halted with stack trace for error message above')
     }
@@ -130,7 +131,8 @@ export default class ApiConnect extends BaseConnect {
       // However, be very careful, as there are many adaptations to js.
       // In particular, even the re pattern differs, due to escapes
       let source = window.location.pathname
-      let pattern = '(.*entries\\/)?([a-zA-Z-]+)\\/?[\\d-]*([a-zA-Z-+]+)?'
+      // watch out for last part -- \\w there because can also have digit/s
+      let pattern = '(.*entries\\/)?([a-zA-Z-]+)\\/?[\\d-]*([\\w-+]+)?'
       let re = new RegExp(pattern)
       let requestItems = re.exec(source)
 
