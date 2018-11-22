@@ -159,7 +159,9 @@ export default class ApiConnect extends BaseConnect {
 
       if (source !== '/') { // home page is fine as is
         // drop any /digit[s] paging extension, and any ?-introduced query like debug
-        let pattern = '((\\/[a-zA-Z-]+)+)([/\\d]+)?'
+        // do recognize that there may be digits in the entry handle, hence the \\w
+        // these would occur where there's been duplication of an element, as example
+        let pattern = '((\\/[\\w-]+)+)([/\\d]+)?'
         let re = new RegExp(pattern)
         let requestItems = re.exec(source)
 
