@@ -151,7 +151,6 @@ export default class BaseConnect {
   preview (dataQuery) {
 
     let checkSignature = true
-    let signatureOk = true
     let rawResult = this.convertLiveVueDiv()
 
     if (dataQuery) {
