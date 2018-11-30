@@ -95,9 +95,6 @@ export default class GqlConnect extends BaseConnect {
         JSON.stringify(response.errors)
       this.reporter(errMsg)
       throw new Error(errMsg) // a hard stop, before components fail themselves
-    } else if (!response) {
-      helpers.devLog('validateLiveVueDiv: Empty data response')
-      return null
     }
     helpers.apiLog('validateLiveVueDiv response is: ' + JSON.stringify(response))
 
@@ -105,13 +102,7 @@ export default class GqlConnect extends BaseConnect {
   }
 
   convertRemoteApi (response) {
-    helpers.apiLog('convertRemoteApi gql data is: ' + JSON.stringify(response))
-
-    if (helpers.isEmpty(response)) {
-      let errMsg = 'convertRemoteApi: gql Empty data response'
-      helpers.devLog(response.errors)
-      throw new Error(errMsg)
-    }
+    helpers.apiLog('convertRemoteApi: data is: ' + JSON.stringify(response))
 
     let fullResponse = {}
 
@@ -129,10 +120,6 @@ export default class GqlConnect extends BaseConnect {
   }
 
   okToUseDataDiv (divContent, haltOnError = true) {
-    if (!divContent) {
-      helpers.devLog('okToUseDataDiv: Empty data div Content')
-      return null
-    }
     // This will help if routes.js or live-vue settings are wrong
     if (divContent.lvMeta.dataSourceType !== 'gapi') {
       helpers.apiLog('gql-connect expected gapi data, ignoring from: ' +

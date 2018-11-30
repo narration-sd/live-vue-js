@@ -183,6 +183,11 @@ export default class BaseConnect {
         return null
       }
 
+      helpers.apiLog('data for ' +
+        (dataQuery === null ? '(direct query) ' : dataQuery) +
+        this.pagingQuery +
+        ' from Live Vue div: ' + JSON.stringify(rawResult))
+
       // now we convert accordingly, and act on return
       // an Exception will be thrown if div reports errors, so we can move directly
 
@@ -196,12 +201,14 @@ export default class BaseConnect {
         let fullResult = this.validateLiveVueDiv(rawResult, true)
         helpers.devLog('successful using Live Vue div data for ' +
           dataQuery + this.pagingQuery)
-        helpers.apiLog('data for ' + dataQuery + this.pagingQuery +
-          ' from Live Vue div: ' + JSON.stringify(fullResult))
         return fullResult
       } else {
         helpers.devLog('div doesn\'t have data for ' + this.dataQuery +
-          this.pagingQuery + ' -- trying direct data call on server')
+          this.pagingQuery +
+          (rawResult === null
+            ? ' (normal when not Live Vue access)'
+            : '(mismatch with ' + this.lvMeta.dataSignature + ' -- are routes or endpoints correct?)') +
+          ' -- trying direct data call on server')
         return null
       }
     }
@@ -340,7 +347,7 @@ export default class BaseConnect {
       helpers.apiLog('convertLiveVueDiv source is: ' + JSON.stringify(response))
       return response
     } else {
-      helpers.devLog('no source div, trying remote api')
+      helpers.apiLog('BaseConnect: no source div, trying remote api')
       return null // because we signal with this, so remote can get called
     }
   }
@@ -480,7 +487,16 @@ export default class BaseConnect {
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser.
-      errMsg = 'Error: ' + error.message + ' (is your data server down? See console log for details)' +
+      let errExplain = ''
+      console.log('ERROR: ' + error.message)
+      if (error.message.indexOf('ERR_CERT_AUTHORITY_INVALID') >= 0) {
+        // this path probably won't work, as browser is the one to give
+        // this message at present, but nice if it will in future
+        errExplain = '<br><br>(your browser rejects the server certificate (ERR_CERT_AUTHORITY_INVALID) -- do you need to enable a .test or other local url for it?)'
+      } else {
+        errExplain = ' <br><br>(Is your data server up and healthy? Does it have CORS access, via config/live-vue.php allowedOrigins if direct access? <br><br>If ERR_CERT_AUTHORITY_INVALID, do you need to enable a .test or other local url? <br><br>...see console log for details)'
+      }
+      errMsg = 'Error: ' + error.message + errExplain +
         (error.request.length > 0 ? (' Request: ' + JSON.stringify(error.request)) : '')
     } else {
       // Something happened in setting up the request that triggered an Error
@@ -494,6 +510,25 @@ export default class BaseConnect {
   }
 
   // --- some utilities,  ---
+
+  // haltOnUnexpectedEmpty() could be used by an app where missing a specific
+  // data content in a response would be an error. It was originally intended
+  // to be automatic, but can't be so in practicality, as Connect response
+  // can have named items that could be properly or improperly empty.
+  //
+  // Remember that only an item contained, not the full response is checkable,
+  // either for gql or api.  And, be sure to provide an appropriate message...
+  haltOnUnexpectedEmpty (dataResult, errMsg, force = false) {
+    // Normally, react only if it's a Live Preview. But a given app could
+    // call this with force to indicate unusual bad situations...
+    if (force ||
+      (this.getLvMeta() && this.lvMeta.isLivePreview &&
+        (dataResult === undefined || dataResult.length === 0))) {
+      helpers.apiLog(errMsg)
+      this.reporter(errMsg)
+      throw new Error(errMsg)
+    }
+  }
 
   // this is a call for appDataSaver to use when a Vuex store is present
   storeAppData (context, fullResult) {

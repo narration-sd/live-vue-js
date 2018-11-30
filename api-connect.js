@@ -43,10 +43,7 @@ export default class ApiConnect extends BaseConnect {
 
   validateLiveVueDiv (response, haltOnError = true) {
     // these are usually similar but differing, for inheriting connects
-    if (!response) {
-      helpers.devLog('validateLiveVueDiv: Empty data response')
-      return null
-    } else if (response.error !== undefined) {
+    if (response.error !== undefined) {
 
       // we've translated api or other errors as best can, to gql format
       // all elements may not be filled in, for element-api code faults
@@ -74,7 +71,7 @@ export default class ApiConnect extends BaseConnect {
     helpers.apiLog('convertRemoteApi data is: ' + JSON.stringify(response))
 
     if (response === undefined) {
-      console.log('convertRemote: Empty data response')
+      helpers.apilog('convertRemote: api Empty data response')
       return null
     }
 
@@ -88,10 +85,6 @@ export default class ApiConnect extends BaseConnect {
   }
 
   okToUseDataDiv (fullResult, haltOnError = true) {
-    if (!fullResult) {
-      helpers.devLog('okToUseDataDiv: Empty data response')
-      return null
-    }
     // This will help if component Connect or live-vue settings are wrong
     if (fullResult.lvMeta.dataSourceType !== 'element-api') {
       helpers.apiLog('api-connect expected element-api data, ignoring from: ' +
