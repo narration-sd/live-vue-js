@@ -41,6 +41,7 @@ export default {
   // these control the debug console content. apiDevMode implies lvDevMode
   lvDevMode: true, // light-weight indications which source provides the data
   apiDevMode: false, // very verbose, for Connect development
+  dataDevMode: false, // when you need to see the data coming back
   routerDevMode: true, // useful when checking router matchings
 
   // --- you might want to add items of your own, for an applicationo ---

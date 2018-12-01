@@ -183,7 +183,7 @@ export default class BaseConnect {
         return null
       }
 
-      helpers.apiLog('data for ' +
+      helpers.dataLog('data for ' +
         (dataQuery === null ? '(direct query) ' : dataQuery) +
         this.pagingQuery +
         ' from Live Vue div: ' + JSON.stringify(rawResult))
@@ -192,7 +192,7 @@ export default class BaseConnect {
       // an Exception will be thrown if div reports errors, so we can move directly
 
       if (!checkSignature) {
-        helpers.devLog('Live Vue div data trusted w/o signature check')
+        helpers.devLog('Live Vue div data trusted without signature check')
         let fullResult = this.validateLiveVueDiv(rawResult, false)
         helpers.apiLog('data from Live Vue div w/o signature ck: ' +
           JSON.stringify(fullResult))
@@ -202,12 +202,17 @@ export default class BaseConnect {
         helpers.devLog('successful using Live Vue div data for ' +
           dataQuery + this.pagingQuery)
         return fullResult
+      } else if (this.isLivePreview()) {
+        this.validateLiveVueDiv(rawResult, true) // error out here first if not
+        let errMsg = 'div doesn\'t have data for ' + this.dataQuery +
+          this.pagingQuery +
+          ' (mismatch with ' + this.lvMeta.dataSignature + ' -- are routes or endpoints correct?)'
+        this.reporter(errMsg)
+        throw new Error(errMsg)
       } else {
         helpers.devLog('div doesn\'t have data for ' + this.dataQuery +
           this.pagingQuery +
-          (rawResult === null
-            ? ' (normal when not Live Vue access)'
-            : '(mismatch with ' + this.lvMeta.dataSignature + ' -- are routes or endpoints correct?)') +
+          ' (normal when different signature and not Live Vue access)' +
           ' -- trying direct data call on server')
         return null
       }
@@ -357,7 +362,7 @@ export default class BaseConnect {
       this.getOnlineApiData(this.dataUrl, usePostForApi)
         .then(fullResult => {
           helpers.devLog('pullFromServer: successful from ' + this.dataUrl)
-          helpers.apiLog('pullFromServer fullResult: ' + JSON.stringify(fullResult))
+          helpers.dataLog('pullFromServer fullResult: ' + JSON.stringify(fullResult))
           appDataSaver(fullResult)
         })
         .catch(error => {
@@ -522,7 +527,7 @@ export default class BaseConnect {
     // Normally, react only if it's a Live Preview. But a given app could
     // call this with force to indicate unusual bad situations...
     if (force ||
-      (this.getLvMeta() && this.lvMeta.isLivePreview &&
+      (this.isLivePreview() &&
         (dataResult === undefined || dataResult.length === 0))) {
       helpers.apiLog(errMsg)
       this.reporter(errMsg)

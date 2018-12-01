@@ -166,6 +166,12 @@ export default {
     }
   },
 
+  dataLog (msg) {
+    if (config.dataDevMode || config.apiDevMode) {
+      console.log(msg)
+    }
+  },
+
   apiLog (msg) {
     if (config.apiDevMode) {
       console.log(msg)
@@ -197,6 +203,7 @@ export default {
       }
       config.lvDevMode = cookie.lvDevMode
       config.routerDevMode = true // cookie.routerDevMode
+      config.dataDevMode = cookie.dataDevMode
       config.apiDevMode = cookie.apiDevMode
     }
   },

@@ -130,10 +130,10 @@ export default class ApiConnect extends BaseConnect {
       let requestItems = re.exec(source)
 
       // this discovery, apropos for apiLog? But a hint to other Connect dev...
-      helpers.apiLog('lv requestItems: ' + JSON.stringify(requestItems))
+      helpers.apiLog('formRequestSignature: lv requestItems: ' + JSON.stringify(requestItems))
 
       if (requestItems === null) {
-        let msg = 'okToUseDataDiv: no proper uri match on: ' + source
+        let msg = 'formRequestSignature: no proper uri match on: ' + source
         throw new Error(msg)
       }
 
@@ -158,10 +158,10 @@ export default class ApiConnect extends BaseConnect {
         let re = new RegExp(pattern)
         let requestItems = re.exec(source)
 
-        helpers.apiLog('non-lv requestItems: ' + JSON.stringify(requestItems))
+        helpers.apiLog('formRequestSignature: non-lv requestItems: ' + JSON.stringify(requestItems))
 
         if (requestItems === null) {
-          let msg = 'okToUseDataDiv: no proper uri match on: ' + source
+          let msg = 'formRequestSignature: no proper uri match on: ' + source
           throw new Error(msg)
         }
 
@@ -169,7 +169,7 @@ export default class ApiConnect extends BaseConnect {
       }
     }
 
-    helpers.apiLog('requestSignature: ' + requestSignature)
+    helpers.apiLog('formRequestSignature: requestSignature: ' + requestSignature)
     return requestSignature
   }
 

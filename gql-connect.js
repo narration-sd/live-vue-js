@@ -133,7 +133,8 @@ export default class GqlConnect extends BaseConnect {
 
     // n.b. we would be using this for actual Live Vue/Prevue, or
     // equally for Live Vue's no-round-trip speedup on spa opening
-    let requestPattern = '?script=' + this.dataQuery + '&uri=' + requestSignature
+    let matchableQuery = this.matchableQuery(this.dataQuery)
+    let requestPattern = '?' + matchableQuery + '&uri=' + requestSignature
 
     ok = (apiPattern === requestPattern)
 
@@ -153,6 +154,16 @@ export default class GqlConnect extends BaseConnect {
       apiPattern + ' vs request ' + requestPattern)
 
     return ok
+  }
+
+  matchableQuery (fullQuery) {
+    if (this.isLivePreview()) {
+      // no params need apply; the Live Vue is determined by edit url only
+      let parts = fullQuery.split('&')
+      return parts[0] // just the script
+    } else {
+      return fullQuery
+    }
   }
 
   formRequestSignature () {
@@ -197,7 +208,7 @@ export default class GqlConnect extends BaseConnect {
   dataQueryNormalize (dataQuery) {
     helpers.apiLog('gql dataQuery to normalize: ' + dataQuery)
     let path = window.location.pathname.substr(1) // lose the slash, for match
-    dataQuery = '?script=' + dataQuery
+    dataQuery = '?' + dataQuery
 
     if (this.skipUri !== undefined && this.skipUri) {
       dataQuery += '&skipUri' // visible flag for no uri; not used by LV plugin
