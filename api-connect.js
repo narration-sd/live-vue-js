@@ -87,7 +87,7 @@ export default class ApiConnect extends BaseConnect {
   okToUseDataDiv (fullResult, haltOnError = true) {
     // This will help if component Connect or live-vue settings are wrong
     if (fullResult.lvMeta.dataSourceType !== 'element-api') {
-      helpers.apiLog('api-connect expected element-api data, ignoring from: ' +
+      helpers.devLog('api-connect expected element-api data, ignoring from: ' +
         fullResult.lvMeta.dataSourceType)
       return false // right away, it's not for this customer
     }

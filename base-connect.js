@@ -16,7 +16,7 @@ import helpers from '@/live-vue-js/helpers.js'
 /*
  * The design premise of the Connect objects is to easily replace
  * existing calls such as $http.get(), also transparently providing
- * Live Vue data when the app is run in Craft Live Preview. As well,
+ * Live Vue data when the app is run in Craft Live liveVue. As well,
  * comprehensive error handling is implemented, along with a default
  * modal notifier, providing confident app presentation.
  *
@@ -53,13 +53,21 @@ export default class BaseConnect {
 
   constructor (reporter = null, sourceBase = null, sourceTag = null) {
 
+    // this package makes much use of JS dynamic properties, beginning here...
+
     this.dataSrcType = 'liveVue' // fundamental at present; allowed to be altered by child
-    this.sourceTag = sourceTag // we use it elsewhere
+    if (!sourceTag) {
+      throw new Error('Attempting to create BaseConnect directly; must instead use children.')
+    } else {
+      this.sourceTag = sourceTag // defines source type
+    }
 
     if (!sourceBase || !helpers.isString(sourceBase)) {
-
+      // the isString() check defends against unintended possibilities
       if (!config.sourceBase) {
-        // not to have set this argument is normal
+        // not to have set sourceBase can be normal, but if you are going to use
+        // webpack devServer or change sources, setSourceBase() will arrange it
+        // over this default to the page's server.
         let parsed = helpers.urlParse(window.location)
         sourceBase = parsed.protocol + '//' + parsed.host // these parts
       } else {
@@ -108,31 +116,32 @@ export default class BaseConnect {
 
     if (this.pullBefore) {
       // Don't allow potentially stale div re-use. This should
-      // never happen on Live Preview, but could in general app.
+      // never happen on Live liveVue, but could in general app.
       // This way, we allow pull() to be used multiple times, rather
       // than needing to be replaced with get().
 
       this.lvMeta = null // clear to keep valid, as we won't refresh it
       helpers.devLog('clearing lvMeta, assuring data from server, after initial pull')
     } else {
-      fullResult = this.preview(dataQuery)
+      fullResult = this.liveVue(dataQuery)
     }
 
     if (fullResult && !this.pullBefore) { // belt and suspenders, clear semantics
       this.pullBefore = true
       appDataSaver(fullResult) // no need for Promise on direct from div
     } else {
-      helpers.devLog('making data call on server, as conditioned or configured')
+      helpers.devLog('Connect.pull: making data call on server, as conditioned or configured')
+      this.formDataUrl()
       this.pullFromServer(appDataSaver)
     }
   }
 
-  // preview() is the heart of Connect's data retrieval from Craft, via
+  // liveVue() is the heart of Connect's data retrieval from Craft, via
   // the Live Vue plugin's hidden data div. Fundamentally, it provides the
-  // information from each edit moment's Live Preview for JS app screen update.
+  // information from each edit moment's Live liveVue for JS app screen update.
   //
   // Thus it's also true that you may use it for a quick way to Live Vue
-  // enable a current component with Live Preview, via a aimple if-else
+  // enable a current component with Live liveVue, via a aimple if-else
   // on its data return, which will be null if Live Vue isn't present.
   // You'd configure the Connect so it passes only Live Vue in this case.
   //
@@ -145,23 +154,28 @@ export default class BaseConnect {
   // instead accumulating the latency of a second round-trip ajax call at some
   // time point in the component's own initiation.
 
-  // for livePreviewData() to work independently, you'll need to pass in the
+  // for liveVue() to work independently, you'll need to pass in the
   // dataQuery identifying the gql Script or api/endpoint
 
-  preview (dataQuery) {
+  liveVue (dataQuery) {
 
     let checkSignature = true
     let rawResult = this.convertLiveVueDiv()
 
+    if (!rawResult) {
+      helpers.devLog('liveVue: bypassed normally, as no data div present')
+      return null
+    }
+
     if (dataQuery) {
-      this.dataQuery = dataQuery // for use in solo preview (legacy pattern)
+      this.dataQuery = dataQuery // for use in solo liveVue (legacy pattern)
       this.formDataUrl() // needs to be done first to enable pageQuery checks
     } else if (!this.noDataQueryOk) {
       // Generally, we don't want to allow the div without a matchable dataQuery.
       // We do need to skip this check with calls which wouldn't involve dataQuery,
       // as a GqlGonnect direct call. In those circumstances, set this.noDataQueryOk
 
-      throw new Error('Attempted preview() without a dataQuery to match')
+      throw new Error('Attempted liveVue() without a dataQuery to match')
     }
 
     if (this.dataSrcType && this.dataSrcType === 'liveVue') {
@@ -210,10 +224,8 @@ export default class BaseConnect {
         this.reporter(errMsg)
         throw new Error(errMsg)
       } else {
-        helpers.devLog('div doesn\'t have data for ' + this.dataQuery +
-          this.pagingQuery +
-          ' (normal when different signature and not Live Vue access)' +
-          ' -- trying direct data call on server')
+        helpers.devLog('Connect.liveVue: indicating div doesn\'t have data for ' +
+          this.dataQuery + this.pagingQuery)
         return null
       }
     }
@@ -234,15 +246,13 @@ export default class BaseConnect {
     // for later feature or children; spread so zero or multiple possible
     this.extraParams = extraParams
 
-    helpers.devLog('get data call on server for ' +
-      this.dataQuery + ', due to Connect.get()')
+    helpers.apiLog('base-connect.get: data call on ' + this.dataApi)
     this.formDataUrl()
     this.pullFromServer(appDataSaver)
   }
 
-  // Normally you won't need this, as it's set automatically from the
-  // current site url, or occasionally from live-vue-js/config's sourceBase
-  // However, for setup aids, test utilities, etc., can be handy
+  // This is useful to change or substitute a config'd or default sourceBase.
+  // Set addTag false, if you're targeting a non-Live Vue server, even on same box
   setSourceBase (url, addTag = true) {
 
     this.dataApi = helpers.stripTrailingSlash(url) + '/'
@@ -253,19 +263,12 @@ export default class BaseConnect {
     helpers.apiLog('dataApi: ' + this.dataApi)
   }
 
-  // this also can be useful for test utilities, and not normally
-
-  setSkipUri () {
-    // means don't make uri part of signature, when Live-vue plugin won't
-    this.skipUri = true
-  }
-
   // --- Connect utilities -- //
 
   // These provide values from Live Vue lvMeta, whenever possible.
   // These are available when the Live Vue div is present, thus defaults.
 
-  // Data is actual Live Preview, which is a fact that can be used to halt
+  // Data is actual Live liveVue, which is a fact that can be used to halt
   // movement or other action during this edit, such as carousel rotation.
   // Also holding current position could be useful, and could be provided
   // via Vuex combined with npm vuex-persist. Or, Craft Solo could be
@@ -275,6 +278,11 @@ export default class BaseConnect {
     let lvMeta = this.getLvMeta()
     // note use of double-!, around js abso peculiar truthy treatement of null
     return lvMeta && lvMeta.isLivePreview
+  }
+
+  dataSourceType () {
+    let lvMeta = this.getLvMeta()
+    return lvMeta.dataSourceType
   }
 
   persistTimeFence () {
@@ -295,13 +303,17 @@ export default class BaseConnect {
     if (!this.lvMeta) {
       // develop lvMeta; as ever, each kind of connect must provide
       let rawResult = this.convertLiveVueDiv()
-      this.validateLiveVueDiv(rawResult, false)
+      if (!rawResult) {
+        this.lvMeta = null
+      } else {
+        this.validateLiveVueDiv(rawResult, false)
+      }
     }
     // well, using the js peculiarity undefined/falsey
     return this.lvMeta || null
   }
 
-  // Data is via div, while may or not be a Live Vue preview
+  // Data is via div, while may or not be a Live Vue liveVue
   // not normally used, but provided for completeness
   isLiveVueDataDelivery () {
     return this.getLvMeta() !== null
@@ -448,7 +460,7 @@ export default class BaseConnect {
     // *todo* verified possible for later, and then lose the get from function name
     // also would/will need headers? But we cover auth in scripts so far
     // while args and signatures would have to be different as well, as
-    // this path is used for Live Vue both live and preview
+    // this path is used for Live Vue both live and liveVue
     // const method = usePost
     //   ? this.postOnlineApiData
     //   : this.getOnlineApiData
@@ -524,7 +536,7 @@ export default class BaseConnect {
   // Remember that only an item contained, not the full response is checkable,
   // either for gql or api.  And, be sure to provide an appropriate message...
   haltOnUnexpectedEmpty (dataResult, errMsg, force = false) {
-    // Normally, react only if it's a Live Preview. But a given app could
+    // Normally, react only if it's a Live liveVue. But a given app could
     // call this with force to indicate unusual bad situations...
     if (force ||
       (this.isLivePreview() &&

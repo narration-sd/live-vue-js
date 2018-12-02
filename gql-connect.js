@@ -122,7 +122,7 @@ export default class GqlConnect extends BaseConnect {
   okToUseDataDiv (divContent, haltOnError = true) {
     // This will help if routes.js or live-vue settings are wrong
     if (divContent.lvMeta.dataSourceType !== 'gapi') {
-      helpers.apiLog('gql-connect expected gapi data, ignoring from: ' +
+      helpers.devLog('gql-connect expected gapi data, ignoring from: ' +
         divContent.lvMeta.dataSourceType)
       return false // right away, it's not for this customer
     }
