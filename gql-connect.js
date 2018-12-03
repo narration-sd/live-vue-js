@@ -64,7 +64,7 @@ export default class GqlConnect extends BaseConnect {
         if (fullResult.data.errors) {
           this.reporter('postDirect Error: ' + JSON.stringify(fullResult.data.errors))
         }
-        helpers.devLog('postDirect: successful from ' + this.dataUrl)
+        helpers.devLog('postDirect: successful from ' + this.dataApi)
         helpers.apiLog('postDirect fullResult: ' + JSON.stringify(fullResult))
         appDataSaver(fullResult.data)
       })

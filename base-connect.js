@@ -162,8 +162,14 @@ export default class BaseConnect {
     let checkSignature = true
     let rawResult = this.convertLiveVueDiv()
 
+    if (this.divDataUsed()) {
+      helpers.devLog('liveVue: bypass properly, as any server div data already used')
+      return null
+    }
+    this.setDivDataUsed()
+
     if (!rawResult) {
-      helpers.devLog('liveVue: bypassed normally, as no data div present')
+      helpers.devLog('liveVue: bypass normally, as no server data div present')
       return null
     }
 
@@ -332,6 +338,8 @@ export default class BaseConnect {
   }
 
   okToUseDataDiv (fullResult) {
+    // *todo* very probably, the overly complicated signature comparison will be removed,
+    // for Connect children, and in live-vue, via get/setDivDataUsed(). Until then...
     console.log('BaseConnect: NO DATA DIV VALIDATION')
     throw new Error('BaseConnect: must provide actual okToUseDataDiv() ' +
       ' in inheriting Connect class...')
@@ -350,7 +358,7 @@ export default class BaseConnect {
 
   postDirect (queryJson, appDataSaver, headers = null, ...extraParams) {
     throw new Error('BaseConnect: postDirect() not available for ' +
-      ' the inheriting Connect class in use...')
+      ' the inheriting Connect class in use...check your type...')
   }
 
   // ---- the following are considered internal routines for Connect itself ----
@@ -370,6 +378,8 @@ export default class BaseConnect {
   }
 
   pullFromServer (appDataSaver, usePostForApi = false) {
+    this.setDivDataUsed() // re-use safety for all paths, needed?
+
     if (this.gqlQuery === undefined) {
       this.getOnlineApiData(this.dataUrl, usePostForApi)
         .then(fullResult => {
@@ -545,6 +555,16 @@ export default class BaseConnect {
       this.reporter(errMsg)
       throw new Error(errMsg)
     }
+  }
+
+  // *todo* this may well be a better way forward than signature checks...
+
+  divDataUsed () {
+    return window.liveVueDivDataUsed !== undefined && window.liveVueDivDataUsed
+  }
+
+  setDivDataUsed () {
+    window.liveVueDivDataUsed = true; // else it's undefined, due to reload
   }
 
   // this is a call for appDataSaver to use when a Vuex store is present
