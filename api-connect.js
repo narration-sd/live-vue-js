@@ -34,8 +34,8 @@ import helpers from '@/live-vue-js/helpers.js'
 
 export default class ApiConnect extends BaseConnect {
 
-  constructor (reporter = null, sourceBase = null) {
-    super(reporter, sourceBase, 'api') // set the specific api tag
+  constructor (reporter = null, sourceBase = null, sourceTag = 'api') {
+    super(reporter, sourceBase, sourceTag)
 
     // here define any dynamic post-construction properties
     // required, beyond those provided by BaseConnect

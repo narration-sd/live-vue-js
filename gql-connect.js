@@ -27,8 +27,8 @@ import axios from 'axios'
 
 export default class GqlConnect extends BaseConnect {
 
-  constructor (reporter = null, sourceBase = null) {
-    super(reporter, sourceBase, 'gapi/query') // set the tag for gql query
+  constructor (reporter = null, sourceBase = null, sourceTag = 'gapi/query') {
+    super(reporter, sourceBase, sourceTag) // we could override the tag
 
     // here define any dynamic post-construction properties
     // required, beyond those provided by BaseConnect
