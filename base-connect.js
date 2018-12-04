@@ -245,16 +245,20 @@ export default class BaseConnect {
     this.pullFromServer(appDataSaver)
   }
 
-  // This is useful to change or substitute a config'd or default sourceBase.
-  // Set addTag false, if you're targeting a non-Live Vue server, even on same box
-  setSourceBase (url, addTag = true) {
+  // This is useful to substitute a config'd or default sourceBase.
+  // Be sure to set sourceTag if apropos, even '' to prevent one.
+  setSourceBase (url, sourceTag = null) {
 
     this.dataApi = helpers.stripTrailingSlash(url) + '/'
-    if (addTag && this.sourceTag) { // child provides if source uses, such as api, gapi, etc.
+    if (sourceTag === null && this.sourceTag) {
+      // child provides if source uses, such as api, gapi, etc.
       this.dataApi += helpers.stripTrailingSlash(this.sourceTag) + '/'
+    } else if (sourceTag) {
+      // but in this case substitute for what child has, can be ''
+      this.dataApi += helpers.stripTrailingSlash(sourceTag) + '/'
     }
 
-    helpers.apiLog('dataApi: ' + this.dataApi)
+    helpers.apiLog('setSourceBase: dataApi: ' + this.dataApi)
   }
 
   // --- Connect utilities -- //
