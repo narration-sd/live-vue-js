@@ -113,21 +113,9 @@ export default class BaseConnect {
     this.extraParams = extraParams
 
     let fullResult = null
+    fullResult = this.liveVue(dataQuery)
 
-    if (this.pullBefore) {
-      // Don't allow potentially stale div re-use. This should
-      // never happen on Live liveVue, but could in general app.
-      // This way, we allow pull() to be used multiple times, rather
-      // than needing to be replaced with get().
-
-      this.lvMeta = null // clear to keep valid, as we won't refresh it
-      helpers.devLog('clearing lvMeta, assuring data from server, after initial pull')
-    } else {
-      fullResult = this.liveVue(dataQuery)
-    }
-
-    if (fullResult && !this.pullBefore) { // belt and suspenders, clear semantics
-      this.pullBefore = true
+    if (fullResult) { // belt and suspenders, clear semantics
       appDataSaver(fullResult) // no need for Promise on direct from div
     } else {
       helpers.devLog('Connect.pull: making data call on server, as conditioned or configured')
@@ -338,11 +326,10 @@ export default class BaseConnect {
   }
 
   okToUseDataDiv (fullResult) {
-    // *todo* very probably, the overly complicated signature comparison will be removed,
-    // for Connect children, and in live-vue, via get/setDivDataUsed(). Until then...
-    console.log('BaseConnect: NO DATA DIV VALIDATION')
-    throw new Error('BaseConnect: must provide actual okToUseDataDiv() ' +
-      ' in inheriting Connect class...')
+    // this is no longer an error, as of get/setDivDataUsed(). As it is implemented
+    // for the children GqlConnect and ApiConnect, its signature comparison could
+    // be helpful in initial setup for Settings and routes.
+    helpers.apiLog('if okToUseDataDiv() present, could be helpful for setup errors...')
   }
 
   // ---- the following can be over-ridden for certain inheriting Connect classes ----
@@ -564,7 +551,7 @@ export default class BaseConnect {
   }
 
   setDivDataUsed () {
-    window.liveVueDivDataUsed = true; // else it's undefined, due to reload
+    window.liveVueDivDataUsed = true // else it's undefined, due to reload
   }
 
   // this is a call for appDataSaver to use when a Vuex store is present

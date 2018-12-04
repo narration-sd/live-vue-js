@@ -119,8 +119,10 @@ export default class GqlConnect extends BaseConnect {
     return fullResponse
   }
 
+  // okToUseDataDiv() is not required as of prior use check set/getDivDataUsed(),
+  // but as we've done the work, it's likely to useful for helping correct
+  // initial routing or Settings errors.
   okToUseDataDiv (divContent, haltOnError = true) {
-    // This will help if routes.js or live-vue settings are wrong
     if (divContent.lvMeta.dataSourceType !== 'gapi') {
       helpers.devLog('gql-connect expected gapi data, ignoring from: ' +
         divContent.lvMeta.dataSourceType)
@@ -149,7 +151,7 @@ export default class GqlConnect extends BaseConnect {
       throw new Error('halted with stack trace for error message')
     }
 
-    helpers.devLog('okToUseDataDiv: ' +
+    helpers.apiLog('okToUseDataDiv: ' +
       (ok ? '' : 'Not ') + 'ok to use Live Vue div marked: ' +
       apiPattern + ' vs request ' + requestPattern)
 
@@ -162,7 +164,22 @@ export default class GqlConnect extends BaseConnect {
       let parts = fullQuery.split('&')
       return parts[0] // just the script
     } else {
-      return fullQuery
+      // there can be params, but we don't want flags
+      let params = fullQuery.split('&')
+      let nonFlagParams = ''
+
+      for (let param of params) {
+        switch (param) {
+          case 'directUri':
+            continue
+          default:
+            nonFlagParams += nonFlagParams
+              ? '/' + param
+              : param
+        }
+      }
+
+      return nonFlagParams
     }
   }
 

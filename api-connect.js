@@ -84,8 +84,10 @@ export default class ApiConnect extends BaseConnect {
     return dataResult
   }
 
+  // okToUseDataDiv() is not required as of prior use check set/getDivDataUsed(),
+  // but as we've done the work, it's likely to useful for helping correct
+  // initial routing or Settings errors.
   okToUseDataDiv (fullResult, haltOnError = true) {
-    // This will help if component Connect or live-vue settings are wrong
     if (fullResult.lvMeta.dataSourceType !== 'element-api') {
       helpers.devLog('api-connect expected element-api data, ignoring from: ' +
         fullResult.lvMeta.dataSourceType)
@@ -109,7 +111,7 @@ export default class ApiConnect extends BaseConnect {
       throw new Error('halted with stack trace for error message above')
     }
 
-    helpers.devLog('okToUseDataDiv: ' +
+    helpers.apiLog('okToUseDataDiv: ' +
       (ok ? '' : 'Not ') + 'ok to use Live Vue div marked: ' +
       apiPattern + ' vs request ' + requestSignature)
 
