@@ -273,7 +273,7 @@ export default {
    * this helps for example to make gql server errors read well on dialogs
    */
   htmlStringify (obj, replacer = null, indent = '<br>') {
-    return JSON.stringify(obj, replacer,  indent)
+    return JSON.stringify(obj, replacer, indent)
   },
 
   /*
