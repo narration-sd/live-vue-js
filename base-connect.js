@@ -476,7 +476,7 @@ export default class BaseConnect {
       })
       .then(response => {
         if (response) {
-          helpers.apiLog('Converting')
+          helpers.devLog('Converting')
           return this.convertRemoteApi(response.data)
         } else {
           throw new Error('getOnlineApiData: empty response from ' + src)
@@ -484,7 +484,7 @@ export default class BaseConnect {
       })
       .catch(error => {
         if (!errMsg) {
-          errMsg = 'getOnlineApiData ' + src + ': ' + error
+          errMsg = 'getOnlineApiData: ' + src + ': ' + error
         }
 
         // We always want to stop activity, so that no consequences
@@ -496,23 +496,27 @@ export default class BaseConnect {
 
   reportAxios (server, error, routine) {
     let errMsg = null
+    let errExplain = ''
+    helpers.devLog('reportAxios: full error: ' + JSON.stringify(error))
 
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       errMsg = ' response: ' + JSON.stringify(error.response.data)
       errMsg += ', status: ' + error.response.status
+      if (errMsg.indexOf('Template not found') >= 0) {
+        errExplain = '<br><br>(this usually indicates you\'re missing or have misnamed the api endpoint for this request, thus Craft has reverted to looking for a template)'
+      }
+      errMsg += errExplain
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser.
-      let errExplain = ''
-      console.log('ERROR: ' + error.message)
       if (error.message.indexOf('ERR_CERT_AUTHORITY_INVALID') >= 0) {
         // this path probably won't work, as browser is the one to give
         // this message at present, but nice if it will in future
         errExplain = '<br><br>(your browser rejects the server certificate (ERR_CERT_AUTHORITY_INVALID) -- do you need to enable a .test or other local url for it?)'
       } else {
-        errExplain = ' <br><br>(Is your data server up and healthy? Does it have CORS access, via config/live-vue.php allowedOrigins if direct access? <br><br>If ERR_CERT_AUTHORITY_INVALID, do you need to enable a .test or other local url? <br><br>...see console log for details)'
+        errExplain = ' <br><br>(Is your data server up and healthy? Checking console log, does it allow CORS access, via config/live-vue.php allowedOrigins if direct access? CORS error can also occur if the request api endpoint is missing or mismatched.<br><br>If console indicates ERR_CERT_AUTHORITY_INVALID, do you need to enable a .test or other local url?)'
       }
       errMsg = 'Error: ' + error.message + errExplain +
         (error.request.length > 0 ? (' Request: ' + JSON.stringify(error.request)) : '')

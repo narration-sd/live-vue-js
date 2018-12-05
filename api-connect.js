@@ -104,7 +104,7 @@ export default class ApiConnect extends BaseConnect {
     // left over in the div from a previous served app page load
     if (ok && haltOnError && fullResult.error !== undefined) { // errors, in gql
       let errMsg = 'okToUseDataDiv: original page server reports error: ' +
-        JSON.stringify(fullResult.error)
+        helpers.htmlStringify(fullResult.error)
       this.reporter(errMsg)
       helpers.devLog(errMsg)
       // a hard stop, before components fail themselves

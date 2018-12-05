@@ -270,6 +270,13 @@ export default {
   },
 
   /*
+   * this helps for example to make gql server errors read well on dialogs
+   */
+  htmlStringify (obj, replacer = null, indent = '<br>') {
+    return JSON.stringify(obj, replacer,  indent)
+  },
+
+  /*
    * This routine is not normally in use for Live Vue, but can be very helpful to have
    * available in the kit for debugging, as it deals well with circular data references,
    * which often occur within Vuejs objects.

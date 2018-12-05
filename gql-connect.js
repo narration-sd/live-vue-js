@@ -92,7 +92,7 @@ export default class GqlConnect extends BaseConnect {
 
     if (haltOnError && response.errors !== undefined) { // errors, in gql
       let errMsg = 'validateLiveVueDiv: original page server reports error: ' +
-        JSON.stringify(response.errors)
+        helpers.htmlStringify(response.errors)
       this.reporter(errMsg)
       throw new Error(errMsg) // a hard stop, before components fail themselves
     }
@@ -108,7 +108,7 @@ export default class GqlConnect extends BaseConnect {
 
     if (response.errors !== undefined) {
       let errMsg = 'convertRemoteApi: gql server reports: ' +
-        JSON.stringify(response.errors)
+        helpers.htmlStringify(response.errors)
       helpers.devLog(response.errors)
       throw new Error(errMsg)
     } else {
@@ -144,7 +144,7 @@ export default class GqlConnect extends BaseConnect {
     // left over in the div from a previous served app page load
     if (ok && haltOnError && divContent.errors !== undefined) { // errors, in gql
       let errMsg = 'okToUseDataDiv: server div reports error: ' +
-        JSON.stringify(divContent.errors)
+        helpers.htmlStringify(divContent.errors)
       this.reporter(errMsg)
       // a hard stop, before components fail themselves
       helpers.devLog(errMsg)
