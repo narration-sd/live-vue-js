@@ -4,9 +4,12 @@ import { Link } from 'gatsby'
 import Layout from '../components/layout'
 
 const SecondPage = () => (
+
   <Layout>
     <h1>Hi from the second page</h1>
     <p>Welcome to page 2</p>
+    <Link to="/page-3">Go on to third page</Link>
+    <br/>
     <Link to="/">Go back to the homepage</Link>
   </Layout>
 )
