@@ -9,7 +9,10 @@ const customStyles = {
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
+    transform             : 'translate(-50%, -50%)',
+    maxWidth              : '80%',
+    background            : '#0c5460',
+    color                 : 'lightgoldenrodyellow'
   }
 };
 
@@ -58,7 +61,7 @@ export default class ReactReporter extends React.Component {
 
     return (
       <div>
-        <button onClick={this.openModal}>Open Modal</button>
+        {/*<button onClick={this.openModal}>Open Modal</button>*/}
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}
@@ -69,7 +72,7 @@ export default class ReactReporter extends React.Component {
           <h2 ref={subtitle => this.subtitle = subtitle}>Hello from subtitle</h2>
           <h2>{ this.state.title } </h2>
           <p>{ this.state.content }</p>
-          <button onClick={this.closeModal}>close</button>
+          <button onClick={this.closeModal}>Accept</button>
         </Modal>
       </div>
     );
