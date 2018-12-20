@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link} from 'gatsby'
-import ReactReporter from '../live-vue-js/react-report.jsx'
+import ReactReporter from '../live-vue-js/react-reporter.jsx'
 
 import Layout from '../components/layout'
 
@@ -9,10 +9,12 @@ class ThirdPage extends Component {
   constructor(props) {
     super(props)
     this.reporter = React.createRef()
-    setTimeout(() => { this.reporter.current.report("Timed Out", this.state.content)}, 5000)
+    // setTimeout(() => { this.reporter.current.report("Timed Out", this.state.content)}, 5000)
   }
 
   state = { show: false, content: 'This is parent state content' };
+
+  report = (title, content) => { this.reporter.current.report (title, content) }
 
   showModal = () => {
     this.setState({ show: true, content: 'shown content' })
@@ -31,7 +33,7 @@ class ThirdPage extends Component {
   }
 
   openWarn = () => {
-    this.openDialog('Now we do from button')
+    this.report('BonanzaWarn', '<h2>More Complex...</h2>\n<p>content set from button</p>')
   }
 
   render () {
@@ -39,22 +41,16 @@ class ThirdPage extends Component {
       <Layout>
         <div id="main">
         <h1>Hi from the third page</h1>
-          <h2> here state content: {this.state.content}</h2>
+          <h2>{this.state.content}</h2>
         </div>
         <p>Welcome to page 3</p>
         <br/>
         <br/>
         <button onClick={ (e) => { this.openDialog('What ho, from click event') }}>Open Dialog</button>
-        <button onClick={ (e) => { this.reporter.current.report('A Report', 'reporting, from a click event') }}>Report thing</button>
+        <button onClick={ (e) => { this.reporter.current.report('A Report', 'reporting, thing from a click event') }}>Report thing</button>
         <button onClick={ (e) => { this.reporter.current.report('A Report', this.state.content) }}>Report state</button>
 
-        <ReactReporter show={this.state.show} handleClose={this.hideModal}
-                       ref={this.reporter}
-                       title={"This is our Modal now, and I don't care who knows it."}
-                       subtitle={"some subtitle or another"}
-                       content={ this.state.content }
-          pstate={this.state}>
-        </ReactReporter>
+        <ReactReporter ref={this.reporter} />
         <br/>
         <br/>
 
