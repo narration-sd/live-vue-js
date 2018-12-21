@@ -12,6 +12,10 @@ const customStyles = {
     maxWidth: '80%',
     background: '#0c5460',
     color: 'lightgoldenrodyellow'
+  },
+  html: {
+    // fontsize: '14px',
+    font: '70% sans-serif'
   }
 }
 
