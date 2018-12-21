@@ -17,7 +17,7 @@ export default {
 
 <style>
 
-  .v--modal {
+  .v--modal { /* this is a funky VModal class name */
      background: #0c5460 !important;
      color: lightgoldenrodyellow !important;
   }
