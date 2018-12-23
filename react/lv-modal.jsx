@@ -15,7 +15,8 @@ const customStyles = {
   },
   html: {
     // fontsize: '14px',
-    font: '70% sans-serif'
+    // *todo* this formatting not working yet...
+    font: '70% sans-serif !important'
   }
 }
 
@@ -54,6 +55,52 @@ class LvModal extends React.Component {
     this.setState({ modalIsOpen: false })
   }
 
+  // the point of parseUp() is to allow some formatting of report,
+  // but not get into xss vulnerabilities by setting innerHtml,
+  // which would be dangerouslySetInnerHtml() in React. This
+  // is a function-separable way to do this in JSX
+  parseUp (content) {
+    let r = /[\s]*<([\w]+)>([\w\s.,=-]+)<\/([\w]+)>[\s]*|<(br)>[\s]*/g
+
+    let index = 0
+    let out = []
+    let parts = []
+    while ((parts = r.exec(content)) !== null) {
+      // [0] is full match; [1] is the format'; [2] is the string
+      // that we want usually -- but [4] is for br as it's a single
+      // Also, the key thing is for React's reactive happiness
+
+      switch (parts[1]) {
+        case 'h1':
+          out[index] = <h1 key={index++}>{parts[2]}</h1>
+          break;
+        case 'h2':
+          out[index] = <h2 key={index++}>{parts[2]}</h2>
+          break;
+        case 'h3':
+          out[index] = <h3 key={index++}>{parts[2]}</h3>
+          break;
+        case 'i':
+          out[index] = <i key={index++}>{parts[2]}</i>
+          break;
+        case 'b':
+        case 'strong':
+          out[index] = <b key={index++}>{parts[2]}</b>
+          break;
+        default:
+          if (parts[4] && parts[4].indexOf('br') >= 0) {
+            out[index] = <br key={index++}/>
+          }
+          else {
+            out[index] = <p key={index++}>{parts[2]}</p>
+          }
+          break;
+      }
+    }
+
+    return out
+  }
+
   render () {
 
     return (
@@ -63,14 +110,12 @@ class LvModal extends React.Component {
           onAfterOpen={this.afterOpenModal}
           onRequestClose={this.closeModal}
           style={customStyles}
-          contentLabel="Example Modal"
+          contentLabel="Comms Error:" // *todo* look at this & subtitle also
         >
           <h2 ref={subtitle => this.subtitle = subtitle}>Hello from
             subtitle</h2>
-          <h2>{this.state.title} </h2>
-          <p>{this.state.content}</p>
-          <div
-            dangerouslySetInnerHTML={{ __html: 'inner: ' + this.state.content }}></div>
+          <h2>{this.state.title}</h2>
+          <div>{this.parseUp(this.state.content)}</div>
           <br/>
           <button onClick={this.closeModal}>Accept</button>
         </Modal>
