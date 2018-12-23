@@ -33,7 +33,7 @@ class ThirdPage extends Component {
   }
 
   openWarn = () => {
-    this.report('BonanzaWarn', '<h2>More Complex...</h2>\n<p>content set from button</p>')
+    this.report('BonanzaWarn', '<h2>More Complex...</h2>\n<p>content set from button</p><br><p>\n...and with a break</p>')
   }
 
   render () {
