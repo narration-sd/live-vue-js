@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link} from 'gatsby'
-import ReactReporter from '../live-vue-js/react-reporter.jsx'
+import Reporter from '../live-vue-js/react/Reporter.jsx'
 
 import Layout from '../components/layout'
 
@@ -50,7 +50,7 @@ class ThirdPage extends Component {
         <button onClick={ (e) => { this.reporter.current.report('A Report', 'reporting, thing from a click event') }}>Report thing</button>
         <button onClick={ (e) => { this.reporter.current.report('A Report', this.state.content) }}>Report state</button>
 
-        <ReactReporter ref={this.reporter} />
+        <Reporter ref={this.reporter} />
         <br/>
         <br/>
 

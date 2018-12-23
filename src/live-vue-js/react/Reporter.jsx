@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import ReactReport from '../live-vue-js/react-report.jsx'
+import LvModal from './lv-modal.jsx'
 
-class ReactReporter extends Component {
+class Reporter extends Component {
   constructor (props) {
     super(props)
     this.reporter = React.createRef()
@@ -15,10 +15,10 @@ class ReactReporter extends Component {
 
   render () {
     return (
-      <ReactReport ref={this.reporter}
-                   subtitle={"some subtitle or another"}></ReactReport>
+      <LvModal ref={this.reporter}
+               subtitle={"some subtitle or another"}></LvModal>
     )
   }
 }
 
-export default ReactReporter
+export default Reporter

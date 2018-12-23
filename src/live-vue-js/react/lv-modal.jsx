@@ -1,5 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
+// import sanitizeHtml from 'sanitize-html'
 
 const customStyles = {
   content: {
@@ -22,7 +23,7 @@ const customStyles = {
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement('body') // this is actually the default if don't set
 
-class ReactReport extends React.Component {
+class LvModal extends React.Component {
 
   constructor ({ subtitle }) {
     super()
@@ -56,6 +57,11 @@ class ReactReport extends React.Component {
 
   render () {
 
+    // let content = sanitizeHtml(this.state.content,
+    //   {
+    //     allowedTags: [ 'b', 'h1' ]
+    //   })
+
     return (
       <div>
         <Modal
@@ -79,5 +85,5 @@ class ReactReport extends React.Component {
   }
 }
 
-export default ReactReport
+export default LvModal
 
