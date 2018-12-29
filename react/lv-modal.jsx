@@ -69,7 +69,11 @@ class LvModal extends React.Component {
   // the point of parseUp() is to allow some formatting of report,
   // but not get into xss vulnerabilities by setting innerHtml,
   // which would be dangerouslySetInnerHtml() in React. This
-  // is a function-separable way to do this in JSX
+  // is a function-separable way to do this in JSX.
+  //
+  // I think it is totally unnecessary, but interesting. Craft should
+  // not produce XSS vulnerability, and neither should propagated
+  // error messages from CraftQl or element-api.
   parseUp (content) {
     let r = /[\s]*<([\w]+)>([\w\s.,=-]+)<\/([\w]+)>[\s]*|<(br)>[\s]*/g
 
