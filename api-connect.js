@@ -43,7 +43,9 @@ export default class ApiConnect extends BaseConnect {
 
   validateLiveVueDiv (response, haltOnError = true) {
     // these are usually similar but differing, for inheriting connects
-    if (response.error !== undefined) {
+    // response is possibly null in some uses, hence the check
+
+    if (response && response.error !== undefined) { // errors, in element-api
 
       // we've translated api or other errors as best can, to gql format
       // all elements may not be filled in, for element-api code faults

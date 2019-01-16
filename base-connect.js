@@ -154,7 +154,10 @@ export default class BaseConnect {
       helpers.devLog('liveVue: bypass properly, as any server div data already used')
       return null
     }
-    this.setDivDataUsed()
+
+    if (!this.isLivePreview()) {
+      this.setDivDataUsed() // no stale data from initial accelerated page load please
+    }
 
     if (!rawResult) {
       helpers.devLog('liveVue: bypass normally, as no server data div present')
@@ -301,11 +304,10 @@ export default class BaseConnect {
     if (!this.lvMeta) {
       // develop lvMeta; as ever, each kind of connect must provide
       let rawResult = this.convertLiveVueDiv()
-      if (!rawResult) {
-        this.lvMeta = null
-      } else {
-        this.validateLiveVueDiv(rawResult, false)
-      }
+      let validResult = this.validateLiveVueDiv(rawResult, false)
+      this.lvMeta = validResult && validResult.lvMeta !== undefined
+        ? rawResult.lvMeta
+        : null
     }
     // well, using the js peculiarity undefined/falsey
     return this.lvMeta || null

@@ -89,12 +89,17 @@ export default class GqlConnect extends BaseConnect {
 
   validateLiveVueDiv (response, haltOnError = true) {
     // these are usually similar but differing, for inheriting connects
+    // response is possibly null in some uses, hence the check
 
-    if (haltOnError && response.errors !== undefined) { // errors, in gql
+    if (response && response.errors !== undefined) { // errors, in gql
       let errMsg = 'validateLiveVueDiv: original page server reports error: ' +
         helpers.htmlStringify(response.errors)
       this.reporter(errMsg)
-      throw new Error(errMsg) // a hard stop, before components fail themselves
+      helpers.devLog(errMsg)
+      if (haltOnError) {
+        throw new Error(errMsg) // a hard stop, before components fail themselves
+      }
+      return null
     }
     helpers.apiLog('validateLiveVueDiv response is: ' + JSON.stringify(response))
 
