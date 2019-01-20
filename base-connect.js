@@ -155,13 +155,13 @@ export default class BaseConnect {
       return null
     }
 
-    if (!this.isLivePreview()) {
-      this.setDivDataUsed() // no stale data from initial accelerated page load please
-    }
-
     if (!rawResult) {
       helpers.devLog('liveVue: bypass normally, as no server data div present')
       return null
+    }
+
+    if (!this.isLivePreview()) {
+      this.setDivDataUsed() // no stale data from a prior accelerated page load please
     }
 
     if (dataQuery) {
@@ -371,7 +371,7 @@ export default class BaseConnect {
   }
 
   pullFromServer (appDataSaver, usePostForApi = false) {
-    this.setDivDataUsed() // re-use safety for all paths, needed?
+    this.setDivDataUsed() // safety for all possible paths
 
     if (this.gqlQuery === undefined) {
       this.getOnlineApiData(this.dataUrl, usePostForApi)
