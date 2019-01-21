@@ -78,12 +78,12 @@ export default class GqlConnect extends BaseConnect {
   // literal GraphQL script and headers, so that base Connect will use them,
   // when you want to call a Gql server with specific query code.
 
-  setGqlDirectQuery (query) {
+  setGqlRemoteQuery (query) {
     this.gqlQuery = query
     this.noDataQueryOk = true
   }
 
-  setGqlDirectHeaders (headers) {
+  setGqlRemoteHeaders (headers) {
     this.gqlHeaders = headers
   }
 
