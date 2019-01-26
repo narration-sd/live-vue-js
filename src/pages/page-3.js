@@ -54,7 +54,10 @@ class ThirdPage extends Component {
         <br/>
         <br/>
 
+        <Link to="/page-4">Go on to fourth page</Link>
+        <br/>
         <Link to="/page-2">Go back to page two</Link>
+        <br/>
         <button onClick={this.openWarn}>
           Set Content
         </button>
