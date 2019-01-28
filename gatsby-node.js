@@ -6,6 +6,8 @@
 
 // You can delete this file if you're not using it
 
+// doesn't work as noted, but also, not employed until build??
+/*
 exports.onCreateWebpackConfig = ({
   stage,
   rules,
@@ -28,3 +30,4 @@ exports.onCreateWebpackConfig = ({
     }
   })
 }
+*/

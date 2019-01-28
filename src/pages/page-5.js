@@ -37,7 +37,6 @@ class FifthPage extends Component {
     this.setData('original data here')
     console.log('original props: ' + JSON.stringify(this.props))
 
-    this.connector = new GqlConnect()
   }
 
   state = {
@@ -46,6 +45,7 @@ class FifthPage extends Component {
   }
 
   componentDidMount = () => {
+    this.connector = new GqlConnect()
 
     let dataQuery = 'script=Cards'
 

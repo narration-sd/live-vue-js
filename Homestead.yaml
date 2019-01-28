@@ -26,12 +26,16 @@ folders:
 sites:
     -
         map: lv-gatsby.test
-        to: "/home/vagrant/lv-gatsby_html/web"
+        to: "/home/vagrant/lv-gatsby_html/web/public"
         php: "7.1"
     -
-        map: else.lv-gatsby.test
-        to: "/home/vagrant/lv-gatsby_html/web"
-        php: "7.1"
+      map: else.lv-gatsby.test
+      to: "/home/vagrant/lv-gatsby_html/web"
+      php: "7.1"
+    -
+      map: site.lv-gatsby.test
+      to: "/home/vagrant/lv-gatsby_html/web/"
+      php: "7.1"
 
 databases:
     - lv-gatsby_db
