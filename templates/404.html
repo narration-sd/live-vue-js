@@ -1,0 +1,12 @@
+{% extends "_layout" %}
+{% set title = "404" %}
+
+{% block content %}
+{% if craft.liveVue.pageErrorHandler == 'browser' %}
+    {% include "lv-index" %}
+{% else %}
+    <h2>404 - Unfortunately,</h2>
+    <blockquote>{{ craft.request.path }}</blockquote>
+    <h2>isn't part of LV Demo</h2>
+{% endif %}
+{% endblock %}

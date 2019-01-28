@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="{{ url('search/results') }}">
+    {{ csrfInput() }}
+    <input type="search" name="q" placeholder="Search">
+    <input type="submit" value="Go">
+</form>
+
+{# Get the user's search query from the 'q' query-string param #}
+{% set searchQuery = craft.request.getParam('q') %}
+
+{# Fetch entries that match the search query #}
+{% set results = craft.categories()
+    .search(searchQuery)
+    .all() %}
+
+{#<textarea name="results" value="{{ results }}"></textarea>#}
+
+</body>
+</html>
+
+
+
+{# Get the user's search query from the 'q' query-string param #}
+{% set searchQuery = craft.request.getParam('q') %}
+
+{# Fetch entries that match the search query #}
+{% set results = craft.entries()
+    .search(searchQuery)
+    .all() %}

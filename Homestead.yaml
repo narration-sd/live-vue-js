@@ -1,0 +1,38 @@
+ip: 192.168.10.34
+memory: 2048
+cpus: 1
+hostname: lv-gatsby-html
+name: lv-gatsby-html
+provider: virtualbox
+ssl: true
+
+authorize: ~/.vagrantssl/id_rsa.pub
+
+keys:
+    - ~/.ssh/id_rsa
+folders:
+    - map: "C:/vagrant/release/lv-gatsby_html"
+      to: "/home/vagrant/lv-gatsby_html"
+      type: rsync
+      options:
+        # do build empty storage and cp_resources folders for Craft's needs
+        # don't avoid uploading images, but do avoid disturbing their _*/ tranform folders
+        # except, you can't - out "_*/*",
+        rsync__exclude: [".git/", ".git*", ".vagrant/", "cpresources/*",  ".idea/", "uploads/",
+          "buildtools/", "node_modules/", "storage/*", "runtime/*", "scss/", ".sass-cache/",
+          "vagrant.*"]
+        rsync__args: ["--verbose", "--archive", "--delete", "-z", "--copy-links"]
+
+sites:
+    -
+        map: lv-gatsby.test
+        to: "/home/vagrant/lv-gatsby_html/web"
+        php: "7.1"
+    -
+        map: else.lv-gatsby.test
+        to: "/home/vagrant/lv-gatsby_html/web"
+        php: "7.1"
+
+databases:
+    - lv-gatsby_db
+

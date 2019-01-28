@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Vue Demo</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    {#<link rel="icon" href="<%= BASE_URL %>favicon.ico"> #}{# *todo* #}
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{{ rev('app.css') }}">
+    <link rel="stylesheet" href="{{ rev('chunk-vendors.css') }}">
+</head>
+<body>
+<noscript>
+    <strong>We're sorry but lv-demo doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+
+{% hook "live-vue" %}
+<div id="app">
+    {#*todo* put a save in lv for no config lines!#}
+    {#<p>*todo* webroot is {{ getAlias('@baseUrl') }}</p>#}    <home/>
+</div>
+</body>
+<script src="{{ rev('about.js') }}"></script>
+<script src="{{ rev('chunk-vendors.js') }}"></script>
+{#*todo* lazy without this? #}
+{#*todo* compare all to generated index page... #}
+<script src="{{ rev('app.js') }}"></script>
+</html>

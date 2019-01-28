@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cheese Plates</title>
+</head>
+<body>
+<h2>Cheese Plate {{ entry.title }}</h2>
+<p>You will enjoy {{ entry.body }}</p>
+{% for cat in entry.dealCategory %}
+{{ cat.title }}
+{% endfor %}
+</body>
+</html>

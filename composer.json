@@ -1,4 +1,24 @@
 {
+    "name": "craftcms/craft",
+    "description": "Craft CMS",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "project"
+    ],
+    "minimum-stability": "beta",
+    "license": "MIT",
+    "homepage": "https://craftcms.com/",
+    "type": "project",
+    "support": {
+        "email": "support@craftcms.com",
+        "issues": "https://github.com/craftcms/cms/issues",
+        "forum": "https://craftcms.stackexchange.com/",
+        "source": "https://github.com/craftcms/cms",
+        "docs": "https://craftcms.com/docs",
+        "rss": "https://craftcms.com/changelog.rss"
+    },
     "repositories": [
         {
             "type": "vcs",
@@ -19,6 +39,35 @@
         "craftcms/cms": "^3.1",
         "narrationsd/live-vue": "^0.9.61",
         "oomphinc/composer-installers-extender": "^1.1",
-        "narrationsd/live-vue-js": "^0.9.57"
+        "narrationsd/live-vue-js": "^0.9.58",
+        "markhuot/craftql": "dev-master",
+        "craftcms/redactor": "^2.3",
+        "vlucas/phpdotenv": "^2.4.0",
+        "craftcms/element-api": "^2.5",
+        "clubstudioltd/craft-asset-rev": "^v6.0.0"
+    },
+    "require-dev": {
+        "laravel/homestead": "^8.0",
+        "roave/security-advisories": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "modules\\": "modules/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "7.1.3"
+        }
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@composer dump-autoload -o",
+            "@php craft setup/welcome"
+        ]
     }
 }

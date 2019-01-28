@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Vue Insert Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    {#<link rel="icon" href="<%= BASE_URL %>favicon.ico"> #}{# *todo* #}
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{{ rev('app.css') }}">
+    <link rel="stylesheet" href="{{ rev('chunk-vendors.css') }}">
+    <link href="/resources/css/insert-demo.css" rel="stylesheet">
+</head>
+<body>
+<h2>Live Vue Insert Demo</h2>
+<div>
+    <a href="#" onclick="history.go(-1)">Go Back</a>
+    <br>
+    <a href="/cards">Cards</a>
+</div>
+<div id="content" class="outlined">
+    <div id="introduction" class="outlined">
+        <h2>Introduction</h2>
+    </div>
+    <div class="text-column outlined">
+        <h2>Something else Column</h2>
+    </div>
+    <div style="width: 40%;" id="insert" class="outlined">
+        {% hook "live-vue" %}
+        <div>
+            <div id="app"></div>
+        </div>
+    </div>
+    <div class="text-column outlined">
+        <h2>Something else Column</h2>
+    </div>
+</div>
+</body>
+<script src="{{ rev('about.js') }}"></script>
+<script src="{{ rev('chunk-vendors.js') }}"></script>
+{#*todo* lazy without this? #}
+{#*todo* compare all to generated index page... #}
+<script src="{{ rev('app.js') }}"></script>
+</html>
