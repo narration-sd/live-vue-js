@@ -12,7 +12,7 @@
     "extra": {
         "installer-types": ["library"],
         "installer-paths": {
-            "src/live-vue-js-real/": ["narrationsd/live-vue-js"]
+            "src/live-vue-js/": ["narrationsd/live-vue-js"]
         }
     },
     "require": {
