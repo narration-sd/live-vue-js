@@ -115,16 +115,16 @@
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.1.3",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "8afa52cd417f4ec417b4bfe86b68106538a87660"
+                "reference": "558f321c52faeb4828c03e7dc0cfe39a09e09a2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/8afa52cd417f4ec417b4bfe86b68106538a87660",
-                "reference": "8afa52cd417f4ec417b4bfe86b68106538a87660",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/558f321c52faeb4828c03e7dc0cfe39a09e09a2d",
+                "reference": "558f321c52faeb4828c03e7dc0cfe39a09e09a2d",
                 "shasum": ""
             },
             "require": {
@@ -167,7 +167,7 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2018-10-18T06:09:13+00:00"
+            "time": "2019-01-28T09:30:10+00:00"
         },
         {
             "name": "composer/composer",
@@ -1762,11 +1762,11 @@
         },
         {
             "name": "narrationsd/live-vue-js",
-            "version": "v0.9.58",
+            "version": "v0.9.59",
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:narrationsd/live-vue-js.git",
-                "reference": "b1fe9c51fd51695bd9abdd6077ad5e4b663affcb"
+                "reference": "16d6c25049150617031639a195b733f020bcba2a"
             },
             "type": "library",
             "extra": {
@@ -1775,7 +1775,7 @@
                 "developerUrl": "https://narrationsd.com"
             },
             "description": "ES6 library for Craft Live View on Vue or similar components",
-            "time": "2019-01-28T03:46:10+00:00"
+            "time": "2019-01-28T11:40:34+00:00"
         },
         {
             "name": "oomphinc/composer-installers-extender",
