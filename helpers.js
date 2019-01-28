@@ -9,7 +9,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import config from '@/config/live-vue.js'
+import config from '../config/live-vue.js'
 
 export default {
   // --- These are match builders, to simplify routes for edit and runtime --- //
@@ -205,6 +205,8 @@ export default {
       if (split[0] === 'live-vue') {
         arr.splice(1) // truncate remaining thus halt
         return JSON.parse(decodeURIComponent(split[1]))
+      } else { // *todo* calms eslint, but is this correct? Check live-vue debug setting ability
+        return ''
       }
     }, null) // the null deals with missing cookie, as running from webpack serve
 

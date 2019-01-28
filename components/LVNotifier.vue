@@ -15,7 +15,7 @@
 
 <script>
 import Vue from 'vue'
-import { ReportModal } from '@/live-vue-js/plugins/report-modal.js'
+import { ReportModal } from '../plugins/report-modal.js'
 import VModal from 'vue-js-modal'
 
 Vue.use(ReportModal)

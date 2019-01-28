@@ -10,8 +10,8 @@
  */
 
 import axios from 'axios'
-import config from '@/config/live-vue.js'
-import helpers from '@/live-vue-js/helpers.js'
+import config from '../config/live-vue.js'
+import helpers from '../live-vue-js/helpers.js'
 
 /*
  * The design premise of the Connect objects is to easily replace
