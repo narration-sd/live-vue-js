@@ -14,6 +14,7 @@ class FifthPage extends Component {
     maxWidth: '150px',
     maxHeight: '150px'
   }
+  post = {}
 
 
   constructor (props) {
@@ -21,7 +22,11 @@ class FifthPage extends Component {
     this.reporter = React.createRef()
     // setTimeout(() => { this.reporter.current.report("Timed Out", this.state.content)}, 5000)
     const id = [2]
+    this.post = this.props.data
+
     this.props.pageContext["id"] = id
+    this.setData('original data here')
+    console.log('original props: ' + JSON.stringify(this.props))
   }
 
   state = {
@@ -45,6 +50,22 @@ class FifthPage extends Component {
     this.reporter.current.report('Bonanza', line)
   }
 
+  setStateData = () => {
+    this.setState(
+      { content: 'We set fresh state content...'}
+    )
+  }
+
+  setData = (data = 'before using setData data...') => {
+    // this.props.data.craftql.cards[0].title = 'We Changed This Title'
+    this.post.craftql.cards[0].title = data
+    // let newData = this.props.data
+    // newData.craftql.cards[0].title = 'We Changed This Title'
+    // this.props.data = newData
+
+    console.log('setData cards[0].title to: ' + this.post.craftql.cards[0].title)
+  }
+
   openDialog = (line) => {
     this.setContent(line)
   }
@@ -55,15 +76,15 @@ class FifthPage extends Component {
 
   render (data) {
 
-    const post = this.props.data
     const id = [2]
     // this.props.pageContext["id"] = id
 
-    console.log('pageContext: ' + JSON.stringify(this.props.pageContext))
+    console.log('pageContext: ' + JSON.stringify(this.post.pageContext))
 
     // console.log(JSON.stringify(this.props))
     // console.log(JSON.stringify(post.craftql))
     // console.log(JSON.stringify(post.swapi.allSpecies[1].name))
+    let newData = 'how about fresh data'
 
     return (
       <Layout>
@@ -72,10 +93,17 @@ class FifthPage extends Component {
           <h2>{this.state.content}</h2>
         </div>
         <p>Welcome to page 5</p>
+        <button onClick={this.setData()}>
+          New Data
+        </button>
+        <button onClick={this.setStateData}>
+          New State Data
+        </button>
 
-        <h2>lv-demo says of Cards, {this.props.data.craftql.cards[0].title}</h2>
 
-        { this.props.data.craftql.cards.map(card =>
+        <h2>lv-demo says of Cards, {this.post.craftql.cards[0].title}</h2>
+
+        { this.post.craftql.cards.map(card =>
           <div key={card.id}>
             <h2>title: {card.title}</h2>
             <h4>body: {card.body.content}</h4>
@@ -96,6 +124,7 @@ class FifthPage extends Component {
         <button onClick={this.openWarn}>
           Set Reporter Content
         </button>
+
         <br/><br/>
         <Link to="/page-6">Go to sixth page</Link>
         <br/>

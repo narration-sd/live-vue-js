@@ -70,3 +70,8 @@ yarn-error.log
 
 # idea
 .idea
+
+# we are going to composer install of this here
+src/live-vue-js/
+# and adding Craft, etc.
+vendor
