@@ -75,3 +75,7 @@ yarn-error.log
 src/live-vue-js/
 # and adding Craft, etc.
 vendor
+
+# vagrant
+/.vagrant/machines/lv-gatsby-html/virtualbox/action_set_name
+/.vagrant/
