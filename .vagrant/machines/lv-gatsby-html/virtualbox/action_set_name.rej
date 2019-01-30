@@ -1,0 +1,9 @@
+diff a/.vagrant/machines/lv-gatsby-html/virtualbox/action_set_name b/.vagrant/machines/lv-gatsby-html/virtualbox/action_set_name	(rejected hunks)
+@@ -1,2 +0,6 @@
+- 1548706004
+ -1548827522
+++<<<<<<< Updated upstream
+++1548706004
+++=======
+++1548827522
+++>>>>>>> Stashed changes
