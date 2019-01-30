@@ -147,8 +147,30 @@ export default class BaseConnect {
 
   liveVue (dataQuery) {
 
+    // *todo* discover on new retrieval via sessionStorage if it's there
+    // let sessResult = window.sessionStorage.getItem("liveVue")
+    let sessResult = window.name
+    console.log('session window name liveVue: ', sessResult)
+    let resultData = JSON.parse(sessResult)
+    this.lvMeta = resultData.lvMeta
+
+    // now revise this into shape gatsby expects
+    let cardsData = resultData.data.cards
+    resultData = {
+      data: {
+        craftql: {
+          cards: cardsData
+        }
+      }
+    }
+
+    // *todo* end discover here, but below...
+
     let checkSignature = true
-    let rawResult = this.convertLiveVueDiv()
+    // let rawResult = this.convertLiveVueDiv()
+    let rawResult = resultData
+
+    // end discovery changes
 
     if (this.divDataUsed()) {
       helpers.devLog('liveVue: bypass properly, as any server div data already used')
@@ -202,7 +224,8 @@ export default class BaseConnect {
       // now we convert accordingly, and act on return
       // an Exception will be thrown if div reports errors, so we can move directly
 
-      if (!checkSignature) {
+      // *todo* more lv-gatsby discovery here
+      if (true || !checkSignature) {
         helpers.devLog('Live Vue div data trusted without signature check')
         let fullResult = this.validateLiveVueDiv(rawResult, false)
         helpers.apiLog('data from Live Vue div w/o signature ck: ' +
