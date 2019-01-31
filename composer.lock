@@ -491,16 +491,16 @@
         },
         {
             "name": "craftcms/cms",
-            "version": "3.1.5",
+            "version": "3.1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/cms.git",
-                "reference": "b2791566f2981d09fab415a4c9e3674f7144d8a7"
+                "reference": "12bf72bc73e0905a5c8a2bf74096046eb07ee075"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/cms/zipball/b2791566f2981d09fab415a4c9e3674f7144d8a7",
-                "reference": "b2791566f2981d09fab415a4c9e3674f7144d8a7",
+                "url": "https://api.github.com/repos/craftcms/cms/zipball/12bf72bc73e0905a5c8a2bf74096046eb07ee075",
+                "reference": "12bf72bc73e0905a5c8a2bf74096046eb07ee075",
                 "shasum": ""
             },
             "require": {
@@ -575,7 +575,7 @@
                 "craftcms",
                 "yii2"
             ],
-            "time": "2019-01-25T21:02:47+00:00"
+            "time": "2019-01-29T22:06:25+00:00"
         },
         {
             "name": "craftcms/element-api",
@@ -721,16 +721,16 @@
         },
         {
             "name": "craftcms/redactor",
-            "version": "2.3.0",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/redactor.git",
-                "reference": "f96f9ce6c94b2c7a443939d244e99ad7317d7a23"
+                "reference": "1f561397bab4700f36b1393e11aa17c72c3bca0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/redactor/zipball/f96f9ce6c94b2c7a443939d244e99ad7317d7a23",
-                "reference": "f96f9ce6c94b2c7a443939d244e99ad7317d7a23",
+                "url": "https://api.github.com/repos/craftcms/redactor/zipball/1f561397bab4700f36b1393e11aa17c72c3bca0b",
+                "reference": "1f561397bab4700f36b1393e11aa17c72c3bca0b",
                 "shasum": ""
             },
             "require": {
@@ -764,7 +764,7 @@
                 "html",
                 "yii2"
             ],
-            "time": "2019-01-22T21:41:57+00:00"
+            "time": "2019-01-30T21:53:19+00:00"
         },
         {
             "name": "craftcms/server-check",
@@ -1642,12 +1642,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/markhuot/craftql.git",
-                "reference": "a1f6e9a4549e8adc925104f5953b20ca451f10f6"
+                "reference": "3a8329b748133db3dd9387303bc3481b445d1e53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markhuot/craftql/zipball/a1f6e9a4549e8adc925104f5953b20ca451f10f6",
-                "reference": "a1f6e9a4549e8adc925104f5953b20ca451f10f6",
+                "url": "https://api.github.com/repos/markhuot/craftql/zipball/3a8329b748133db3dd9387303bc3481b445d1e53",
+                "reference": "3a8329b748133db3dd9387303bc3481b445d1e53",
                 "shasum": ""
             },
             "require": {
@@ -1682,7 +1682,7 @@
                 "craft-plugin",
                 "craftcms"
             ],
-            "time": "2019-01-24T21:39:49+00:00"
+            "time": "2019-01-29T15:26:17+00:00"
         },
         {
             "name": "mikehaertl/php-shellcommand",
@@ -3260,20 +3260,21 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v2.5.2",
+            "version": "v2.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "cfd5dc225767ca154853752abc93aeec040fcf36"
+                "reference": "2a7dcf7e3e02dc5e701004e51a6f304b713107d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/cfd5dc225767ca154853752abc93aeec040fcf36",
-                "reference": "cfd5dc225767ca154853752abc93aeec040fcf36",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/2a7dcf7e3e02dc5e701004e51a6f304b713107d5",
+                "reference": "2a7dcf7e3e02dc5e701004e51a6f304b713107d5",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9"
+                "php": ">=5.3.9",
+                "symfony/polyfill-ctype": "^1.9"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.8.35 || ^5.0"
@@ -3281,7 +3282,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.5-dev"
+                    "dev-master": "2.6-dev"
                 }
             },
             "autoload": {
@@ -3306,7 +3307,7 @@
                 "env",
                 "environment"
             ],
-            "time": "2018-10-30T17:29:25+00:00"
+            "time": "2019-01-29T11:11:52+00:00"
         },
         {
             "name": "webonyx/graphql-php",
@@ -3507,20 +3508,20 @@
         },
         {
             "name": "yiisoft/yii2-bootstrap",
-            "version": "2.0.8",
+            "version": "2.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-bootstrap.git",
-                "reference": "3f49c47924bb9fa5363c3fc7b073d954168cf438"
+                "reference": "4677951dda712dd99d5bf2a127eaee118dfea860"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/3f49c47924bb9fa5363c3fc7b073d954168cf438",
-                "reference": "3f49c47924bb9fa5363c3fc7b073d954168cf438",
+                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/4677951dda712dd99d5bf2a127eaee118dfea860",
+                "reference": "4677951dda712dd99d5bf2a127eaee118dfea860",
                 "shasum": ""
             },
             "require": {
-                "bower-asset/bootstrap": "3.3.* | 3.2.* | 3.1.*",
+                "bower-asset/bootstrap": "3.4.* | 3.3.* | 3.2.* | 3.1.*",
                 "yiisoft/yii2": "~2.0.6"
             },
             "type": "yii2-extension",
@@ -3563,7 +3564,7 @@
                 "bootstrap",
                 "yii2"
             ],
-            "time": "2018-02-16T10:41:52+00:00"
+            "time": "2019-01-29T21:39:45+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
@@ -3847,22 +3848,24 @@
         },
         {
             "name": "zendframework/zend-feed",
-            "version": "2.10.3",
+            "version": "2.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-feed.git",
-                "reference": "6641f4cf3f4586c63f83fd70b6d19966025c8888"
+                "reference": "5248e9fffa760e5c36092aeff02c3797e4a8a690"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-feed/zipball/6641f4cf3f4586c63f83fd70b6d19966025c8888",
-                "reference": "6641f4cf3f4586c63f83fd70b6d19966025c8888",
+                "url": "https://api.github.com/repos/zendframework/zend-feed/zipball/5248e9fffa760e5c36092aeff02c3797e4a8a690",
+                "reference": "5248e9fffa760e5c36092aeff02c3797e4a8a690",
                 "shasum": ""
             },
             "require": {
+                "ext-dom": "*",
+                "ext-libxml": "*",
                 "php": "^5.6 || ^7.0",
                 "zendframework/zend-escaper": "^2.5.2",
-                "zendframework/zend-stdlib": "^2.7.7 || ^3.1"
+                "zendframework/zend-stdlib": "^3.2.1"
             },
             "require-dev": {
                 "phpunit/phpunit": "^5.7.23 || ^6.4.3",
@@ -3885,8 +3888,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.10.x-dev",
-                    "dev-develop": "2.11.x-dev"
+                    "dev-master": "2.11.x-dev",
+                    "dev-develop": "2.12.x-dev"
                 }
             },
             "autoload": {
@@ -3904,7 +3907,7 @@
                 "feed",
                 "zf"
             ],
-            "time": "2018-08-01T13:53:20+00:00"
+            "time": "2019-01-29T21:37:15+00:00"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -3956,16 +3959,16 @@
     "packages-dev": [
         {
             "name": "laravel/homestead",
-            "version": "v8.0.1",
+            "version": "v8.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/homestead.git",
-                "reference": "499ab1c8e09bb215e5c5b45705ed04663598ac57"
+                "reference": "e56b86c5034621894d2b5d92db18207d379269f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/homestead/zipball/499ab1c8e09bb215e5c5b45705ed04663598ac57",
-                "reference": "499ab1c8e09bb215e5c5b45705ed04663598ac57",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/e56b86c5034621894d2b5d92db18207d379269f9",
+                "reference": "e56b86c5034621894d2b5d92db18207d379269f9",
                 "shasum": ""
             },
             "require": {
@@ -4002,7 +4005,7 @@
                 }
             ],
             "description": "A virtual machine for web artisans.",
-            "time": "2019-01-25T18:16:55+00:00"
+            "time": "2019-01-29T18:32:11+00:00"
         },
         {
             "name": "roave/security-advisories",

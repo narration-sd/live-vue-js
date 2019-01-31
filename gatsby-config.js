@@ -11,7 +11,7 @@ module.exports = {
         // This is the field under which it's accessible
         fieldName: "craftql",
         // URL to query from
-        url: "http://lv-gatsby.test/cqapi",
+        url: "http://site.lv-gatsby.test/cqapi",
         // HTTP headers
         headers: {
           // Learn about environment variables: https://gatsby.app/env-vars

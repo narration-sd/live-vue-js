@@ -146,6 +146,7 @@ class FifthPage extends Component {
 
     return (
       <Layout>
+        {/*{ {% hook "live-vue" %} }*/}
         <div id="main">
           <h1>The fifth page, with Cards via page queries...</h1>
           <h2>{this.state.content}</h2>

@@ -26,7 +26,7 @@ folders:
 sites:
     -
         map: lv-gatsby.test
-        to: "/home/vagrant/lv-gatsby_html/web/public"
+        to: "/home/vagrant/lv-gatsby_html/public"
         php: "7.1"
     -
       map: else.lv-gatsby.test
