@@ -27,7 +27,8 @@
 <script>
 function pushMessage () {
 
-  var msg = { text: 'from our Craft parent' }
+  var msg = // { text: 'from our Craft parent' }
+    { text: document.getElementById('liveVue').innerText }
   // get reference to window in iframe
   console.log('preparing: ' + msg.text)
   var frame =  document.getElementById('ifrm')
@@ -39,7 +40,7 @@ function pushMessage () {
 
 function timeMessage() {
   console.log('beginning timeout')
-  setTimeout(pushMessage, 500);
+  setTimeout(pushMessage, 1); // *todo* even this, actually one tick, is enough??
 
 }
 window.addEventListener('load', timeMessage, false);

@@ -21,7 +21,8 @@ function ShowFromParent (props) {
     height: '250px',
     padding: '5px',
     backgroundColor: 'yellow',
-    border: '4px solid green'
+    border: '4px solid green',
+    overflow: 'hidden'
   };
   console.log ('props.msg: ' + JSON.stringify(props.msg ))
   // msg = 'static inside'
@@ -69,7 +70,7 @@ class FifthPage extends Component {
 
     if (event.data !== undefined) {
       console.log ('data is: ' + JSON.stringify(event.data))
-      parentMsg +=  event.data.text
+      parentMsg =  event.data.text
       // parentMsg = 'tempotempo'
       this.setState ({ parentMsg: parentMsg })
     }

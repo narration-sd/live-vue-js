@@ -491,16 +491,16 @@
         },
         {
             "name": "craftcms/cms",
-            "version": "3.1.6.1",
+            "version": "3.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/cms.git",
-                "reference": "12bf72bc73e0905a5c8a2bf74096046eb07ee075"
+                "reference": "d7d9166144138f7794510f816b776bb1ff6761b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/cms/zipball/12bf72bc73e0905a5c8a2bf74096046eb07ee075",
-                "reference": "12bf72bc73e0905a5c8a2bf74096046eb07ee075",
+                "url": "https://api.github.com/repos/craftcms/cms/zipball/d7d9166144138f7794510f816b776bb1ff6761b3",
+                "reference": "d7d9166144138f7794510f816b776bb1ff6761b3",
                 "shasum": ""
             },
             "require": {
@@ -575,7 +575,7 @@
                 "craftcms",
                 "yii2"
             ],
-            "time": "2019-01-29T22:06:25+00:00"
+            "time": "2019-01-31T20:49:25+00:00"
         },
         {
             "name": "craftcms/element-api",
@@ -768,16 +768,16 @@
         },
         {
             "name": "craftcms/server-check",
-            "version": "1.1.6",
+            "version": "1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/server-check.git",
-                "reference": "309d2952842c7f96b36dea00c0944a606624feaf"
+                "reference": "b379bbcdd32f2db78d204bc4d6f3f97e63fa8e04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/server-check/zipball/309d2952842c7f96b36dea00c0944a606624feaf",
-                "reference": "309d2952842c7f96b36dea00c0944a606624feaf",
+                "url": "https://api.github.com/repos/craftcms/server-check/zipball/b379bbcdd32f2db78d204bc4d6f3f97e63fa8e04",
+                "reference": "b379bbcdd32f2db78d204bc4d6f3f97e63fa8e04",
                 "shasum": ""
             },
             "type": "library",
@@ -798,7 +798,7 @@
                 "requirements",
                 "yii2"
             ],
-            "time": "2018-08-17T23:47:59+00:00"
+            "time": "2019-01-31T19:59:15+00:00"
         },
         {
             "name": "creocoder/yii2-nested-sets",
