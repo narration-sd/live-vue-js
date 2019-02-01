@@ -147,30 +147,8 @@ export default class BaseConnect {
 
   liveVue (dataQuery) {
 
-    // *todo* discover on new retrieval via sessionStorage if it's there
-    // let sessResult = window.sessionStorage.getItem("liveVue")
-    let sessResult = window.name
-    console.log('session window name liveVue: ', sessResult)
-    let resultData = JSON.parse(sessResult)
-    this.lvMeta = resultData.lvMeta
-
-    // now revise this into shape gatsby expects
-    let cardsData = resultData.data.cards
-    resultData = {
-      data: {
-        craftql: {
-          cards: cardsData
-        }
-      }
-    }
-
-    // *todo* end discover here, but below...
-
     let checkSignature = true
-    // let rawResult = this.convertLiveVueDiv()
-    let rawResult = resultData
-
-    // end discovery changes
+    let rawResult = this.convertLiveVueDiv()
 
     if (this.divDataUsed()) {
       helpers.devLog('liveVue: bypass properly, as any server div data already used')
@@ -224,10 +202,21 @@ export default class BaseConnect {
       // now we convert accordingly, and act on return
       // an Exception will be thrown if div reports errors, so we can move directly
 
-      // *todo* more lv-gatsby discovery here
-      if (true || !checkSignature) {
+      if (!checkSignature) {
         helpers.devLog('Live Vue div data trusted without signature check')
         let fullResult = this.validateLiveVueDiv(rawResult, false)
+        // discovery on gatsby
+        // now revise this into shape gatsby expects
+        let cardsData = fullResult.data.cards
+        fullResult = {
+          data: {
+            craftql: {
+              cards: cardsData
+            }
+          }
+        }
+        // end discovery on gatsby
+
         helpers.apiLog('data from Live Vue div w/o signature ck: ' +
           JSON.stringify(fullResult))
         return fullResult
@@ -235,6 +224,17 @@ export default class BaseConnect {
         let fullResult = this.validateLiveVueDiv(rawResult, true)
         helpers.devLog('successful using Live Vue div data for ' +
           dataQuery + this.pagingQuery)
+        // discovery on gatsby
+        // now revise this into shape gatsby expects
+        let cardsData = fullResult.data.cards
+        fullResult = {
+          data: {
+            craftql: {
+              cards: cardsData
+            }
+          }
+        }
+        // end discovery on gatsby
         return fullResult
       } else if (this.isLivePreview()) {
         this.validateLiveVueDiv(rawResult, true) // error out here first if not
