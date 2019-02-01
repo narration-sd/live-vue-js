@@ -11,6 +11,25 @@ function ShowSome () {
   return <h2>Showing Some...</h2>
 }
 
+var parentMsg = 'could be the message, really? Where\'s the event?'
+
+
+function ShowFromParent (props) {
+  let styles = {
+    margin: '20px',
+    width: '250px',
+    height: '250px',
+    padding: '5px',
+    backgroundColor: 'yellow',
+    border: '4px solid green'
+  };
+  console.log ('props.msg: ' + JSON.stringify(props.msg ))
+  // msg = 'static inside'
+  return <div style={styles}>
+    <h2>Here is where the message will go: </h2>
+    <p>{ props.msg }</p>
+  </div>
+}
 
 class FifthPage extends Component {
   entries = null
@@ -36,15 +55,40 @@ class FifthPage extends Component {
     this.props.pageContext['id'] = id
     this.setData('original data here')
     console.log('original props: ' + JSON.stringify(this.props))
+  }
+
+  receiveMessage = (event) => {
+    // if (event.origin !== "http://example.org:8080")
+    //   return;
+
+    console.log('child received event: ' + JSON.stringify(event))
+    if (event.data === undefined) {
+      console.log('skipping in hope')
+      return
+    }
+
+    if (event.data !== undefined) {
+      console.log ('data is: ' + JSON.stringify(event.data))
+      parentMsg +=  event.data.text
+      // parentMsg = 'tempotempo'
+      this.setState ({ parentMsg: parentMsg })
+    }
+    else {
+      console.log('no data')
+    }
 
   }
 
   state = {
     show: false,
-    content: 'This is original state content'
+    content: 'This is original state content',
+    parentMsg: 'a message? '
   }
 
   componentDidMount = () => {
+    this.receiveMessage = this.receiveMessage.bind(this);
+    window.addEventListener("message", this.receiveMessage, false);
+
     this.connector = new GqlConnect()
 
     let dataQuery = 'script=Cards'
@@ -96,6 +140,8 @@ class FifthPage extends Component {
       data.craftql.cards[0].title = 'We changed this with setData'
       this.setState ({ data: data })
     }
+
+    // this.receiveMessage({ data: {msg: { text: 'something extra'}}})
     // // this.props.data.craftql.cards[0].title = 'We Changed This Title'
     // this.post.craftql.cards[0].title = event
     // // let newData = this.props.data
@@ -152,6 +198,7 @@ class FifthPage extends Component {
           <h2>{this.state.content}</h2>
         </div>
         <p>Welcome to page 5</p>
+        <ShowFromParent msg={this.state.parentMsg}/>
         <button onClick={this.setData}>
           New First Title
         </button>
