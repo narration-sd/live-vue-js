@@ -205,18 +205,6 @@ export default class BaseConnect {
       if (!checkSignature) {
         helpers.devLog('Live Vue div data trusted without signature check')
         let fullResult = this.validateLiveVueDiv(rawResult, false)
-        // discovery on gatsby
-        // now revise this into shape gatsby expects
-        let cardsData = fullResult.data.cards
-        fullResult = {
-          data: {
-            craftql: {
-              cards: cardsData
-            }
-          }
-        }
-        // end discovery on gatsby
-
         helpers.apiLog('data from Live Vue div w/o signature ck: ' +
           JSON.stringify(fullResult))
         return fullResult
@@ -224,17 +212,6 @@ export default class BaseConnect {
         let fullResult = this.validateLiveVueDiv(rawResult, true)
         helpers.devLog('successful using Live Vue div data for ' +
           dataQuery + this.pagingQuery)
-        // discovery on gatsby
-        // now revise this into shape gatsby expects
-        let cardsData = fullResult.data.cards
-        fullResult = {
-          data: {
-            craftql: {
-              cards: cardsData
-            }
-          }
-        }
-        // end discovery on gatsby
         return fullResult
       } else if (this.isLivePreview()) {
         this.validateLiveVueDiv(rawResult, true) // error out here first if not
