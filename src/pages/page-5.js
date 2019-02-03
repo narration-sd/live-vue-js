@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import {Link} from 'gatsby'
 import {StaticQuery, graphql} from 'gatsby'
 import Reporter from '../live-vue-js/react/Reporter.jsx'
-import GqlConnect from '../live-vue-js/gql-connect.js'
+import GatsbyConnect from '../live-vue-js/gatsby-connect.js'
 
 import Layout from '../components/layout'
 
@@ -13,6 +13,25 @@ function ShowSome () {
 
 var parentMsg = 'could be the message, really? Where\'s the event?'
 
+class ShowFromParentC extends React.Component {
+
+  render = () => {
+    let styles = {
+      margin: '20px',
+      width: '250px',
+      height: '250px',
+      padding: '5px',
+      backgroundColor: 'lightblue',
+      border: '4px solid red',
+      overflow: 'hidden'
+    }
+
+    return <div style={styles}>
+      <h2>Here is where the message goes: </h2>
+      <p>{this.props.msg}</p>
+    </div>
+  }
+}
 
 function ShowFromParent (props) {
   let styles = {
@@ -23,12 +42,12 @@ function ShowFromParent (props) {
     backgroundColor: 'yellow',
     border: '4px solid green',
     overflow: 'hidden'
-  };
-  console.log ('props.msg: ' + JSON.stringify(props.msg ))
+  }
+  console.log('props.msg: ' + JSON.stringify(props.msg))
   // msg = 'static inside'
   return <div style={styles}>
     <h2>Here is where the message will go: </h2>
-    <p>{ props.msg }</p>
+    <p>{props.msg}</p>
   </div>
 }
 
@@ -53,7 +72,7 @@ class FifthPage extends Component {
       data: this.props.data
     })
 
-    this.props.pageContext['id'] = id
+    // this.props.pageContext['id'] = id
     this.setData('original data here')
     console.log('original props: ' + JSON.stringify(this.props))
   }
@@ -69,12 +88,25 @@ class FifthPage extends Component {
     }
 
     if (event.data !== undefined) {
-      console.log ('data is: ' + JSON.stringify(event.data))
-      parentMsg =  event.data.text
+      console.log('data is: ' + JSON.stringify(event.data))
+      parentMsg = event.data.text
+      // let's see the jsoniousnes  of it
+      let obj = {}
+      try {
+        obj = JSON.parse(parentMsg)
+        obj = this.connector.rearrangeData(obj)
+        console.log('json parse success; obj is: ' + JSON.stringify(obj))
+      } catch (error) {
+        console.log('json parse error: ' + error)
+      }
+
       // parentMsg = 'tempotempo'
-      this.setState ({ parentMsg: parentMsg })
-    }
-    else {
+      this.setState({
+        data: obj ? obj.data : this.state.data,
+        parentMsg: parentMsg,
+        content: 'We set fresh Live Vue content...',
+      })
+    } else {
       console.log('no data')
     }
 
@@ -87,10 +119,10 @@ class FifthPage extends Component {
   }
 
   componentDidMount = () => {
-    this.receiveMessage = this.receiveMessage.bind(this);
-    window.addEventListener("message", this.receiveMessage, false);
+    this.receiveMessage = this.receiveMessage.bind(this)
+    window.addEventListener('message', this.receiveMessage, false)
 
-    this.connector = new GqlConnect()
+    this.connector = new GatsbyConnect()
 
     let dataQuery = 'script=Cards'
 
@@ -131,15 +163,22 @@ class FifthPage extends Component {
 
   setStateData = (event) => {
     this.setState(
-      { content: 'We set fresh state content...' }
+      {
+        content: 'We set fresh state content...',
+        parentMsg: 'and we set a fresher message...'
+      }
     )
+    console.log('setState state: ' + JSON.stringify(this.state))
   }
 
   setData = (event) => {
     let data = this.state.data
     if (data !== undefined) {
       data.craftql.cards[0].title = 'We changed this with setData'
-      this.setState ({ data: data })
+      this.setState({
+        data: data,
+        parentMsg: 'and we set a fresh message...'
+      })
     }
 
     // this.receiveMessage({ data: {msg: { text: 'something extra'}}})
@@ -175,7 +214,8 @@ class FifthPage extends Component {
   showCards = (props) => {
     if (true || this.state.data !== undefined) {
       return <h2>Cards go here</h2>
-      {/*<cardsPlay />*/}
+      {/*<cardsPlay />*/
+      }
     }
   }
 
@@ -184,7 +224,7 @@ class FifthPage extends Component {
     const id = [2]
     // this.props.pageContext["id"] = id
 
-    console.log('pageContext: ' + JSON.stringify(this.post.pageContext))
+    // console.log('pageContext: ' + JSON.stringify(this.post.pageContext))
 
     // console.log(JSON.stringify(this.props))
     // console.log(JSON.stringify(post.craftql))
@@ -199,7 +239,7 @@ class FifthPage extends Component {
           <h2>{this.state.content}</h2>
         </div>
         <p>Welcome to page 5</p>
-        <ShowFromParent msg={this.state.parentMsg}/>
+        <ShowFromParentC msg={this.state.parentMsg}/>
         <button onClick={this.setData}>
           New First Title
         </button>
@@ -207,22 +247,22 @@ class FifthPage extends Component {
           New State Data
         </button>
 
-        <ShowSome msg="showing some" />
+        <ShowSome msg="showing some"/>
         {/*<h2>lv-demo says of Cards, {this.state.data.craftql.cards[0].title}</h2>*/}
         {/*if (this.state.data !== undefined) {*/}
 
-        { this.state.data !== undefined &&
-          this.state.data.craftql.cards.map(card =>
+        {this.state.data !== undefined &&
+        this.state.data.craftql.cards.map(card =>
           <div key={card.id}>
-          <h2>title: {card.title}</h2>
-          <h4>body: {card.body.content}</h4>
-          <h5>image: {card.image[0].url}</h5>
-          <img src={card.image[0].url} style={this.imgStyle}/>
-          <h6>id: {card.id}</h6>
+            <h2>title: {card.title}</h2>
+            <h4>body: {card.body.content}</h4>
+            <h5>image: {card.image[0].url}</h5>
+            <img src={card.image[0].url} style={this.imgStyle}/>
+            <h6>id: {card.id}</h6>
           </div>
-          )
+        )
         }
-      {/*}*/}
+        {/*}*/}
 
 
         <br/>

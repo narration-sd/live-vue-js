@@ -17,18 +17,15 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-helmet": "^5.2.0",
-    "react-modal": "^3.8.1"
+    "react-modal": "^3.8.1",
+    "terser": "3.14.1"
   },
   "keywords": [
     "gatsby"
   ],
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
-    "develop": "gatsby develop",
-    "start": "npm run develop",
-    "format": "prettier --write \"src/**/*.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "upgrade-interactive": "npm-check --update"
   },
   "devDependencies": {
     "prettier": "^1.16.3",
