@@ -67,10 +67,10 @@ class FifthPage extends Component {
     this.reporter = React.createRef()
     // setTimeout(() => { this.reporter.current.report("Timed Out", this.state.content)}, 5000)
     const id = [2]
-    this.post = this.props.data
-    this.setState({
-      data: this.props.data
-    })
+    // this.post = this.props.data
+    // this.setState({
+    //   data: this.props.data
+    // })
 
     // this.props.pageContext['id'] = id
     this.setData('original data here')

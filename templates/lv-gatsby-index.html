@@ -21,14 +21,16 @@
 </noscript>
 <script>
 // var gatsbySite = "http://localhost:8001//page-5" // *todo* for now, before Settings routing
-var gatsbySite = 'https://localhost/page-5' // *todo* for now, before Settings routing
-// var gatsbySite = "https://lv-gatsby.test/page-5" // *todo* for now, before Settings routing
+// var gatsbySite = 'https://localhost/page-5' // *todo* for now, before Settings routing
+var gatsbySite = "https://lv-gatsby.test/page-5" // *todo* for now, before Settings routing
 </script>
 {% hook "live-vue" %}
 <script>
     var iframeElem = document.createElement('iframe')
     iframeElem.src = gatsbySite
     iframeElem.id = 'ifrm'
+    iframeElem.className = 'lv-iframe'
+    iframeElem.name = 'live-vue-frame'
     document.body.appendChild(iframeElem)
 </script>
 {#<iframe id="ifrm" name="live-vue" class="lv-iframe"#}
@@ -56,7 +58,7 @@ function pushMessage () {
 
 function timeMessage () {
   console.log('beginning timeout')
-  setTimeout(pushMessage, 500) // *todo* even this, actually one tick, is enough??
+  setTimeout(pushMessage, 0) // *todo* even this, actually one tick, is enough??
 
 }
 
