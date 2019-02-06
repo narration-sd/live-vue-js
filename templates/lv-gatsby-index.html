@@ -49,20 +49,22 @@ function pushMessage () {
     { text: document.getElementById('liveVue').innerText }
   // get reference to window in iframe
   console.log('preparing: ' + msg.text)
-  var frame = document.getElementById('ifrm')
+  var frame = iframeElem // document.getElementById('ifrm')
   console.log('sending: ' + msg.text + ', to:' + frame.name)
   var win = frame.contentWindow
-  // send msg to win
+  // post msg to win - but remember, otherwise mayn't touch it
+  // because CSRF rules as this iframe src is on another site
   win.postMessage(msg, '*')
 }
 
-function timeMessage () {
-  console.log('beginning timeout')
+function tickDelayPush () {
+  console.log('beginning tick timeout')
+  // *todo* with the full-js iframe build, do we need any time, or just tick?
   setTimeout(pushMessage, 0) // *todo* even this, actually one tick, is enough??
 
 }
 
-window.addEventListener('load', timeMessage, false)
+window.addEventListener('load', tickDelayPush, false)
 </script>
 </body>
 </html>
