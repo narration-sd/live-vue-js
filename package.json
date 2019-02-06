@@ -5,7 +5,7 @@
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
     "axios": "^0.18.0",
-    "gatsby": "^2.0.110",
+    "gatsby": "^2.0.115",
     "gatsby-image": "^2.0.29",
     "gatsby-plugin-manifest": "^2.0.17",
     "gatsby-plugin-offline": "^2.0.22",
@@ -18,7 +18,7 @@
     "react-dom": "^16.7.0",
     "react-helmet": "^5.2.0",
     "react-modal": "^3.8.1",
-    "terser": "3.14.1"
+    "terser": "^3.16.1"
   },
   "keywords": [
     "gatsby"
@@ -28,7 +28,7 @@
     "upgrade-interactive": "npm-check --update"
   },
   "devDependencies": {
-    "prettier": "^1.16.3",
+    "prettier": "^1.16.4",
     "webpack-dev-server": "^3.1.14"
   },
   "repository": {
