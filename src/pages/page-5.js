@@ -88,24 +88,26 @@ class FifthPage extends Component {
     }
 
     if (event.data !== undefined) {
-      console.log('data is: ' + JSON.stringify(event.data))
-      parentMsg = event.data.text
-      // let's see the jsoniousnes  of it
-      let obj = {}
-      try {
-        obj = JSON.parse(parentMsg)
-        obj = this.connector.rearrangeData(obj)
-        console.log('json parse success; obj is: ' + JSON.stringify(obj))
-      } catch (error) {
-        console.log('json parse error: ' + error)
-      }
+      console.log('received data is: ' + JSON.stringify(event.data))
+      if (event.data.text !== undefined) {
+        parentMsg = event.data.text
+        // let's see the jsoniousness  of it
+        let obj = {}
+        try {
+          obj = JSON.parse(parentMsg)
+          obj = this.connector.rearrangeData(obj)
+          console.log('json parse success; obj is: ' + JSON.stringify(obj))
+        } catch (error) {
+          console.log('json parse error: ' + error)
+        }
 
-      // parentMsg = 'tempotempo'
-      this.setState({
-        data: obj ? obj.data : this.state.data,
-        parentMsg: parentMsg,
-        content: 'We set fresh Live Vue content...',
-      })
+        // parentMsg = 'tempotempo'
+        this.setState({
+          data: obj ? obj.data : this.state.data,
+          parentMsg: parentMsg,
+          content: 'We set fresh Live Vue content...',
+        })
+      }
     } else {
       console.log('no data')
     }
@@ -121,6 +123,8 @@ class FifthPage extends Component {
   componentDidMount = () => {
     this.receiveMessage = this.receiveMessage.bind(this)
     window.addEventListener('message', this.receiveMessage, false)
+    // document.getElementById('ifrm').dataset.iframeReady = 'yes'
+    window.parent.postMessage('loaded', '*')
 
     this.connector = new GatsbyConnect()
 

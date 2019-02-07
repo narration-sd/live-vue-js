@@ -11,6 +11,21 @@
         width: 100%;
         height: 100%;
     }
+    /* these have rules marked out as they don't work */
+    .lv-hidden {
+        /*visibility: 'hidden';*/
+        /*width: 0;*/
+    }
+    .lv-show {
+        /*visibility: 'visible';*/
+        /*width: 100%;*/
+    }
+    .lv-content-hide {
+        visibility: hidden;
+    }
+    .lv-content-show {
+        visibility: visible;
+    }
     </style>
 
 </head>
@@ -19,52 +34,76 @@
     <strong>We're sorry but Live Vue doesn't work properly without JavaScript
         enabled. Please enable it to continue.</strong>
 </noscript>
-<script>
-// var gatsbySite = "http://localhost:8001//page-5" // *todo* for now, before Settings routing
-// var gatsbySite = 'https://localhost/page-5' // *todo* for now, before Settings routing
-var gatsbySite = "https://lv-gatsby.test/page-5" // *todo* for now, before Settings routing
-</script>
-{% hook "live-vue" %}
-<script>
+
+<div id="content" class="lv-content-hide">
+    <script>
+    // var gatsbySite = "http://localhost:8001//page-5" // *todo* for now, before Settings routing
+    // var gatsbySite = 'https://localhost/page-5' // proxy *todo* for now, before Settings routing
+    var gatsbySite = "https://lv-gatsby.test/page-5" // *todo* for now, before Settings routing
+    </script>
+    {% hook "live-vue" %}
+    <script>
     var iframeElem = document.createElement('iframe')
     iframeElem.src = gatsbySite
     iframeElem.id = 'ifrm'
-    iframeElem.className = 'lv-iframe'
+    iframeElem.className = 'lv-iframe lv-hidden'
     iframeElem.name = 'live-vue-frame'
+    iframeElem.dataset.iframeReady = 'no'
     document.body.appendChild(iframeElem)
-</script>
-{#<iframe id="ifrm" name="live-vue" class="lv-iframe"#}
-{#        src="https://localhost/page-5"></iframe>#}
-{#<iframe id="ifrm" name="live-vue" class="lv-iframe" src="https://lv-gatsby.test/page-5"></iframe>#}
-{#<iframe id="ifrm" name="live-vue" class="lv-iframe" src="https://localhost/page-5"></iframe>#}
-{#<iframe id="ifrm" name="live-vue" class="lv-iframe" ></iframe>#}
-<script>
-// document.getElementById('ifrm').src = gatsbySite
-document.write('<div style="position: absolute; bottom: 5px; background: lightcoral;"><h6 style="margin: 2px 5px;">we are here</h6></div>')
-</script>
-<script>
-function pushMessage () {
+    var contentElement = document.getElementById('content')
 
-  var msg = // { text: 'from our Craft parent' }
-    { text: document.getElementById('liveVue').innerText }
-  // get reference to window in iframe
-  console.log('preparing: ' + msg.text)
-  var frame = iframeElem // document.getElementById('ifrm')
-  console.log('sending: ' + msg.text + ', to:' + frame.name)
-  var win = frame.contentWindow
-  // post msg to win - but remember, otherwise mayn't touch it
-  // because CSRF rules as this iframe src is on another site
-  win.postMessage(msg, '*')
-}
+    // for our postMessage from the iframe
+    var iframeLoaded = 'no'
+    function receiveMessage(event) {
+      console.log('parent received message: ' + JSON.stringify(event.data))
+      if (event.data = 'loaded') {
+        iframeLoaded = 'loaded'
+      }
+    }
+    window.addEventListener('message', receiveMessage, false)
+    </script>
+    {#<iframe id="ifrm" name="live-vue" class="lv-iframe"#}
+    {#        src="https://localhost/page-5"></iframe>#}
+    {#<iframe id="ifrm" name="live-vue" class="lv-iframe" src="https://lv-gatsby.test/page-5"></iframe>#}
+    {#<iframe id="ifrm" name="live-vue" class="lv-iframe" src="https://localhost/page-5"></iframe>#}
+    {#<iframe id="ifrm" name="live-vue" class="lv-iframe" ></iframe>#}
+    <script>
+    // document.getElementById('ifrm').src = gatsbySite
+    document.write('<div style="position: absolute; bottom: 5px; background: lightcoral;"><h6 style="margin: 2px 5px;">we are here</h6></div>')
+    </script>
+    <script>
+    function pushMessage () {
 
-function tickDelayPush () {
-  console.log('beginning tick timeout')
-  // *todo* with the full-js iframe build, do we need any time, or just tick?
-  setTimeout(pushMessage, 0) // *todo* even this, actually one tick, is enough??
+      var msg = // { text: 'from our Craft parent' }
+        { text: document.getElementById('liveVue').innerText }
+      // get reference to window in iframe
+      console.log('preparing: ' + msg.text)
+      var frame = iframeElem // document.getElementById('ifrm')
+      console.log('frame.iframeReady: ' + frame.dataset.iframeReady)
+      console.log('sending: ' + msg.text + ', to:' + frame.name)
+      var win = frame.contentWindow
+      // post msg to win - but remember, otherwise mayn't touch it
+      // because CSRF rules as this iframe src is on another site
+      win.postMessage(msg, '*')
+      iframeElem.className = 'lv-iframe lv-show'
+      contentElement.className = 'lv-content-show'
+    }
 
-}
+    function tickDelayPush () {
+      console.log('beginning tick timeout')
+      if (iframeLoaded === 'loaded') {
+        console.log('tickDelayPush got loaded')
+        pushMessage()
+        // setTimeout(pushMessage, 0) // still need our tick?
+      } else {
+        setTimeout(tickDelayPush, 50) // *todo* should be settable?
+      }
 
-window.addEventListener('load', tickDelayPush, false)
-</script>
+    }
+    window.addEventListener('load', tickDelayPush, false)
+
+    </script>
+</div>
+
 </body>
 </html>
