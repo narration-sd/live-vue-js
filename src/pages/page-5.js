@@ -120,12 +120,53 @@ class FifthPage extends Component {
     parentMsg: 'a message? '
   }
 
+  componentWillUpdate (nextProps, nextState, nextContext) {
+    console.log('will update session storage: ' + JSON.stringify(window.sessionStorage))
+    // const currentPosition = getSavedScrollPosition(location)
+    for(var i =0; i < window.sessionStorage.length; i++){
+      console.log('key' + i + ': ' + window.sessionStorage.key(i))
+      console.log(window.sessionStorage.getItem(window.sessionStorage.key(i)));
+    }
+    console.log('ours: ' + window.sessionStorage.getItem('@@scroll|/page-5'))
+    console.log('ours/: ' + window.sessionStorage.getItem('@@scroll|/page-5/'))
+    console.log('typeof ours/: ' + typeof window.sessionStorage.getItem('@@scroll|/page-5/'))
+    console.log('mine: ' + window.sessionStorage.getItem('mine'))
+    const currentPos = window.sessionStorage.getItem('@@scroll|/page-5/')
+    // const currentPos = window.sessionStorage.getItem('mine')
+    let currentPosition = [0,0]
+    try {
+      console.log('trying currentPos: ' + currentPos)
+      currentPosition = JSON.parse(currentPos)
+      console.log('will update scroll currentPosition: ' + currentPosition) // JSON.stringify(currentPosition))
+      console.log('will update scroll to x: ' + currentPosition[0] + ', y: ' + currentPosition[1])
+      // window.scrollTo(...(currentPosition || [0, 0]))
+      window.scrollTo(currentPosition[0], currentPosition[1])
+    }
+    catch(e) {
+      console.log('no pos yet: ' + e)
+    }
+  }
+
+  count = 5
+  markWin () {
+    let pos = '[' + String(window.scrollX)  + ',' + String(window.scrollY + this.count++) + ']'
+    // let pos = [ parseInt(window.scrollX), parseInt(window.scrollY) ]
+    // pos = '[0,350]'
+    console.log ('markWin pos: ' + JSON.stringify(pos))
+    console.log ('markWin page-5/: ' + window.sessionStorage.getItem('@@scroll|/page-5/'))
+    // window.sessionStorage.setItem('@@scroll|/page-5', pos)
+    // window.sessionStorage.setItem('@@scroll|/page-5/', pos)
+    window.sessionStorage.setItem('mine', pos)
+  }
+
   componentDidMount = () => {
     this.receiveMessage = this.receiveMessage.bind(this)
     window.addEventListener('message', this.receiveMessage, false)
+    window.addEventListener('beforeunload', this.markWin, false)
     // document.getElementById('ifrm').dataset.iframeReady = 'yes'
     window.parent.postMessage('loaded', '*')
-
+    this.markWin()
+    console.log('did mount session storage: ' + JSON.stringify(window.sessionStorage))
     this.connector = new GatsbyConnect()
 
     let dataQuery = 'script=Cards'
@@ -147,6 +188,13 @@ class FifthPage extends Component {
         data: this.props.data
       })
     }
+  }
+
+  componentWillUnmount () {
+    this.markWin()
+    console.log('will unmount session storage: ' + JSON.stringify(window.sessionStorage))
+    window.removeEventListener('message', this.receiveMessage)
+    window.removeEventListener('beforeunload', this.markWin)
   }
 
   report = (title, content) => {
