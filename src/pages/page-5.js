@@ -4,6 +4,7 @@ import {Link} from 'gatsby'
 import {StaticQuery, graphql} from 'gatsby'
 import Reporter from '../live-vue-js/react/Reporter.jsx'
 import GatsbyConnect from '../live-vue-js/gatsby-connect.js'
+import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
 import Layout from '../components/layout'
 
@@ -12,6 +13,15 @@ function ShowSome () {
 }
 
 var parentMsg = 'could be the message, really? Where\'s the event?'
+var scrollPos = [0,0]
+
+function Relocate () {
+  if (typeof window !== `undefined`) {
+    console.log('Relocate to: ' + JSON.stringify(scrollPos))
+    window.scrollTo(scrollPos[0], scrollPos[1])
+  }
+  return null
+}
 
 class ShowFromParentC extends React.Component {
 
@@ -61,6 +71,8 @@ class FifthPage extends Component {
   }
   post = {}
   connector = null
+  location = null
+  dataArrived = false
 
   constructor (props) {
     super(props)
@@ -75,6 +87,8 @@ class FifthPage extends Component {
     // this.props.pageContext['id'] = id
     this.setData('original data here')
     console.log('original props: ' + JSON.stringify(this.props))
+    console.log('original props.location: ' + JSON.stringify(this.props.location))
+    this.location = this.props.location
   }
 
   receiveMessage = (event) => {
@@ -105,13 +119,16 @@ class FifthPage extends Component {
         this.setState({
           data: obj ? obj.data : this.state.data,
           parentMsg: parentMsg,
-          content: 'We set fresh Live Vue content...',
+          content: 'We set fresh Live Vue content from receiveMessage...',
         })
+        console.log('state.content: ' + this.state.content)
+        this.dataArrived = true
+        this.showContent()
+        Relocate()
       }
     } else {
       console.log('no data')
     }
-
   }
 
   state = {
@@ -120,9 +137,20 @@ class FifthPage extends Component {
     parentMsg: 'a message? '
   }
 
+  stripTrailingSlash = (str) => {
+    return str.endsWith('/') ? str.slice(0, -1) : str;
+  };
+
   componentWillUpdate (nextProps, nextState, nextContext) {
     console.log('will update session storage: ' + JSON.stringify(window.sessionStorage))
-    // const currentPosition = getSavedScrollPosition(location)
+    console.log('Reporter: ' + JSON.stringify(new GatsbyConnect()))
+    console.log('SessionStorage: ' + JSON.stringify(new SessionStorage()))+
+    console.log('location.pathname: ' + location.pathname)
+    this.location.pathname = this.stripTrailingSlash(this.location.pathname) + '/'
+    const currentPos = new SessionStorage().read(this.location, null)
+    console.log('xcurrentPos: ' + JSON.stringify(currentPos))
+    console.log('this.location: ' + JSON.stringify(this.location))
+
     for(var i =0; i < window.sessionStorage.length; i++){
       console.log('key' + i + ': ' + window.sessionStorage.key(i))
       console.log(window.sessionStorage.getItem(window.sessionStorage.key(i)));
@@ -131,16 +159,17 @@ class FifthPage extends Component {
     console.log('ours/: ' + window.sessionStorage.getItem('@@scroll|/page-5/'))
     console.log('typeof ours/: ' + typeof window.sessionStorage.getItem('@@scroll|/page-5/'))
     console.log('mine: ' + window.sessionStorage.getItem('mine'))
-    const currentPos = window.sessionStorage.getItem('@@scroll|/page-5/')
+    // const currentPos = window.sessionStorage.getItem('@@scroll|/page-5/')
     // const currentPos = window.sessionStorage.getItem('mine')
     let currentPosition = [0,0]
     try {
       console.log('trying currentPos: ' + currentPos)
-      currentPosition = JSON.parse(currentPos)
+      currentPosition = currentPos // JSON.parse(currentPos)
       console.log('will update scroll currentPosition: ' + currentPosition) // JSON.stringify(currentPosition))
       console.log('will update scroll to x: ' + currentPosition[0] + ', y: ' + currentPosition[1])
       // window.scrollTo(...(currentPosition || [0, 0]))
-      window.scrollTo(currentPosition[0], currentPosition[1])
+      scrollPos = currentPosition
+      // window.scrollTo(currentPosition[0], currentPosition[1])
     }
     catch(e) {
       console.log('no pos yet: ' + e)
@@ -179,15 +208,23 @@ class FifthPage extends Component {
       // so we'll reactively show it...
       this.setState(
         {
-          content: 'We set fresh Live Vue content...',
+          content: 'We set fresh Live Vue content from connector.liveVue...',
           data: theData
         }
       )
+      this.dataArrived = true
     } else { // normal run case
       this.setState({
         data: this.props.data
       })
     }
+    console.log('state.content: ' + this.state.content)
+    Relocate()
+  }
+
+  componentDidUpdate () {
+    Relocate()
+    this.showContent()
   }
 
   componentWillUnmount () {
@@ -271,6 +308,14 @@ class FifthPage extends Component {
     }
   }
 
+  showContent () {
+    if (typeof  window !== 'undefined' && this.dataArrived) {
+      console.log('showing content')
+      let content = document.getElementById('content')
+      content.style.visibility = 'visible'
+    }
+  }
+
   render (data) {
 
     const id = [2]
@@ -282,8 +327,12 @@ class FifthPage extends Component {
     // console.log(JSON.stringify(post.craftql))
     // console.log(JSON.stringify(post.swapi.allSpecies[1].name))
     let newData = 'how about fresh data'
+    let style = {
+      visibility: 'hidden'
+    }
 
     return (
+      <div id="content" style={style}>
       <Layout>
         {/*{ {% hook "live-vue" %} }*/}
         <div id="main">
@@ -297,6 +346,9 @@ class FifthPage extends Component {
         </button>
         <button onClick={this.setStateData}>
           New State Data
+        </button>
+        <button onClick={Relocate}>
+          Relocate
         </button>
 
         <ShowSome msg="showing some"/>
@@ -335,6 +387,7 @@ class FifthPage extends Component {
         <br/>
         <Link to="/">Go back to the homepage</Link>
       </Layout>
+      </div>
     )
   }
 }

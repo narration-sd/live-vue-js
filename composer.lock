@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ca19884e2175fa8e139adc5396c4da4",
+    "content-hash": "6ab7a9e5384979c1e2b3ceb38af913b6",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -1638,16 +1638,16 @@
         },
         {
             "name": "markhuot/craftql",
-            "version": "2.0.0-beta1",
+            "version": "2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/markhuot/craftql.git",
-                "reference": "4663af3c8bf294284676941a0fcb22adee9063f0"
+                "reference": "7ea7edf2250fa1e1d9cd513291a72c75198a1617"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markhuot/craftql/zipball/4663af3c8bf294284676941a0fcb22adee9063f0",
-                "reference": "4663af3c8bf294284676941a0fcb22adee9063f0",
+                "url": "https://api.github.com/repos/markhuot/craftql/zipball/7ea7edf2250fa1e1d9cd513291a72c75198a1617",
+                "reference": "7ea7edf2250fa1e1d9cd513291a72c75198a1617",
                 "shasum": ""
             },
             "require": {
@@ -1682,7 +1682,7 @@
                 "craft-plugin",
                 "craftcms"
             ],
-            "time": "2019-02-05T19:52:54+00:00"
+            "time": "2019-02-07T22:06:55+00:00"
         },
         {
             "name": "mikehaertl/php-shellcommand",
@@ -4219,7 +4219,7 @@
     "aliases": [],
     "minimum-stability": "beta",
     "stability-flags": {
-        "markhuot/craftql": 10,
+        "markhuot/craftql": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

@@ -40,7 +40,7 @@
         "craftcms/cms": "^3.1",
         "craftcms/element-api": "^2.5",
         "craftcms/redactor": "^2.3",
-        "markhuot/craftql": "~2@beta",
+        "markhuot/craftql": "2.x-dev",
         "narrationsd/live-vue": "^0.9.61",
         "narrationsd/live-vue-js": "^0.9.58",
         "oomphinc/composer-installers-extender": "^1.1",
