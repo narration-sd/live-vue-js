@@ -22,6 +22,7 @@
     }
     .lv-content-hide {
         visibility: hidden;
+        opacity: 0;
     }
     .lv-content-show {
         visibility: visible;
@@ -31,7 +32,7 @@
 </head>
 <body>
 <noscript>
-    <strong>We're sorry but Live Vue doesn't work properly without JavaScript
+    <strong>We're sorry but Live Vue previews don't work properly without JavaScript
         enabled. Please enable it to continue.</strong>
 </noscript>
 
@@ -44,11 +45,12 @@
     {% hook "live-vue" %}
     <script>
     var iframeElem = document.createElement('iframe')
-    iframeElem.src = gatsbySite
+    iframeElem.src = gatsbySite + '?isLiveVue=1'
     iframeElem.id = 'ifrm'
     iframeElem.className = 'lv-iframe lv-hidden'
     iframeElem.name = 'live-vue-frame'
     iframeElem.dataset.iframeReady = 'no'
+    iframeElem.dataset.isLiveVue = true
     document.body.appendChild(iframeElem)
     var contentElement = document.getElementById('content')
 
@@ -58,6 +60,9 @@
       console.log('parent received message: ' + JSON.stringify(event.data))
       if (event.data = 'loaded') {
         iframeLoaded = 'loaded'
+        // document.getElementById('content').style.visibility = 'visible'
+        // document.getElementById('content').style.opacity = 1
+        // document.write('DO WE SEE THIS ANYWAY?')
       }
     }
     window.addEventListener('message', receiveMessage, false)
@@ -69,7 +74,7 @@
     {#<iframe id="ifrm" name="live-vue" class="lv-iframe" ></iframe>#}
     <script>
     // document.getElementById('ifrm').src = gatsbySite
-    document.write('<div style="position: absolute; bottom: 5px; background: lightcoral;"><h6 style="margin: 2px 5px;">we are here</h6></div>')
+    // document.write('<div style="position: absolute; bottom: 5px; background: lightcoral;"><h6 style="margin: 2px 5px;">we are here</h6></div>')
     </script>
     <script>
     function pushMessage () {
