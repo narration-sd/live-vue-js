@@ -23,7 +23,6 @@
 
 import GqlConnect from './gql-connect'
 import helpers from './helpers.js'
-import axios from 'axios'
 
 export default class GatsbyConnect extends GqlConnect {
 
