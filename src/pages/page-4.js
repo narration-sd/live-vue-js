@@ -17,8 +17,9 @@ class FourthPage extends Component {
 
   }
 
-  state = { show: false,
-            content: 'This is parent state content',
+  state = {
+    show: false,
+    content: 'This is page state content',
   };
 
   report = (title, content) => { this.reporter.current.report (title, content) }
@@ -117,6 +118,9 @@ export default FourthPage
 export const pageQuery = graphql`
   query {
       swapi {
+          allFilms {
+              title
+          }
 #          allFilms{
 #              edges{
 #                  node{

@@ -12,7 +12,7 @@ class ThirdPage extends Component {
     // setTimeout(() => { this.reporter.current.report("Timed Out", this.state.content)}, 5000)
   }
 
-  state = { show: false, content: 'This is parent state content' };
+  state = { show: false, content: 'This is our own state content' };
 
   report = (title, content) => { this.reporter.current.report (title, content) }
 

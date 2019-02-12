@@ -520,6 +520,8 @@ class FifthPage extends Component {
             <br/><br/>
             <Link to="/page-6">Go to sixth page</Link>
             <br/>
+            <Link to="/page-7">Go to seventh page</Link>
+            <br/>
             <Link to="/page-3">Go back to third page</Link>
             <br/>
             <Link to="/">Go back to the homepage</Link>
