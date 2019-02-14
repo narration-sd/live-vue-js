@@ -13,6 +13,17 @@ import Card from '@material-ui/core/Card'
 
 import Layout from '../components/layout'
 
+var scrollPos = [0, 0]
+var parentMsg = 'could be the message, really? Where\'s the event?'
+
+function Relocate () {
+  // if (typeof window !== `undefined`) {
+  //   console.log('Relocate to: ' + JSON.stringify(scrollPos))
+  //   window.scrollTo(scrollPos[0], scrollPos[1])
+  // }
+  return null
+}
+
 function ShowSome (props) {
   console.log('ShowSome props: ' + JSON.stringify(props))
 
@@ -100,7 +111,7 @@ function Image (props) {
 }
 
 function ShowTheCards (props) {
-  console.log('ShowTheCards props: ' + JSON.stringify(props))
+  console.log('ShowTheCards data: ' + JSON.stringify(data))
 
   let data = props.data
   if (!data || !data.craftql) {
@@ -133,10 +144,7 @@ const Child = () => {
     <p>{scontext.msg}</p>}</MyContext.Consumer>
 }
 
-class SeventhPage extends Component {
-  blarf = 'Reporter Next...'
-  state = { noStateHere: true }
-
+class SeventhPageHold extends LiveVueGatsby {
   constructor (props) {
     console.log('SeventhPage starting on React version: ' + React.version)
     super(props)
@@ -146,6 +154,32 @@ class SeventhPage extends Component {
     }
     console.log('SeventhPage props data: ' + JSON.stringify(this.props.data))
     console.log('SeventhPage state: ' + JSON.stringify(this.state))
+  }
+
+  render () {
+    return <LiveVueGatsby data={this.props.data}>
+      <SeventhPageImpl/>
+    </LiveVueGatsby>
+  }
+}
+
+class SeventhPage extends LiveVueGatsby {
+  blarf = 'Reporter Next...'
+  // state = { noStateHere: true }
+
+  constructor (props) {
+    console.log('SeventhPageImpl starting on React version: ' + React.version)
+    super(props)
+    this.state = {
+      data: {}
+    }
+
+    // this.state = {
+    //   data: this.props.data,
+    //   noStateHere: false
+    // }
+    console.log('SeventhPageImpl props data: ' + JSON.stringify(this.props.data))
+    console.log('SeventhPageImpl state: ' + JSON.stringify(this.state))
   }
 
   showModal = () => {
@@ -189,10 +223,14 @@ class SeventhPage extends Component {
     console.log('setOwnStateData state: ' + JSON.stringify(this.state))
   }
 
+  componentDidMount () {
+    super.componentDidMount ()
+  }
 
   render (data) {
 
     console.log('SeventhPage render state data: ' + JSON.stringify(this.state.data))
+    console.log('SeventhPageImpl render props data: ' + JSON.stringify(this.props.data))
     // console.log('SeventhPage render state: ' + JSON.stringify(this.state))
 
     const id = [2]
@@ -203,25 +241,36 @@ class SeventhPage extends Component {
 // console.log(JSON.stringify(this.props))
 // console.log(JSON.stringify(post.craftql))
 // console.log(JSON.stringify(post.swapi.allSpecies[1].name))
-    let newData = 'how about fresh data'
+    let newData = this.state.data // 'how about fresh data'
     let style = {
       visibility: 'hidden' // critical so we don't flash static page
     }
-    {/*<ErrorBoundary>*/
-    }
 
-    let propsData = this.props.data ? this.props.data : { noData: true }
-    let stateData = this.state.data ? this.state.data : { noStateData: true }
+    console.log('pre-displayData this.state: ' + JSON.stringify(this.state))
+    console.log('pre-displayData this.state.data: ' + JSON.stringify(this.state.data))
+    let displayData = Object.keys(this.state.data).length === 0
+      ? this.props.data
+      : this.state.data
+    console.log('displayData: ' + JSON.stringify(displayData))
+
+    if (displayData) {
+      console.log('SeventhPage render, props data set to: ' + this.state.data)
+      // this.props.data = this.state.data
+      console.log('SeventhPage render, props data are: ' + JSON.stringify(this.props.data))
+
+    } else {
+      console.log('SeventhPage render, empty state data')
+    }
 
     return (
 
       <div id="content" style={style}>
         <Layout>
-          <LiveVueGatsby data={propsData} stateData={stateData}
-                         setter={this.setOwnStateData.bind(this)}
-                         // propsData={this.props.data}
-          >
-            <TellMeTrue setter={this.setState.bind(this)} data={this.props.data}/>
+          {/*<LiveVueGatsby data={propsData} stateData={stateData}*/}
+          {/*               setter={this.setOwnStateData.bind(this)}*/}
+          {/*               // propsData={this.props.data}*/}
+          {/*>*/}
+          {/*  <TellMeTrue setter={this.setState.bind(this)} data={this.props.data}/>*/}
             {/*<ErrorBoundary>*/}
             {/*{ {% hook "live-vue" %} }*/}
             {/*<Child/>*/}
@@ -246,7 +295,8 @@ class SeventhPage extends Component {
 
             <ShowSome msg="showing some"/>
 
-            <ShowTheCards data={this.state.data}/>
+            <ShowTheCards data={displayData}/>
+              {/*{this.props.data}/>*/}
 
             <br/>
             <br/>
@@ -268,7 +318,7 @@ class SeventhPage extends Component {
             <br/>
             <Link to="/">Go back to the homepage</Link>
             {/*</ErrorBoundary>*/}
-          </LiveVueGatsby>
+          {/*</LiveVueGatsby>*/}
         </Layout>
       </div>
     )

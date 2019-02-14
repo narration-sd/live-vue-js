@@ -96,13 +96,19 @@
     }
 
     function tickDelayPush () {
-      console.log('beginning tick timeout')
+
+      let tickCount = 0
+      // console.log('beginning tick timeout')
       if (iframeLoaded === 'loaded') {
         console.log('tickDelayPush got loaded')
         pushMessage()
         // setTimeout(pushMessage, 0) // still need our tick?
       } else {
-        setTimeout(tickDelayPush, 50) // *todo* should be settable?
+        if (tickCount++ > 10) {
+          console.log('ticks timed out: no iframe answering')
+        } else {
+          setTimeout(tickDelayPush, 50) // *todo* should be settable?
+        }
       }
 
     }
