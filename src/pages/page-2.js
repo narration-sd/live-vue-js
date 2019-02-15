@@ -6,8 +6,8 @@ import Layout from '../components/layout'
 const styles = {
   // margin: '20px',
   marginLeft: '-100px',
-  width: '800px', // document.body.clientWidth - 400, // '100%',
-  height: '600px',  //document.body.clientHeight + 200, // '400px',
+  width: '1200px', // document.body.clientWidth - 400, // '100%',
+  height: '2000px', //(window.innerHeight - 250).toString() + 'px', // '800px',  //document.body.clientHeight + 200, // '400px',
   padding: '5px',
   // backgroundColor: 'lightblue',
   border: '0px solid red',
@@ -17,8 +17,8 @@ const styles = {
 const SecondPage = () => (
 
   <Layout>
-    <h1>Hi from the second page</h1>
-    <p>Welcome to page 2</p>
+    {/*<h1>Hi from the second page</h1>*/}
+    {/*<p>Welcome to page 2</p>*/}
     <iframe title={'Docs'} src={"https://narrationsd.com/docs/live-vue"} style={styles}></iframe>
     <Link to="/page-3">Go on to third page</Link>
     {/*<br/>*/}

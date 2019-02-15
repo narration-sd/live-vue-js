@@ -18,8 +18,10 @@ const IndexPage = () => (
     <Link to="/page-2/">Go to page 2</Link>
       <br/>
       <Link to="/page-4/">Go to page 4</Link>
-      <br/>
-      <Link to="/page-5/">Go to page five</Link>
+    <br/>
+    <Link to="/page-5/">Go to page five</Link>
+    <br/>
+    <Link to="/page-7/">Go to page seven</Link>
   </Layout>
 )
 
