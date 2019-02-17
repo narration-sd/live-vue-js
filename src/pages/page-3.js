@@ -4,6 +4,9 @@ import Reporter from '../live-vue-js/react/Reporter.jsx'
 
 import Layout from '../components/layout'
 
+// import Fade from '@material-ui/core/Fade'
+
+
 class ThirdPage extends Component {
 
   constructor(props) {

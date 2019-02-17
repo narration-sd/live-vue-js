@@ -4,7 +4,7 @@ import {Link} from 'gatsby'
 import {StaticQuery, graphql} from 'gatsby'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
-import {LiveVueGatsby, ErrorBoundary, MyContext} from '../live-vue-js/react/LiveVueGatsby.jsx'
+import {LiveVueGatsby, LiveVueWrap} from '../live-vue-js/react/LiveVueGatsby.jsx'
 import Reporter from '../live-vue-js/react/Reporter.jsx'
 import GatsbyConnect from '../live-vue-js/gatsby-connect.js'
 
@@ -12,6 +12,10 @@ import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 
 import Layout from '../components/layout'
+
+var styles = theme => ({
+  backgroundColor: 'goldenrod'
+})
 
 var scrollPos = [0, 0]
 var parentMsg = 'could be the message, really? Where\'s the event?'
@@ -25,7 +29,7 @@ function Relocate () {
 }
 
 function ShowSome (props) {
-  console.log('ShowSome props: ' + JSON.stringify(props))
+  // console.log('ShowSome props: ' + JSON.stringify(props))
 
   return <h2>Showing Some...</h2>
 }
@@ -35,12 +39,13 @@ const tellIt = (context) => {
 }
 
 function TellMeTrue (props) {
-  console.log('TellMeTrue props: ' + JSON.stringify(props))
+  // console.log('TellMeTrue props: ' + JSON.stringify(props))
 
   // props.setter(props.data)
 
   return <div>
-    <MyContext.Consumer>{context => <p>{tellIt(context)}</p>}</MyContext.Consumer>
+    <MyContext.Consumer>{context =>
+      <p>{tellIt(context)}</p>}</MyContext.Consumer>
     <h2>Told Me True</h2>
   </div>
 }
@@ -75,7 +80,7 @@ function ShowFromParent (props) {
     border: '4px solid green',
     overflow: 'hidden'
   }
-  console.log('props.msg: ' + JSON.stringify(props.msg))
+  // console.log('props.msg: ' + JSON.stringify(props.msg))
 // msg = 'static inside'
   return <div style={styles}>
     <h2>Here is where the message will go: </h2>
@@ -84,19 +89,19 @@ function ShowFromParent (props) {
 }
 
 function Body (props) {
-  console.log('body content: ' + JSON.stringify(props.content))
+  // console.log('body content: ' + JSON.stringify(props.content))
   return <React.Fragment>
     <h6>Body: </h6>
     <div dangerouslySetInnerHTML={props.content}></div>
   </React.Fragment>
 }
 
-function Image (props) {
-  console.log('Image image: ' + JSON.stringify(props))
+function SafeImage (props) {
+  // console.log('SafeImage image: ' + JSON.stringify(props))
 
   const imgStyle = {
-    maxWidth: '150px',
-    maxHeight: '150px'
+    maxWidth: '500px',
+    maxHeight: '500px'
   }
 
   if (props.image[0]) {
@@ -106,12 +111,12 @@ function Image (props) {
       <h6>image url: {props.image[0].url}</h6>
     </React.Fragment>
   } else {
-    return <h3>Missing Image (*todo* later we will have substitute)</h3>
+    return <h3>Missing Image (*todo* later we will have a substitute)</h3>
   }
 }
 
 function ShowTheCards (props) {
-  console.log('ShowTheCards data: ' + JSON.stringify(data))
+  // console.log('ShowTheCards data: ' + JSON.stringify(data))
 
   let data = props.data
   if (!data || !data.craftql) {
@@ -130,7 +135,7 @@ function ShowTheCards (props) {
       <Card style={cardStyle}>
         <h5>title:</h5><h2>{card.title}</h2>
         <Body content={{ __html: card.body.content }}/>
-        <Image image={card.image}/>
+        <SafeImage image={card.image}/>
         <h6>card id: {card.id}</h6>
       </Card>
     </React.Fragment>)
@@ -144,42 +149,22 @@ const Child = () => {
     <p>{scontext.msg}</p>}</MyContext.Consumer>
 }
 
-class SeventhPageHold extends LiveVueGatsby {
-  constructor (props) {
-    console.log('SeventhPage starting on React version: ' + React.version)
-    super(props)
-    this.state = {
-      data: this.props.data,
-      noStateHere: false
-    }
-    console.log('SeventhPage props data: ' + JSON.stringify(this.props.data))
-    console.log('SeventhPage state: ' + JSON.stringify(this.state))
-  }
-
-  render () {
-    return <LiveVueGatsby data={this.props.data}>
-      <SeventhPageImpl/>
-    </LiveVueGatsby>
-  }
-}
-
 class SeventhPage extends LiveVueGatsby {
-  blarf = 'Reporter Next...'
-  // state = { noStateHere: true }
+  note = 'Reporter Next...'
+
+  state = { noStateHere: true }
 
   constructor (props) {
-    console.log('SeventhPageImpl starting on React version: ' + React.version)
+    // console.log('SeventhPageImpl starting on React version: ' + React.version)
     super(props)
+
     this.state = {
+      checked: true,
       data: {}
     }
 
-    // this.state = {
-    //   data: this.props.data,
-    //   noStateHere: false
-    // }
-    console.log('SeventhPageImpl props data: ' + JSON.stringify(this.props.data))
-    console.log('SeventhPageImpl state: ' + JSON.stringify(this.state))
+    // console.log('SeventhPageImpl props data: ' + JSON.stringify(this.props.data))
+    // console.log('SeventhPageImpl state: ' + JSON.stringify(this.state))
   }
 
   showModal = () => {
@@ -201,7 +186,15 @@ class SeventhPage extends LiveVueGatsby {
         parentMsg: 'and we set a fresher message...'
       }
     )
-    console.log('setState state: ' + JSON.stringify(this.state))
+    // console.log('setState state: ' + JSON.stringify(this.state))
+  }
+
+  setChecked = () => {
+    this.setState(
+      {
+        checked: !this.state.checked
+      }
+    )
   }
 
   openDialog = (line) => {
@@ -220,17 +213,17 @@ class SeventhPage extends LiveVueGatsby {
         parentMsg: 'and we setter a fresher message...'
       }
     )
-    console.log('setOwnStateData state: ' + JSON.stringify(this.state))
+    // console.log('setOwnStateData state: ' + JSON.stringify(this.state))
   }
 
   componentDidMount () {
-    super.componentDidMount ()
+    super.componentDidMount()
   }
 
-  render (data) {
+  render () {
 
     console.log('SeventhPage render state data: ' + JSON.stringify(this.state.data))
-    console.log('SeventhPageImpl render props data: ' + JSON.stringify(this.props.data))
+    console.log('SeventhPage render props data: ' + JSON.stringify(this.props.data))
     // console.log('SeventhPage render state: ' + JSON.stringify(this.state))
 
     const id = [2]
@@ -246,17 +239,17 @@ class SeventhPage extends LiveVueGatsby {
       visibility: 'hidden' // critical so we don't flash static page
     }
 
-    console.log('pre-displayData this.state: ' + JSON.stringify(this.state))
-    console.log('pre-displayData this.state.data: ' + JSON.stringify(this.state.data))
+    // console.log('pre-displayData this.state: ' + JSON.stringify(this.state))
+    // console.log('pre-displayData this.state.data: ' + JSON.stringify(this.state.data))
     let displayData = Object.keys(this.state.data).length === 0
       ? this.props.data
       : this.state.data
-    console.log('displayData: ' + JSON.stringify(displayData))
+    // console.log('displayData: ' + JSON.stringify(displayData))
 
     if (displayData) {
-      console.log('SeventhPage render, props data set to: ' + this.state.data)
+      // console.log('SeventhPage render, props data set to: ' + this.state.data)
       // this.props.data = this.state.data
-      console.log('SeventhPage render, props data are: ' + JSON.stringify(this.props.data))
+      // console.log('SeventhPage render, props data are: ' + JSON.stringify(this.props.data))
 
     } else {
       console.log('SeventhPage render, empty state data')
@@ -264,63 +257,48 @@ class SeventhPage extends LiveVueGatsby {
 
     return (
 
-      <div id="content" style={style}>
-        <Layout>
-          {/*<LiveVueGatsby data={propsData} stateData={stateData}*/}
-          {/*               setter={this.setOwnStateData.bind(this)}*/}
-          {/*               // propsData={this.props.data}*/}
-          {/*>*/}
-          {/*  <TellMeTrue setter={this.setState.bind(this)} data={this.props.data}/>*/}
-            {/*<ErrorBoundary>*/}
-            {/*{ {% hook "live-vue" %} }*/}
-            {/*<Child/>*/}
-            {/*<MyContext.Consumer>{*/}
-            {/*  context => <p>{context.msg + ' from page-7'}</p>*/}
-            {/*}</MyContext.Consumer>*/}
-            <div id="main">
-              <h1>The seventh page, with Cards via LiveVueGatsby...</h1>
-              {/*<h2>{this.state.content}</h2>*/}
-            </div>
-            <p>Welcome to page 7</p>
-            {/*<ShowFromParentC msg={this.state.parentMsg}/>*/}
-            <Button onClick={this.setData} variant="contained" color="primary">
-              New First Title
-            </Button> &nbsp;
-            {/*<Button onClick={this.setStateData} variant="contained" color="primary">*/}
-            {/*  New State Data*/}
-            {/*</Button> &nbsp;*/}
-            {/*<Button onClick={Relocate} variant="contained" color="primary">*/}
-            {/*  Relocate*/}
-            {/*</Button>*/}
+      <LiveVueWrap>
+              <Layout>
+                <div id="main">
+                  <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
+                  {/*<h2>{this.state.content}</h2>*/}
+                </div>
+                <p>Welcome to page 7</p>
+                {/*<Button onClick={this.setData} variant="contained"*/}
+                {/*        color="primary">*/}
+                {/*  New First Title*/}
+                {/*</Button> &nbsp;*/}
+                {/*<Button onClick={this.setChecked} variant="contained"*/}
+                {/*        color="primary">*/}
+                {/*  Flip Checked*/}
+                {/*</Button> &nbsp;*/}
+                {/*<ShowSome msg="showing some"/>*/}
 
-            <ShowSome msg="showing some"/>
+                <ShowTheCards data={displayData}/>
+                {/*{this.props.data}/>*/}
 
-            <ShowTheCards data={displayData}/>
-              {/*{this.props.data}/>*/}
+                <br/>
+                <br/>
+                <h2>Note: {this.note} </h2>
+                <Reporter ref={this.reporter}/>
+                <br/>
+                <br/>
 
-            <br/>
-            <br/>
-            <h2>blarf: {this.blarf} </h2>
-            <Reporter ref={this.reporter}/>
-            <br/>
-            <br/>
+                <Button onClick={this.openWarn} variant="contained"
+                        color="primary">
+                  Set Reporter Content
+                </Button>
 
-            <Button onClick={this.openWarn} variant="contained" color="primary">
-              Set Reporter Content
-            </Button>
-
-            <br/><br/>
-            <Link to="/page-6">Go to sixth page</Link>
-            <br/>
-            <Link to="/page-5">Go back to fifth page</Link>
-            <br/>
-            <Link to="/page-3">Go back to third page</Link>
-            <br/>
-            <Link to="/">Go back to the homepage</Link>
-            {/*</ErrorBoundary>*/}
-          {/*</LiveVueGatsby>*/}
-        </Layout>
-      </div>
+                <br/><br/>
+                <Link to="/page-6">Go to sixth page</Link>
+                <br/>
+                <Link to="/page-5">Go back to fifth page</Link>
+                <br/>
+                <Link to="/page-3">Go back to third page</Link>
+                <br/>
+                <Link to="/">Go back to the homepage</Link>
+              </Layout>
+     </LiveVueWrap>
     )
   }
 }
