@@ -11,6 +11,27 @@ import Fade from '@material-ui/core/Fade'
 var parentMsg = 'could be the message, really? Where\'s the event?'
 // var scrollPos = [0, 0]
 
+/**
+ * @classdesc this is a wrapper Component to enclose a Gatsby Page render tree.
+ * It provides blanking during Live Preview refresh, and fade-in transition,
+ * which is essential for smoothness of view during use.
+ *
+ * There's also an error-presenting wrapper silently included, which will
+ * announce on cases of Page code errors, as may be helpful during development.
+ *
+ * @note used in combination with LiveVueGatsby, which the Page class inherits from
+ * @usage place LiveVueWrap in the Page render(), surrounding the actual child components
+ *
+ * ```
+ *    // here's an example
+ *    render () {
+ *      <LiveVueWrap>
+ *        ...render tree...
+ *      </LiveVueWrap>
+ *    }
+ *    ```
+ *
+ */
 class LiveVueWrap extends Component {
 
   state = {
@@ -46,7 +67,14 @@ function Relocate () {
   return null
 }
 
-class LiveVueGatsby extends React.Component {
+/**
+ * @classdesc Basis Component to enable Live Vue preview on a Gatsby Page.
+ * It provides all services to manage previewing transit from static to live data
+ * Companion LiveVueWrap is used to wrap the render tree for the Page.
+ * @usage: The page inherits from LiveVueGatsby, rather than from React.Component.
+ * This allows retrieving preview data on behalf of the Page.
+ */
+class LiveVueGatsby extends Component {
 
   location = null
   dataArrived = false
@@ -68,6 +96,22 @@ class LiveVueGatsby extends React.Component {
 
     this.reporter = React.createRef()
     this.setter = this.props.setter
+  }
+
+  /**
+   * provides the automatically switched data:
+   *  - Gatsby props data as expected for a static page
+   *  - but Craft Live Preview data, when entries are edited in Craft
+   *
+   * @usage create a prop for the element which calls this function, which
+   * will appear on the Page class, then use that data in the rendering Component:
+   * ```
+   *     <ShowTheData data={ this.liveVueData()} />
+   * ```
+   * @returns string
+   */
+  liveVueData = (forceLive = false) => {
+    return 'this would be props or live data, automatically or via forceLive: ' + forceLive
   }
 
   setData = (event) => {
@@ -129,7 +173,9 @@ class LiveVueGatsby extends React.Component {
       // console.log('showing content')
       let content = document.getElementById('content')
       // *todo* here's where Hider does better?
-      content.style.visibility = 'visible'
+      if (content) {
+        content.style.visibility = 'visible'
+      }
     }
   }
 

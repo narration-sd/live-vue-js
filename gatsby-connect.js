@@ -24,7 +24,15 @@
 import GqlConnect from './gql-connect'
 import helpers from './helpers.js'
 
-export default class GatsbyConnect extends GqlConnect {
+class GatsbyConnect extends GqlConnect {
+  /**
+   * @classdesc Provide Gatsby connection to live vue server
+   * @note this class may considerably change its function, or
+   * become something else, as we're not using it properly yet
+   * @param reporter callback function to raise a modal usually
+   * @param sourceBase
+   * @param sourceTag
+   */
 
   constructor (reporter = null, sourceBase = null, sourceTag = 'gapi/query') {
     super(reporter, sourceBase, sourceTag) // we could override the tag
@@ -33,6 +41,10 @@ export default class GatsbyConnect extends GqlConnect {
     // required, beyond those provided by BaseConnect
   }
 
+  /**
+   * @param fullResult
+   * @returns {{data: {craftql: {cards: *}}}}
+   */
   rearrangeData (fullResult) {
     // now revise this into shape gatsby expects
     let cardsData = fullResult.data.cards
@@ -47,6 +59,12 @@ export default class GatsbyConnect extends GqlConnect {
     return fullResult
   }
 
+  /**
+   * Validate div content
+   * @param response
+   * @param haltOnError
+   * @returns {null|{data: {craftql: {cards: *}}}}
+   */
   validateLiveVueDiv (response, haltOnError = true) {
     // these are usually similar but differing, for inheriting connects
     // response is possibly null in some uses, hence the check
@@ -66,3 +84,5 @@ export default class GatsbyConnect extends GqlConnect {
     return this.rearrangeData(response)
   }
 }
+
+export default GatsbyConnect
