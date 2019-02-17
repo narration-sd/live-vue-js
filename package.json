@@ -26,7 +26,13 @@
   ],
   "license": "MIT",
   "scripts": {
-    "upgrade-interactive": "npm-check --update"
+    "upgrade-interactive": "npm-check --update",
+    "say-hello": "echo 'Hello World'",
+    "docs:prep": "vuepress-jsdoc --source ./src --dist ./documentation --folder code --title \"Live Vue Gatsby\" --exclude *.test.js,exclude.js",
+    "docs:dev": "vuepress dev ./documentation",
+    "docs:build": "vuepress build",
+    "docs:try": "npm run docs:prep && npm run docs:dev",
+    "docs:try2": "vuepress-jsdoc --source ./src --dist ./documentation --folder code --title \"Live Vue Gatsby\" --exclude *.test.js,exclude.js; vuepress dev ./documentation"
   },
   "devDependencies": {
     "prettier": "^1.16.4",

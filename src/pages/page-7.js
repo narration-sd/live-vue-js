@@ -4,7 +4,7 @@ import {Link} from 'gatsby'
 import {StaticQuery, graphql} from 'gatsby'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
-import {LiveVueGatsby, LiveVueWrap} from '../live-vue-js/react/LiveVueGatsby.jsx'
+import {LiveVueGatsby, LiveVueWrap} from '../live-vue-js/react/LiveVueGatsby.js'
 import Reporter from '../live-vue-js/react/Reporter.jsx'
 import GatsbyConnect from '../live-vue-js/gatsby-connect.js'
 
@@ -28,16 +28,31 @@ function Relocate () {
   return null
 }
 
+/**
+ *
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
 function ShowSome (props) {
   // console.log('ShowSome props: ' + JSON.stringify(props))
 
   return <h2>Showing Some...</h2>
 }
 
+/**
+ * @param context
+ * @returns {string}
+ */
 const tellIt = (context) => {
   return 'msg was: ' + context.msg + ' from page-7'
 }
 
+/**
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
 function TellMeTrue (props) {
   // console.log('TellMeTrue props: ' + JSON.stringify(props))
 
@@ -51,8 +66,19 @@ function TellMeTrue (props) {
 }
 
 class ShowFromParentC extends React.Component {
+  /**
+   * @classdesc Show what's enclosed
+   * @note this is nonsense to gin up the doc generator, since ShowFromParentC goes out
+   */
+  constructor () {
 
-  render = () => {
+  }
+
+/**
+ * provide the rendering
+ * @returns string
+ */
+ render = () => {
     let styles = {
       margin: '20px',
       width: '250px',
@@ -116,6 +142,11 @@ function SafeImage (props) {
 }
 
 function ShowTheCards (props) {
+  /**
+   * @classdesc main Page class for showing the Cards content
+   * @note it's a functional component
+   * @usage in Page render(), <LiveVueWrap>...render tree...</LiveVueWrap>
+   */
   // console.log('ShowTheCards data: ' + JSON.stringify(data))
 
   let data = props.data
@@ -142,6 +173,14 @@ function ShowTheCards (props) {
   return cards
 }
 
+function SeeSomeData (props) {
+  return <>
+    <h4>Data: </h4>
+    <h6>{props.data}</h6>
+  </>
+}
+
+
 const Child = () => {
 // We wrap the component that actually needs access to
 // the lastName property in FamilyConsumer
@@ -149,7 +188,15 @@ const Child = () => {
     <p>{scontext.msg}</p>}</MyContext.Consumer>
 }
 
+/**
+ * @classdesc the page-7 Page class, inheriting from LiveVueGatsby so we
+ * will have Live Vue Craft Preview ability
+ * @note inheriting from LiveVueGatsby so we
+ * will have Live Vue Craft Preview ability
+ * @usage in Page render(), enclose using <LiveVueWrap>...render tree...</LiveVueWrap>
+ */
 class SeventhPage extends LiveVueGatsby {
+
   note = 'Reporter Next...'
 
   state = { noStateHere: true }
@@ -258,47 +305,48 @@ class SeventhPage extends LiveVueGatsby {
     return (
 
       <LiveVueWrap>
-              <Layout>
-                <div id="main">
-                  <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
-                  {/*<h2>{this.state.content}</h2>*/}
-                </div>
-                <p>Welcome to page 7</p>
-                {/*<Button onClick={this.setData} variant="contained"*/}
-                {/*        color="primary">*/}
-                {/*  New First Title*/}
-                {/*</Button> &nbsp;*/}
-                {/*<Button onClick={this.setChecked} variant="contained"*/}
-                {/*        color="primary">*/}
-                {/*  Flip Checked*/}
-                {/*</Button> &nbsp;*/}
-                {/*<ShowSome msg="showing some"/>*/}
+        <Layout>
+          <div id="main">
+            <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
+            {/*<h2>{this.state.content}</h2>*/}
+          </div>
+          <p>Welcome to page 7</p>
+          <SeeSomeData data={this.liveVueData()}/>
+          {/*<Button onClick={this.setData} variant="contained"*/}
+          {/*        color="primary">*/}
+          {/*  New First Title*/}
+          {/*</Button> &nbsp;*/}
+          {/*<Button onClick={this.setChecked} variant="contained"*/}
+          {/*        color="primary">*/}
+          {/*  Flip Checked*/}
+          {/*</Button> &nbsp;*/}
+          {/*<ShowSome msg="showing some"/>*/}
 
-                <ShowTheCards data={displayData}/>
-                {/*{this.props.data}/>*/}
+          <ShowTheCards data={displayData}/>
+          {/*{this.props.data}/>*/}
 
-                <br/>
-                <br/>
-                <h2>Note: {this.note} </h2>
-                <Reporter ref={this.reporter}/>
-                <br/>
-                <br/>
+          <br/>
+          <br/>
+          <h2>Note: {this.note} </h2>
+          <Reporter ref={this.reporter}/>
+          <br/>
+          <br/>
 
-                <Button onClick={this.openWarn} variant="contained"
-                        color="primary">
-                  Set Reporter Content
-                </Button>
+          <Button onClick={this.openWarn} variant="contained"
+                  color="primary">
+            Set Reporter Content
+          </Button>
 
-                <br/><br/>
-                <Link to="/page-6">Go to sixth page</Link>
-                <br/>
-                <Link to="/page-5">Go back to fifth page</Link>
-                <br/>
-                <Link to="/page-3">Go back to third page</Link>
-                <br/>
-                <Link to="/">Go back to the homepage</Link>
-              </Layout>
-     </LiveVueWrap>
+          <br/><br/>
+          <Link to="/page-6">Go to sixth page</Link>
+          <br/>
+          <Link to="/page-5">Go back to fifth page</Link>
+          <br/>
+          <Link to="/page-3">Go back to third page</Link>
+          <br/>
+          <Link to="/">Go back to the homepage</Link>
+        </Layout>
+      </LiveVueWrap>
     )
   }
 }
