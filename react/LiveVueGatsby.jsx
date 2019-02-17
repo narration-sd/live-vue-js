@@ -1,17 +1,42 @@
 import React, {Component} from 'react'
-import {Link} from 'gatsby'
-import {StaticQuery, graphql} from 'gatsby'
 import GatsbyConnect from '../gatsby-connect.js'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
-import Layout from '../../components/layout'
-import Reporter from './Reporter.jsx'
+import Fade from '@material-ui/core/Fade'
 
-const MyContext = React.createContext('no Context')
+// import Reporter from './Reporter.jsx'
+
+// const MyContext = React.createContext('no Context')
 
 var parentMsg = 'could be the message, really? Where\'s the event?'
-var scrollPos = [0, 0]
+// var scrollPos = [0, 0]
 
+class LiveVueWrap extends Component {
+
+  state = {
+    checked: true
+  }
+
+  render = () => {
+
+    let style = {
+      visibility: 'hidden' // critical so we don't flash static page
+    }
+
+    return (
+      <React.Fragment>
+        <ErrorBoundary>
+        <Fade in={this.state.checked} timeout={{ enter: 800, exit: 0 }}>
+          <div id="content" style={style}>
+            {/*<h2>Wrapping...</h2>*/}
+            {this.props.children}
+          </div>
+        </Fade>
+        </ErrorBoundary>
+      </React.Fragment>
+    )
+  }
+}
 
 function Relocate () {
   // if (typeof window !== `undefined`) {
@@ -20,7 +45,6 @@ function Relocate () {
   // }
   return null
 }
-
 
 class LiveVueGatsby extends React.Component {
 
@@ -43,26 +67,7 @@ class LiveVueGatsby extends React.Component {
     super(props)
 
     this.reporter = React.createRef()
-
     this.setter = this.props.setter
-    // this.state.data = [] // this.props.data
-    // this.state.data.craftql.cards[0].title = 'LiveVueGatsby modified title'
-    console.log('LiveVueGatsby original state: ' + JSON.stringify(this.state))
-
-    // setTimeout(() => { this.reporter.current.report("Timed Out", this.state.content)}, 5000)
-    const id = [2]
-    // this.post = this.props.data
-    // this.setState({
-    //   data: this.props.data
-    // })
-
-    // this.props.pageContext['id'] = id
-    // this.setData('original data here')
-    // console.log('original props: ' + JSON.stringify(this.props))
-    console.log('original props.location: ' + JSON.stringify(this.props.location))
-    console.log('original props.search: ' + JSON.stringify(this.props.search))
-    console.log('original props.testVar: ' + JSON.stringify(this.props.testVar))
-    // this.location = this.props.location
   }
 
   setData = (event) => {
@@ -80,52 +85,35 @@ class LiveVueGatsby extends React.Component {
     // if (event.origin !== "http://example.org:8080")
     //   return;
 
-    console.log('child received event: ' + JSON.stringify(event))
+    // console.log('child received event: ' + JSON.stringify(event))
     if (event.data === undefined) {
       console.log('skipping in hope')
       return
     }
 
     if (event.data !== undefined) {
-      console.log('received event is: ' + JSON.stringify(event))
+      // console.log('received event is: ' + JSON.stringify(event))
       if (event.data.text !== undefined) {
         parentMsg = event.data.text
-        console.log('event.data.text: ' + event.data.text)
+        // console.log('event.data.text: ' + event.data.text)
         // let's see the jsoniousness  of it
         let obj = { data: {} }
         try {
           obj = JSON.parse(parentMsg)
-          console.log('json parse success; obj is: ' + JSON.stringify(obj))
+          // console.log('json parse success; obj is: ' + JSON.stringify(obj))
           if (Object.keys(obj.data).length > 0) {
             obj = this.connector.rearrangeData(obj)
-            console.log('json rearranged; obj is: ' + JSON.stringify(obj))
+            // console.log('json rearranged; obj is: ' + JSON.stringify(obj))
           }
         } catch (error) {
           console.log('json parse error: ' + error)
         }
 
-        // parentMsg = 'tempotempo'
         if (obj) {
-          let freshState = {
-            data: obj,
-            parentMsg: parentMsg,
-            content: 'We set fresh Live Vue content from receiveMessage...'
-          }
           this.setState({
             data: obj.data
           })
-          // this.setState(freshState) // on LiveVueGatsby
-          console.log('LiveVueGatsby received set state.content: ' + this.state.content)
-          // this.setter(freshState) // on SeventhPage
-          console.log('LiveVueGatsby received state after setter: ' + JSON.stringify(this.state))
-
         }
-        // this.setState({
-        //   data: obj ? obj.data : this.state.data,
-        //   parentMsg: parentMsg,
-        //   content: 'We set fresh Live Vue content from receiveMessage...'
-        // })
-        // console.log('state.content: ' + this.state.content)
         this.dataArrived = true
         this.showContent()
         // Relocate()
@@ -138,7 +126,7 @@ class LiveVueGatsby extends React.Component {
   showContent () {
     if (typeof window !== 'undefined' && this.dataArrived) {
       this.dataArrived = false // don't keep looping on it
-      console.log('showing content')
+      // console.log('showing content')
       let content = document.getElementById('content')
       // *todo* here's where Hider does better?
       content.style.visibility = 'visible'
@@ -150,47 +138,15 @@ class LiveVueGatsby extends React.Component {
   }
 
   componentWillUpdate (nextProps, nextState, nextContext) {
-    console.log('componentWillUpdate nextState: ' + JSON.stringify(nextState))
-    this.location = window.location
-    // // *todo* function out any actual position storage, once it works again
-    console.log('will update session storage: ' + JSON.stringify(window.sessionStorage))
-    console.log('Reporter: ' + JSON.stringify(new GatsbyConnect()))
-    console.log('SessionStorage: ' + JSON.stringify(new SessionStorage()))
-    console.log('location.pathname: ' + this.location.pathname)
-    console.log('props location pathname: ' + this.props.location.pathname)
-    // this.location.pathname = this.stripTrailingSlash(this.location.pathname) + '/'
-    const currentPos = new SessionStorage().read(this.props.location, null)
-    console.log('xcurrentPos: ' + JSON.stringify(currentPos))
-    console.log('this.location: ' + JSON.stringify(this.location))
-
-    // for (var i = 0; i < window.sessionStorage.length; i++) {
-    //   console.log('key' + i + ': ' + window.sessionStorage.key(i))
-    //   console.log(window.sessionStorage.getItem(window.sessionStorage.key(i)))
-    // }
-    // console.log('ours: ' + window.sessionStorage.getItem('@@scroll|/page-7'))
-    // console.log('ours/: ' + window.sessionStorage.getItem('@@scroll|/page-7/'))
-    // console.log('typeof ours/: ' + typeof window.sessionStorage.getItem('@@scroll|/page-7/'))
-    // console.log('mine: ' + window.sessionStorage.getItem('mine'))
-    // const currentPos = window.sessionStorage.getItem('@@scroll|/page-7/')
-    // const currentPos = window.sessionStorage.getItem('mine')
-    let currentPosition = [0, 80]
-    // let currentPos = currentPosition
-    console.log('now currentPos: ' + currentPos)
+    this.location = window.location // window is safe here
+    const currentPosition = new SessionStorage().read(this.props.location, null)
     try {
-      if (currentPos) {
-        console.log('trying currentPos: ' + JSON.stringify(currentPos))
-        currentPosition = currentPos // JSON.parse(currentPos)
-        console.log('will update scroll currentPosition: ' + JSON.stringify(currentPosition)) // JSON.stringify(currentPosition))
-        // console.log('will update scroll to x: ' + currentPosition[0] + ', y: ' + currentPosition[1])
-        // window.scrollTo(...(currentPosition || [0, 0]))
-        scrollPos = currentPosition
+      if (currentPosition) {
+        // scrollPos = currentPosition
         window.scrollTo(currentPosition[0], currentPosition[1])
-      } else {
-        console.log('no currentPos yet')
       }
     } catch (e) {
-      console.log('no pos yet: ' + e)
-
+      console.log('no currentPosition yet: ' + e)
     }
   }
 
@@ -206,36 +162,29 @@ class LiveVueGatsby extends React.Component {
     // // window.sessionStorage.setItem('@@scroll|/page-7/', pos)
     // window.sessionStorage.setItem('mine', pos)
   }
+
   //
 
   componentDidMount = () => {
     this.receiveMessage = this.receiveMessage.bind(this)
     window.addEventListener('message', this.receiveMessage, false)
     window.addEventListener('beforeunload', this.markWin, false)
-    // document.getElementById('ifrm').dataset.iframeReady = 'yes'
-    let returnValue = window.parent.postMessage('loaded', '*')
-    console.log('win postMessage: ' + returnValue)
+
+    window.parent.postMessage('loaded', '*')
     const params = new URLSearchParams(window.location.search)
     let blocked = params.get('isLiveVue') ? 'lv_blocked' : 'lv_unblocked'
-    console.log('blocked: ' + params.get('isLiveVue'))
-    // window.parent.getSelection().catch ((error) => {
-    //   // whatever
-    //   console.log ('caught parent: ' + error)
-    //   parentName = 'lv_blocked'
-    // });
 
     if (blocked !== 'lv_blocked') {
-      console.log('should be live: ' + blocked)
       this.dataArrived = true // since we're not in the Live Vue iframe
       this.showContent()
     }
 
     this.markWin()
-    console.log('did mount session storage: ' + JSON.stringify(window.sessionStorage))
+    // console.log('did mount session storage: ' + JSON.stringify(window.sessionStorage))
     this.connector = new GatsbyConnect()
 
-    let dataQuery = 'script=Cards'
-
+    // let dataQuery = 'script=Cards'
+    //
     // here we're going to use Live Vue only for previews.
     // This method will never call out for server data.
     // let theData = this.connector.liveVue(dataQuery)
@@ -256,8 +205,8 @@ class LiveVueGatsby extends React.Component {
     //   //   data: this.props.data
     //   // })
     // }
-    console.log('componentDidMount state.content: ' + this.state.content)
-    console.log('componentDidMount state: ' + JSON.stringify(this.state))
+    // console.log('componentDidMount state.content: ' + this.state.content)
+    // console.log('componentDidMount state: ' + JSON.stringify(this.state))
     Relocate()
   }
 
@@ -268,7 +217,7 @@ class LiveVueGatsby extends React.Component {
 
   componentWillUnmount () {
     this.markWin()
-    console.log('will unmount session storage: ' + JSON.stringify(window.sessionStorage))
+    // console.log('will unmount session storage: ' + JSON.stringify(window.sessionStorage))
     window.removeEventListener('message', this.receiveMessage)
     window.removeEventListener('beforeunload', this.markWin)
   }
@@ -277,30 +226,7 @@ class LiveVueGatsby extends React.Component {
     this.reporter.current.report(title, content)
   }
 
-//   render () {
-//
-//     let values = {
-//       styles: {
-//         visibility: 'visible'
-//       },
-//       msg: 'our message',
-//       newData: 'new data here from state?',
-//       data: this.state.data
-//     }
-//
-//     console.log('LiveVueGatsby render values: ' + JSON.stringify(values))
-//     // return this.props.children
-//
-//     return (<MyContext.Provider value={values}>
-//       <ErrorBoundary>
-//         <Hider props={this.props}>
-//           {/*<div>*/}
-//           {this.props.children}
-//           {/*</div>*/}
-//         </Hider>
-//       </ErrorBoundary>
-//     </MyContext.Provider>)
-//   }
+
 }
 
 class ErrorBoundary extends React.Component {
@@ -310,7 +236,7 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch (error, info) {
-    // Display fallback UI
+    // *todo* Display fallback UI
     this.setState({
       hasError: true,
       error: error,
@@ -346,85 +272,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-function rev (val) {
-  return 'rev ' + val
-}
-
-class Hider extends React.Component {
-
-  childrenWithProps = null
-
-  constructor (props) {
-    super(props)
-      console.log('Hider props data: ' + JSON.stringify(this.props.data))
-  }
-
-  addDataToChildren = (data) => {
-    const { children } = this.props;
-    const extraProps = { data: data }
-    console.log('childrenWithProps extraProps: ' + JSON.stringify(extraProps))
-
-    this.childrenWithProps = React.Children.map(children, child =>
-      React.cloneElement(child, extraProps)
-    )
-
-    console.log('childrenWithProps result props data: ' + JSON.stringify(this.childrenWithProps[0].props.data))
-  }
-
-  render = () => {
-    return (<div>
-      <MyContext.Consumer>{context =>
-        <div>
-          {/*{ alert('We got: ' + context.data) }*/}
-          {/*<p>{rev(context.msg)}</p>*/}
-          {this.addDataToChildren(context.data)}
-          <div style={context.styles} >
-            <h2>Do we see this?</h2>
-            {/*{this.props.children}*/}
-            { this.childrenWithProps }
-          </div>
-        </div>
-      }
-      </MyContext.Consumer>
-    </div>)
-  }
-
-}
-
-// function Hider (props) {
-//
-//   console.log('Hider props data: ' + JSON.stringify(this.parent.props))
-//   let otherProps = {
-//     ourData: { dataHere: 'new state data here'}
-//   }
-//
-//   // const { children } = this.props;
-//   //
-//   // const childrenWithProps = React.Children.map(children, child =>
-//   //   React.cloneElement(child, otherProps)
-//   // )
-//
-// // throw new Error('Hider stop')
-//   return (
-//     <div>
-//       <MyContext.Consumer>{context =>
-//         <div>
-//           {/*{ alert('We got: ' + context.msg) }*/}
-//           {/*<p>{rev(context.msg)}</p>*/}
-//           <div style={context.styles} dummy=>
-//             {/*<h2>Do we see this?</h2>*/}
-//             {props.children}
-//             {/*{ childrenWithProps }*/}
-//           </div>
-//         </div>
-//       }
-//       </MyContext.Consumer>
-//     </div>
-//   )
-// }
-
 export {
   LiveVueGatsby,
-  ErrorBoundary,
-  MyContext
+  LiveVueWrap
 }
