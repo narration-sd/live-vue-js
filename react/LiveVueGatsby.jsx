@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, useContext} from 'react'
 import GatsbyConnect from '../gatsby-connect.js'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
@@ -6,9 +6,10 @@ import Fade from '@material-ui/core/Fade'
 
 // import Reporter from './Reporter.jsx'
 
-// const MyContext = React.createContext('no Context')
+const LVGatsbyContext = React.createContext('no Context')
 
 var parentMsg = 'could be the message, really? Where\'s the event?'
+
 // var scrollPos = [0, 0]
 
 /**
@@ -38,25 +39,87 @@ class LiveVueWrap extends Component {
     checked: true
   }
 
-  render = () => {
+  render = (props) => {
 
     let style = {
       visibility: 'hidden' // critical so we don't flash static page
     }
 
     return (
-      <React.Fragment>
-        <ErrorBoundary>
-        <Fade in={this.state.checked} timeout={{ enter: 800, exit: 0 }}>
-          <div id="content" style={style}>
-            {/*<h2>Wrapping...</h2>*/}
-            {this.props.children}
-          </div>
-        </Fade>
-        </ErrorBoundary>
-      </React.Fragment>
+      <LVGatsbyContext.Provider value={
+        { checked: this.state.checked }
+      }>
+        <React.Fragment>
+          <ErrorBoundary>
+            <Fade in={this.state.checked} timeout={{ enter: 800, exit: 0 }}>
+              <div id="content" style={style}>
+                {/*<h2>Wrapping...</h2>*/}
+                {this.props.children}
+              </div>
+            </Fade>
+          </ErrorBoundary>
+        </React.Fragment>
+      </LVGatsbyContext.Provider>
     )
   }
+}
+
+/**
+ * @classdesc this is a functional Component to enclose a Gatsby Page elements
+ * which normally use props.data. It provides instead props.liveData, which:
+ * - normally supplies the expected props.data from the pageData GraphQL query
+ * - but in Craft Preview, supplies the live data as edited in the CP
+ *
+ * @note used in combination with LiveVueGatsby, which the Page class inherits from
+ * @example place LiveVueWrap in the Page render(), surrounding the actual child components
+ *
+ * ```
+ *    render () {
+ *      <LiveVueData>
+ *        ...render tree of components which use prop.liveData rather than props.data...
+ *      </LiveVueData>
+ *    }
+ *    ```
+ *
+ */
+function LiveVueData (props) {
+
+  const addDataToChildren = (children, liveVueData = null) => {
+
+    return React.Children.map(children, child => {
+
+      // React mis-recognizes <Elements> that aren't its own,
+      // and then, passes them as empty strings.
+      // Also, children can be null. I ask you.
+      if (child && child.type !== undefined) {
+
+        // if we don't have Live Vue data, replay the Gatsby
+        // static data that the child already has
+        const liveData = liveVueData
+          ? liveVueData
+          : child.props.data
+
+        return React.cloneElement(child, { liveData: liveData })
+      } else {
+        return React.cloneElement(child)
+      }
+    })
+  }
+
+  const lvgData  = useContext(LVGatsbyContext)
+  const { checked } = lvgData
+
+  console.log('lvgData: ' + JSON.stringify(lvgData))
+  console.log('checked: ' + checked)
+
+  const childrenWithData = addDataToChildren(props.children)
+
+  return (
+    <React.Fragment>
+      <h2>Live Vue Data</h2>
+      {childrenWithData}
+    </React.Fragment>
+  )
 }
 
 function Relocate () {
@@ -88,7 +151,7 @@ class LiveVueGatsby extends Component {
     content: 'This is original state content',
     parentMsg: 'a message? ',
     testVar: 'unset', // *todo* get this out of here
-    data: {}
+    liveVueData: {} // critical, unless they over-ride it
   }
 
   constructor (props) {
@@ -99,27 +162,33 @@ class LiveVueGatsby extends Component {
   }
 
   /**
-   * provides the automatically switched data:
+   * provides the automatically switched liveVueData:
    *  - Gatsby props data as expected for a static page
    *  - but Craft Live Preview data, when entries are edited in Craft
    *
-   * @usage create a prop for the element which calls this function, which
+   * @example create a prop for the element which calls this function, which
    * will appear on the Page class, then use that data in the rendering Component:
    * ```
    *     <ShowTheData data={ this.liveVueData()} />
    * ```
+   * @param {boolean} [forceLive = false]
+   * @function
    * @returns string
    */
   liveVueData = (forceLive = false) => {
-    return 'this would be props or live data, automatically or via forceLive: ' + forceLive
+    let displayData = Object.keys(this.state.liveVueData).length === 0
+      ? this.props.data
+      : this.state.liveVueData
+
+    return displayData
   }
 
   setData = (event) => {
-    let data = this.state.data
+    let data = this.state.liveVueData
     if (data !== undefined) {
       data.craftql.cards[0].title = 'We changed this with setData'
       this.setState({
-        data: data,
+        liveVueData: data,
         parentMsg: 'and we set a fresh message...'
       })
     }
@@ -155,7 +224,7 @@ class LiveVueGatsby extends Component {
 
         if (obj) {
           this.setState({
-            data: obj.data
+            liveVueData: obj.data
           })
         }
         this.dataArrived = true
@@ -241,14 +310,14 @@ class LiveVueGatsby extends Component {
     //   this.setState(
     //     {
     //       content: 'We set fresh Live Vue content from connector.liveVue...',
-    //       data: theData
+    //       liveVueData: theData
     //     }
     //   )
     //   this.dataArrived = true
     // } else { // normal run case
     //   // *todo* Here's the looping problem -- result of setState
     //   // this.setState({
-    //   //   data: this.props.data
+    //   //   liveVueData: this.props.data
     //   // })
     // }
     // console.log('componentDidMount state.content: ' + this.state.content)
@@ -271,7 +340,6 @@ class LiveVueGatsby extends Component {
   report = (title, content) => {
     this.reporter.current.report(title, content)
   }
-
 
 }
 
@@ -320,5 +388,6 @@ class ErrorBoundary extends React.Component {
 
 export {
   LiveVueGatsby,
-  LiveVueWrap
+  LiveVueWrap,
+  LiveVueData
 }
