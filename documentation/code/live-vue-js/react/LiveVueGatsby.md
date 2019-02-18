@@ -52,15 +52,21 @@ Companion LiveVueWrap is used to wrap the render tree for the Page.
 This allows retrieving preview data on behalf of the Page.  
 <a name="LiveVueGatsby+liveVueData"></a>
 
-### liveVueGatsby.liveVueData ⇒
+### liveVueGatsby.liveVueData([forceLive]) ⇒
 provides the automatically switched data:
  - Gatsby props data as expected for a static page
  - but Craft Live Preview data, when entries are edited in Craft
 
-**Kind**: instance property of [<code>LiveVueGatsby</code>](#LiveVueGatsby)  
+**Kind**: instance method of [<code>LiveVueGatsby</code>](#LiveVueGatsby)  
 **Returns**: string  
-**Usage**: create a prop for the element which calls this function, which
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [forceLive] | <code>boolean</code> | <code>false</code> | 
+
+**Example**  
+create a prop for the element which calls this function, which
 will appear on the Page class, then use that data in the rendering Component:
 ```
     <ShowTheData data={ this.liveVueData()} />
-```  
+```
