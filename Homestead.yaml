@@ -18,16 +18,17 @@ folders:
         # do build empty storage and cp_resources folders for Craft's needs
         # don't avoid uploading images, but do avoid disturbing their _*/ tranform folders
         # except, you can't - out "_*/*",
-        rsync__exclude: [".git/", ".git*", ".vagrant/", "cpresources/*",  ".idea/", "uploads/",
-          "buildtools/", "node_modules/", "storage/*", "runtime/*", "scss/", ".sass-cache/",
-          "vagrant.*"]
+        rsync__exclude: [".git/", ".git*", ".vagrant/", "cpresources/*",
+         ".idea/", "uploads/", "buildtools/", "node_modules/",
+         "storage/*", "runtime/*", "scss/", ".sass-cache/",
+         ".cache", "vagrant.*"]
         rsync__args: ["--verbose", "--archive", "--delete", "-z", "--copy-links"]
 
 sites:
     -
-        map: lv-gatsby.test
-        to: "/home/vagrant/lv-gatsby_html/public"
-        php: "7.1"
+      map: lv-gatsby.test
+      to: "/home/vagrant/lv-gatsby_html/public"
+      php: "7.1"
     -
       map: else.lv-gatsby.test
       to: "/home/vagrant/lv-gatsby_html/web"
