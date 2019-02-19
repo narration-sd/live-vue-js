@@ -1,0 +1,18 @@
+{#Here just to view the Cards simply#}
+
+{% extends "_layout" %}
+{% set title = 'Cardz Play' %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+
+    {% for card in craft.entries.section('cards') %}
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.body }}</p>
+        <p>{{ card.image[0].url('cardImage') }}</p>
+        <img src="{{ card.image[0].url('cardImage') }}">
+        <h6>{{ card.image[0] }}</h6>
+        <br/>
+    {% endfor %}
+
+{% endblock %}
