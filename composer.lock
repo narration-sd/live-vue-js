@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ab7a9e5384979c1e2b3ceb38af913b6",
+    "content-hash": "b70684b7a1271f9368b74344b6b69758",
     "packages": [
         {
             "name": "cebe/markdown",
-            "version": "1.1.2",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cebe/markdown.git",
-                "reference": "25b28bae8a6f185b5030673af77b32e1163d5c6e"
+                "reference": "9bac5e971dd391e2802dca5400bbeacbaea9eb86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cebe/markdown/zipball/25b28bae8a6f185b5030673af77b32e1163d5c6e",
-                "reference": "25b28bae8a6f185b5030673af77b32e1163d5c6e",
+                "url": "https://api.github.com/repos/cebe/markdown/zipball/9bac5e971dd391e2802dca5400bbeacbaea9eb86",
+                "reference": "9bac5e971dd391e2802dca5400bbeacbaea9eb86",
                 "shasum": ""
             },
             "require": {
@@ -35,7 +35,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev"
+                    "dev-master": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -64,7 +64,7 @@
                 "markdown",
                 "markdown-extra"
             ],
-            "time": "2017-07-16T21:13:23+00:00"
+            "time": "2018-03-26T11:24:36+00:00"
         },
         {
             "name": "clubstudioltd/craft-asset-rev",
@@ -491,16 +491,16 @@
         },
         {
             "name": "craftcms/cms",
-            "version": "3.1.12",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/cms.git",
-                "reference": "8089a0741d2dbbdf6b8d142b60b8ed3814ffe211"
+                "reference": "ec6e797c191732333e291237ff7af4dadbc634fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/cms/zipball/8089a0741d2dbbdf6b8d142b60b8ed3814ffe211",
-                "reference": "8089a0741d2dbbdf6b8d142b60b8ed3814ffe211",
+                "url": "https://api.github.com/repos/craftcms/cms/zipball/ec6e797c191732333e291237ff7af4dadbc634fc",
+                "reference": "ec6e797c191732333e291237ff7af4dadbc634fc",
                 "shasum": ""
             },
             "require": {
@@ -531,7 +531,7 @@
                 "true/punycode": "^2.1.0",
                 "twig/twig": "^2.5.0",
                 "yii2tech/ar-softdelete": "^1.0.2",
-                "yiisoft/yii2": "~2.0.15.1",
+                "yiisoft/yii2": "~2.0.16.0",
                 "yiisoft/yii2-debug": "^2.0.10",
                 "yiisoft/yii2-queue": "2.1.0",
                 "yiisoft/yii2-swiftmailer": "^2.1.0",
@@ -543,7 +543,7 @@
             "provide": {
                 "bower-asset/bootstrap": "3.3.* | 3.2.* | 3.1.*",
                 "bower-asset/inputmask": "~3.2.2 | ~3.3.5",
-                "bower-asset/jquery": "3.2.*@stable | 3.1.*@stable | 2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
+                "bower-asset/jquery": "3.3.*@stable | 3.2.*@stable | 3.1.*@stable | 2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
                 "bower-asset/punycode": "1.3.*",
                 "bower-asset/yii2-pjax": "~2.0.1"
             },
@@ -575,7 +575,7 @@
                 "craftcms",
                 "yii2"
             ],
-            "time": "2019-02-15T19:35:25+00:00"
+            "time": "2019-02-20T14:15:23+00:00"
         },
         {
             "name": "craftcms/element-api",
@@ -1638,16 +1638,16 @@
         },
         {
             "name": "markhuot/craftql",
-            "version": "2.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/markhuot/craftql.git",
-                "reference": "7ea7edf2250fa1e1d9cd513291a72c75198a1617"
+                "reference": "e7bd63a9c5141155f7c6d1ba11df1e1ccc4a102b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markhuot/craftql/zipball/7ea7edf2250fa1e1d9cd513291a72c75198a1617",
-                "reference": "7ea7edf2250fa1e1d9cd513291a72c75198a1617",
+                "url": "https://api.github.com/repos/markhuot/craftql/zipball/e7bd63a9c5141155f7c6d1ba11df1e1ccc4a102b",
+                "reference": "e7bd63a9c5141155f7c6d1ba11df1e1ccc4a102b",
                 "shasum": ""
             },
             "require": {
@@ -1682,7 +1682,7 @@
                 "craft-plugin",
                 "craftcms"
             ],
-            "time": "2019-02-07T22:06:55+00:00"
+            "time": "2019-02-12T18:57:42+00:00"
         },
         {
             "name": "mikehaertl/php-shellcommand",
@@ -3412,24 +3412,24 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.15.1",
+            "version": "2.0.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "ed3a9e1c4abe206e1c3ce48a6b3624119b79850d"
+                "reference": "789de9783d41e6ca10fffc3644a43a764f79b399"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/ed3a9e1c4abe206e1c3ce48a6b3624119b79850d",
-                "reference": "ed3a9e1c4abe206e1c3ce48a6b3624119b79850d",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/789de9783d41e6ca10fffc3644a43a764f79b399",
+                "reference": "789de9783d41e6ca10fffc3644a43a764f79b399",
                 "shasum": ""
             },
             "require": {
                 "bower-asset/inputmask": "~3.2.2 | ~3.3.5",
-                "bower-asset/jquery": "3.2.*@stable | 3.1.*@stable | 2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
+                "bower-asset/jquery": "3.3.*@stable | 3.2.*@stable | 3.1.*@stable | 2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
                 "bower-asset/punycode": "1.3.*",
                 "bower-asset/yii2-pjax": "~2.0.1",
-                "cebe/markdown": "~1.0.0 | ~1.1.0",
+                "cebe/markdown": "~1.0.0 | ~1.1.0 | ~1.2.0",
                 "ext-ctype": "*",
                 "ext-mbstring": "*",
                 "ezyang/htmlpurifier": "~4.6",
@@ -3508,7 +3508,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2018-03-21T18:36:53+00:00"
+            "time": "2019-01-30T23:54:16+00:00"
         },
         {
             "name": "yiisoft/yii2-bootstrap",
@@ -4017,12 +4017,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "54ee79a17e8cdc4ff8a1570198d5bc669a5803b8"
+                "reference": "0e9deaa81b96fd55d9ba0fd9f5fa0353b7b79725"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/54ee79a17e8cdc4ff8a1570198d5bc669a5803b8",
-                "reference": "54ee79a17e8cdc4ff8a1570198d5bc669a5803b8",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0e9deaa81b96fd55d9ba0fd9f5fa0353b7b79725",
+                "reference": "0e9deaa81b96fd55d9ba0fd9f5fa0353b7b79725",
                 "shasum": ""
             },
             "conflict": {
@@ -4117,7 +4117,7 @@
                 "shopware/shopware": "<5.3.7",
                 "silverstripe/cms": ">=3,<=3.0.11|>=3.1,<3.1.11",
                 "silverstripe/forum": "<=0.6.1|>=0.7,<=0.7.3",
-                "silverstripe/framework": ">=3,<3.3",
+                "silverstripe/framework": ">=3,<3.6.7|>=3.7,<3.7.3|>=4,<4.0.7|>=4.1,<4.1.5|>=4.2,<4.2.4|>=4.3,<4.3.1",
                 "silverstripe/userforms": "<3",
                 "simple-updates/phpwhois": "<=1",
                 "simplesamlphp/saml2": "<1.10.6|>=2,<2.3.8|>=3,<3.1.4",
@@ -4155,7 +4155,7 @@
                 "symfony/yaml": ">=2,<2.0.22|>=2.1,<2.1.7",
                 "tecnickcom/tcpdf": "<6.2.22",
                 "thelia/backoffice-default-template": ">=2.1,<2.1.2",
-                "thelia/thelia": ">=2.1.0-beta1,<2.1.3|>=2.1,<2.1.2",
+                "thelia/thelia": ">=2.1,<2.1.2|>=2.1.0-beta1,<2.1.3",
                 "theonedemon/phpwhois": "<=4.2.5",
                 "titon/framework": ">=0,<9.9.99",
                 "truckersmp/phpwhois": "<=4.3.1",
@@ -4213,12 +4213,20 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2019-02-14T08:06:11+00:00"
+            "time": "2019-02-20T16:25:00+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "3.1",
+            "alias_normalized": "3.1.0.0",
+            "version": "dev-develop",
+            "package": "craftcms/cms"
+        }
+    ],
     "minimum-stability": "beta",
     "stability-flags": {
+        "craftcms/cms": 20,
         "markhuot/craftql": 20,
         "roave/security-advisories": 20
     },
