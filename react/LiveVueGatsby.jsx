@@ -106,7 +106,7 @@ function LiveVueData (props) {
     })
   }
 
-  const lvgData  = useContext(LVGatsbyContext)
+  const lvgData = useContext(LVGatsbyContext)
   const { checked } = lvgData
 
   console.log('lvgData: ' + JSON.stringify(lvgData))
@@ -157,6 +157,13 @@ class LiveVueGatsby extends Component {
   constructor (props) {
     super(props)
 
+    if (this.state === undefined) {
+      // we'll provide our own
+      this.state = {}
+    }
+
+    this.state.liveVueData = null
+
     this.reporter = React.createRef()
     this.setter = this.props.setter
   }
@@ -176,7 +183,17 @@ class LiveVueGatsby extends Component {
    * @returns string
    */
   liveVueData = (forceLive = false) => {
-    let displayData = Object.keys(this.state.liveVueData).length === 0
+
+    const isLiveVue = Object.keys(this.state.liveVueData).length === 0
+
+    // we should free up display as soon as we know we're static
+    // *todo* this works, but isn't the optimum place
+
+    if (!isLiveVue) {
+      this.showContent()
+    }
+
+    let displayData = isLiveVue
       ? this.props.data
       : this.state.liveVueData
 
@@ -239,11 +256,12 @@ class LiveVueGatsby extends Component {
   showContent () {
     if (typeof window !== 'undefined' && this.dataArrived) {
       this.dataArrived = false // don't keep looping on it
-      // console.log('showing content')
+      console.log('showing content')
       let content = document.getElementById('content')
       // *todo* here's where Hider does better?
       if (content) {
         content.style.visibility = 'visible'
+        content.style.opacity = '100 '
       }
     }
   }
