@@ -190,6 +190,7 @@ class LiveVueGatsby extends Component {
     // *todo* this works, but isn't the optimum place
 
     if (!isLiveVue) {
+      console.log('showContent on call to liveVueData')
       this.showContent()
     }
 
@@ -217,7 +218,12 @@ class LiveVueGatsby extends Component {
 
     // console.log('child received event: ' + JSON.stringify(event))
     if (event.data === undefined) {
-      console.log('skipping in hope')
+      console.log('skipping data on undefined')
+      return
+    }
+
+    if (event.data === "") {
+      console.log('skipping data on empty')
       return
     }
 
@@ -245,8 +251,11 @@ class LiveVueGatsby extends Component {
           })
         }
         this.dataArrived = true
+        console.log('showContent on div data arrival')
         this.showContent()
         // Relocate()
+      } else {
+        console.log('event data.text undefined')
       }
     } else {
       console.log('no data')
@@ -261,8 +270,12 @@ class LiveVueGatsby extends Component {
       // *todo* here's where Hider does better?
       if (content) {
         content.style.visibility = 'visible'
-        content.style.opacity = '100 '
+        content.style.opacity = '100'
+      } else {
+        console.log('content div not available for visibility')
       }
+    } else if (!this.dataArrived) {
+      console.log('not dataArrived')
     }
   }
 
@@ -309,6 +322,7 @@ class LiveVueGatsby extends Component {
 
     if (blocked !== 'lv_blocked') {
       this.dataArrived = true // since we're not in the Live Vue iframe
+      console.log('showContent on non-live-vue')
       this.showContent()
     }
 
@@ -345,6 +359,7 @@ class LiveVueGatsby extends Component {
 
   componentDidUpdate () {
     // Relocate()
+    console.log('showContent on componentDidUpdate')
     this.showContent()
   }
 
