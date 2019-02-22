@@ -10,7 +10,10 @@ module.exports = {
         typeName: "CraftQL",
         // This is the field under which it's accessible
         fieldName: "craftql",
+
         // URL to query from
+        // this one for server build once token etc. for it
+        // url: "http://site.staging.narrationsd.com/cqapi",
         url: "http://site.lv-gatsby.test/cqapi",
         // HTTP headers
         headers: {

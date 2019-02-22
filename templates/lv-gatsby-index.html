@@ -38,11 +38,10 @@
 
 <div id="content" class="lv-content-hide">
     <script>
-    // var gatsbySite = "http://localhost:8001//page-5" // *todo* for now, before Settings routing
-    // var gatsbySite = 'https://localhost/page-5' // proxy *todo* for now, before Settings routing
-    // var gatsbySite = "https://lv-gatsby.test/page-5" // *todo* for now, before Settings routing
-    var gatsbySite = "https://lv-gatsby.test/page-7" // *todo* for now, before Settings routing
-    // var gatsbySite = "https://localhost/page-7" // *todo* for now, before Settings routing
+    // *todo* some choices here for now, before Settings routing
+    var gatsbySite = "https://lv-gatsby.test/page-7"
+    // var gatsbySite = "https://staging.narrationsd.com/page-7"
+    // var gatsbySite = "https://localhost/page-7"
     </script>
     {% hook "live-vue" %}
     <script>
@@ -50,18 +49,23 @@
     iframeElem.src = gatsbySite + '?isLiveVue=1'
     iframeElem.id = 'ifrm'
     iframeElem.className = 'lv-iframe lv-hidden'
+
+    // *todo* any amount of these dataset tryouts can go
     iframeElem.name = 'live-vue-frame'
     iframeElem.dataset.iframeReady = 'no'
     iframeElem.dataset.isLiveVue = true
+
     document.body.appendChild(iframeElem)
+    // *todo* out also all with contentElement - nothing touches, hence msgs
     var contentElement = document.getElementById('content')
 
     // for our postMessage from the iframe
     var iframeLoaded = 'no'
     function receiveMessage(event) {
       console.log('parent received message: ' + JSON.stringify(event.data))
-      if (event.data = 'loaded') {
+      if (event.data === 'loaded') {
         iframeLoaded = 'loaded'
+        console.log('parent got iframe loaded on data: ' + event.data)
         // document.getElementById('content').style.visibility = 'visible'
         // document.getElementById('content').style.opacity = 1
         // document.write('DO WE SEE THIS ANYWAY?')
@@ -96,23 +100,24 @@
       contentElement.className = 'lv-content-show'
     }
 
+    let tickCount = 0
+
     function tickDelayPush () {
 
-      let tickCount = 0
-      // console.log('beginning tick timeout')
       if (iframeLoaded === 'loaded') {
-        console.log('tickDelayPush got loaded')
+        console.log('tickDelayPush got loaded at tick: ' + tickCount)
         pushMessage()
-        // setTimeout(pushMessage, 0) // still need our tick?
+        // setTimeout(pushMessage, 0) // *todo* still need our tick? think not
       } else {
-        if (tickCount++ > 10) {
+        console.log('ticking: ' + tickCount)
+        if (tickCount++ > 50) { // *todo* can go down when settable
           console.log('ticks timed out: no iframe answering')
         } else {
-          setTimeout(tickDelayPush, 50) // *todo* should be settable?
+          setTimeout(tickDelayPush, 50) // *todo* should be settable, within limits
         }
       }
-
     }
+
     window.addEventListener('load', tickDelayPush, false)
 
     </script>

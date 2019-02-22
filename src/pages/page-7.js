@@ -143,14 +143,14 @@ class SeventhPage extends LiveVueGatsby {
 export default SeventhPage
 
 export const
-  pageQuery = graphql`
-
+  pageQuery = graphql`    
       query Cards7 ($id: [Int]) {
           craftql {
               cards: entries (section: cards, id: $id, orderBy: "postDate asc") {
                   ...on CraftQL_Cards {
                       id
                       title
+                      # postDate @date(as "F Y")
                       body {
                           content
                       }
