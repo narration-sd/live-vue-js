@@ -13,8 +13,8 @@ module.exports = {
 
         // URL to query from
         // this one for server build once token etc. for it
-        // url: "http://site.staging.narrationsd.com/cqapi",
-        url: "http://site.lv-gatsby.test/cqapi",
+        url: "https://site.staging.narrationsd.com/cqapi",
+        // url: "http://site.lv-gatsby.test/cqapi",
         // HTTP headers
         headers: {
           // Learn about environment variables: https://gatsby.app/env-vars

@@ -8,14 +8,15 @@
 
     "README_request" : "To request the schema from a url instead, remove the 'file' JSON property above (and optionally delete the default graphql.schema.json file).",
     "request": {
-      "url" : "http://site.lv-gatsby.test/cqapi",
+      "url": "https://site.staging.narrationsd.com/cqapi",
       "method" : "POST",
       "README_postIntrospectionQuery" : "Whether to POST an introspectionQuery to the url. If the url always returns the schema JSON, set to false and consider using GET",
       "postIntrospectionQuery" : true,
       "README_options" : "See the 'Options' section at https://github.com/then/then-request",
       "options" : {
         "headers": {
-          "user-agent" : "JS GraphQL"
+          "user-agent" : "JS GraphQL",
+          "Authorization": "bearer S2XedNbHI_QeON3J2RZ4YxstCTkBA7HxBk7n2FmecH0gsxGRe4wHao3E350Vdb3g"
         }
       }
     }
@@ -26,10 +27,11 @@
   "endpoints" : [
     {
       "name": "Default (http://localhost:8080/graphql)",
-      "url": "http://localhost:8080/graphql",
+      "url": "https://site.staging.narrationsd.com/cqapi",
       "options" : {
         "headers": {
-          "user-agent" : "JS GraphQL"
+          "user-agent" : "JS GraphQL",
+          "Authorization": "bearer S2XedNbHI_QeON3J2RZ4YxstCTkBA7HxBk7n2FmecH0gsxGRe4wHao3E350Vdb3g"
         }
       }
     }
