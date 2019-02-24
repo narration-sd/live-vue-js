@@ -320,7 +320,7 @@ query Cards ($id: [Int], $idNot: [Int],
       image {
         id
         title
-        url(transform: originalCards)
+        url(transform: cardImage)
       }
     }
   }
@@ -342,7 +342,7 @@ query Cards ($id: [Int], $uri: String) {
       image {
         id
         title
-        url(transform: originalCards)
+        url(transform: cardImage)
       }
     }
   }

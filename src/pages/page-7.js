@@ -27,14 +27,14 @@ function Body (props) {
 function SafeImage (props) {
 
   const imgStyle = {
-    maxWidth: '500px',
-    maxHeight: '500px'
+    maxWidth: '600px',
+    maxHeight: '600px'
   }
 
   if (props.image[0]) {
     return <React.Fragment>
       <h6>image:</h6>
-      <img src={props.image[0] && props.image[0].url} style={imgStyle}/>
+      <img src={ props.image[0] && props.image[0].url } style={imgStyle}/>
       <h6>image url: {props.image[0].url}</h6>
     </React.Fragment>
   } else {
@@ -69,6 +69,7 @@ function ShowTheCards (props) {
         <Body content={{ __html: card.body.content }}/>
         <SafeImage image={card.image}/>
         <h6>card id: {card.id}</h6>
+        <h5>Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... </h5>
       </Card>
     </React.Fragment>)
   return cards
@@ -156,7 +157,7 @@ export const
                       }
                       image {
                           id
-                          url
+                          url: url(transform: cardImage)
                       }
                   }
               }
