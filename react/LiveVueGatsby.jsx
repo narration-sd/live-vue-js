@@ -2,13 +2,25 @@ import React, {Component, useContext} from 'react'
 import GatsbyConnect from '../gatsby-connect.js'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
-import Fade from '@material-ui/core/Fade'
+// import Fade from '@material-ui/core/Fade'
 
 // import Reporter from './Reporter.jsx'
 
 const LVGatsbyContext = React.createContext('no Context')
 
 var parentMsg = 'could be the message, really? Where\'s the event?'
+var editFadeDuration = 0
+
+// this is really dirty, but React object freezing makes necessary
+var fadeOut = {
+  opacity: '0.1',
+  // transition: 'opacity 0ms'
+}
+
+var fadeIn = {
+  opacity: '1',
+  transition: 'opacity 1200ms'
+}
 
 // var scrollPos = [0, 0]
 
@@ -36,30 +48,143 @@ var parentMsg = 'could be the message, really? Where\'s the event?'
 class LiveVueWrap extends Component {
 
   state = {
-    checked: true
+    isLiveVue: true
+  }
+
+  constructor (props) {
+    super(props)
+    this.state.isLiveVue = this.inIFrame()
+  }
+
+  inIFrame () {
+    if (typeof window === `undefined`) {
+      // abso necessary for build time with no window to check
+      return false
+    }
+    else {
+      try {
+        return window.self !== window.top
+      } catch (e) {
+        return true
+      }
+    }
+  }
+
+  getEditFadeDuration = () => {
+    console.log('getting editFadeDuration')
+    return editFadeDuration
   }
 
   render = (props) => {
 
     let style = {
-      visibility: 'hidden' // critical so we don't flash static page
+      visibility: this.isLiveVue
+        ? 'hidden'  // critical so we don't flash static page
+        : 'visible',
+      opacity: this.isLiveVue
+        ? '1'  // critical so we don't flash static page
+        : '0'
     }
 
     return (
       <LVGatsbyContext.Provider value={
-        { checked: this.state.checked }
+        { checked: this.state.isLiveVue }
       }>
         <React.Fragment>
           <ErrorBoundary>
-            <Fade in={this.state.checked} timeout={{ enter: 800, exit: 0 }}>
+            <Fader>
+              {/*in={this.state.isLiveVue}*/}
+              {/*timeout={{ enter: this.getEditFadeDuration(), exit: 0 }}>*/}
               <div id="content" style={style}>
                 {/*<h2>Wrapping...</h2>*/}
                 {this.props.children}
               </div>
-            </Fade>
+            </Fader>
           </ErrorBoundary>
         </React.Fragment>
       </LVGatsbyContext.Provider>
+    )
+  }
+}
+
+class Fader extends React.Component {
+
+  theStyle = fadeOut
+
+  constructor (props) {
+    super(props)
+    // this.theStyle = this.inIFrame()
+    //   ? fadeOut
+    //   : fadeIn
+    // if (!this.inIFrame()) {
+    //   this.theStyle = fadeIn
+    // }
+    if (this.inIFrame()) {
+      fadeIn = {
+        opacity: '0.1',
+        transition: 'opacity 600ms'
+      }
+    }
+
+    console.log ('in iframe: ' + (this.inIFrame()
+      ? 'yes'
+      : 'no'))
+
+    console.log('constructor  this.theStyle: ' + JSON.stringify(this.theStyle))
+    console.log('constructor  fadeIn: ' + JSON.stringify(fadeIn))
+  }
+
+  inIFrame () {
+    if (typeof window === `undefined`) {
+      // abso necessary for build time with no window to check
+      return false
+    }
+    else {
+      try {
+        return window.self !== window.top
+      } catch (e) {
+        return true
+      }
+    }
+  }
+
+  componentWillMount () {
+    // this.theStyle = false // this.inIFrame()
+    //   ? fadeOut
+    //   : fadeIn
+  }
+
+  componentWillUpdate (nextProps, nextState, nextContext) {
+    // this.theStyle.transition
+    //   = 'opacity ' + (editFadeDuration + 'ms').toString()
+
+    // *todo* for some reason this is critical - tie down
+    console.log('will update prior this.theStyle: ' + JSON.stringify(this.theStyle))
+    // this.theStyle = false // this.inIFrame()
+    //   ? fadeOut
+    //   : fadeIn
+    // if (!this.inIFrame()) {
+    //   this.theStyle = fadeIn
+    // }
+
+    console.log('will update after this.theStyle: ' + JSON.stringify(this.theStyle))
+  }
+
+  render (props) {
+    console.log ('render in iframe: ' + (this.inIFrame()
+      ? 'yes'
+      : 'no'))
+
+    if (!this.inIFrame()) {
+      this.theStyle = fadeIn
+    }
+    console.log('render  this.theStyle: ' + JSON.stringify(this.theStyle))
+    console.log('render  fadeIn: ' + JSON.stringify(fadeIn))
+
+    return (
+      <div style={ fadeIn } id={'Fader'}>
+        {this.props.children}
+      </div>
     )
   }
 }
@@ -107,10 +232,10 @@ function LiveVueData (props) {
   }
 
   const lvgData = useContext(LVGatsbyContext)
-  const { checked } = lvgData
+  const { isLiveVue } = lvgData
 
   console.log('lvgData: ' + JSON.stringify(lvgData))
-  console.log('checked: ' + checked)
+  console.log('isLiveVue: ' + isLiveVue)
 
   const childrenWithData = addDataToChildren(props.children)
 
@@ -184,17 +309,17 @@ class LiveVueGatsby extends Component {
    */
   liveVueData = (forceLive = false) => {
 
-    const isLiveVue = Object.keys(this.state.liveVueData).length === 0
+    const isLiveVueData = Object.keys(this.state.liveVueData).length === 0
 
     // we should free up display as soon as we know we're static
     // *todo* this works, but isn't the optimum place
 
-    if (!isLiveVue) {
+    if (!isLiveVueData) {
       console.log('showContent on call to liveVueData')
       this.showContent()
     }
 
-    let displayData = isLiveVue
+    let displayData = isLiveVueData
       ? this.props.data
       : this.state.liveVueData
 
@@ -222,7 +347,7 @@ class LiveVueGatsby extends Component {
       return
     }
 
-    if (event.data === "") {
+    if (event.data === '') {
       console.log('skipping data on empty')
       return
     }
@@ -236,6 +361,24 @@ class LiveVueGatsby extends Component {
         let obj = { data: {} }
         try {
           obj = JSON.parse(parentMsg)
+          editFadeDuration = obj.lvMeta.editFadeDuration
+          // console.log('lvMeta is: ' + JSON.stringify(obj))
+          console.log('editFadeDuration: ' + editFadeDuration)
+          let localStyle = {
+            opacity: '1',
+          }
+          // editFadeDuration = 3000
+          console.log('setting editFade to: ' + editFadeDuration)
+          localStyle.opacity = '1'
+          localStyle.transition
+            = 'opacity ' + (editFadeDuration + 'ms').toString()
+          fadeIn = localStyle
+
+          if (!obj.data) {
+            // *todo* fix this -- here we get into integrating Reporter
+            throw new Error('no data from Live Preview!')
+          }
+
           // console.log('json parse success; obj is: ' + JSON.stringify(obj))
           if (Object.keys(obj.data).length > 0) {
             obj = this.connector.rearrangeData(obj)
@@ -270,7 +413,7 @@ class LiveVueGatsby extends Component {
       // *todo* here's where Hider does better?
       if (content) {
         content.style.visibility = 'visible'
-        content.style.opacity = '100'
+        content.style.opacity = '1'
       } else {
         console.log('content div not available for visibility')
       }
