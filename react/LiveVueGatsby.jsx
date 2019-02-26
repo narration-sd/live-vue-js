@@ -13,7 +13,7 @@ var editFadeDuration = 0
 
 // this is really dirty, but React object freezing makes necessary
 var fadeOut = {
-  opacity: '0.1',
+  opacity: '0.1'
   // transition: 'opacity 0ms'
 }
 
@@ -21,6 +21,7 @@ var fadeIn = {
   opacity: '1',
   transition: 'opacity 1200ms'
 }
+
 
 // var scrollPos = [0, 0]
 
@@ -48,20 +49,24 @@ var fadeIn = {
 class LiveVueWrap extends Component {
 
   state = {
-    isLiveVue: true
+    isLiveVue: true,
+    else: 'else state'
   }
 
   constructor (props) {
     super(props)
     this.state.isLiveVue = this.inIFrame()
+    console.log('Wrap props dataArrived: ' + props.dataArrived)
+    console.log('Wrap props editFadeDuration: ' + props.editFadeDuration)
+    console.log(props)
+    console.log(this.props)
   }
 
   inIFrame () {
     if (typeof window === `undefined`) {
       // abso necessary for build time with no window to check
       return false
-    }
-    else {
+    } else {
       try {
         return window.self !== window.top
       } catch (e) {
@@ -88,7 +93,12 @@ class LiveVueWrap extends Component {
 
     return (
       <LVGatsbyContext.Provider value={
-        { checked: this.state.isLiveVue }
+        {
+          liveVue: this.state.isLiveVue,
+          dataArrived: this.props.dataArrived,
+          editFadeDuration: this.props.editFadeDuration,
+          data: this.props.data
+        }
       }>
         <React.Fragment>
           <ErrorBoundary>
@@ -108,6 +118,7 @@ class LiveVueWrap extends Component {
 }
 
 class Fader extends React.Component {
+  static contextType = LVGatsbyContext
 
   theStyle = fadeOut
 
@@ -126,7 +137,7 @@ class Fader extends React.Component {
       }
     }
 
-    console.log ('in iframe: ' + (this.inIFrame()
+    console.log('in iframe: ' + (this.inIFrame()
       ? 'yes'
       : 'no'))
 
@@ -138,8 +149,7 @@ class Fader extends React.Component {
     if (typeof window === `undefined`) {
       // abso necessary for build time with no window to check
       return false
-    }
-    else {
+    } else {
       try {
         return window.self !== window.top
       } catch (e) {
@@ -171,19 +181,38 @@ class Fader extends React.Component {
   }
 
   render (props) {
-    console.log ('render in iframe: ' + (this.inIFrame()
+    console.log('render in iframe: ' + (this.inIFrame()
       ? 'yes'
       : 'no'))
 
+    // if (!this.inIFrame()) {
+    //   this.theStyle = fadeIn
+    // }
+    // console.log('render  this.theStyle: ' + JSON.stringify(this.theStyle))
+    // console.log('render  fadeIn: ' + JSON.stringify(fadeIn))
+    // console.log('render dataArrived: ' + this.context.dataArrived)
+    // console.log('render dataArr: ' + this.context.dataArr)
+    // console.log('render liveVue: ' + this.context.liveVue)
+    console.log(this.context)
+
+    const show = { opacity: 1, transition: '' }
+    const hidden = { opacity: 0, transition: '' }
+    const fadeIn = { opacity: 1, transition: 'opacity '
+        + this.context.editFadeDuration + 'ms' }
+
+    let style = {}
     if (!this.inIFrame()) {
-      this.theStyle = fadeIn
+      style = show
+    } else if (this.context.dataArrived) {
+      style = fadeIn
+    } else {
+      style = hidden
     }
-    console.log('render  this.theStyle: ' + JSON.stringify(this.theStyle))
-    console.log('render  fadeIn: ' + JSON.stringify(fadeIn))
+    console.log('Fader style: ' + JSON.stringify(style))
 
     return (
-      <div style={ fadeIn } id={'Fader'}>
-        {this.props.children}
+      <div id={'Fader'} style={style}>
+        { this.props.children }
       </div>
     )
   }
@@ -200,8 +229,10 @@ class Fader extends React.Component {
  *
  * ```
  *    render () {
- *      <LiveVueData>
- *        ...render tree of components which use prop.liveData rather than props.data...
+ *      <LiveVueWrap dataArrived={this.getDataArrived()}>
+ *        [future]...render tree of components which use prop.liveData rather than props.data...
+ *        ...render tree of components which set their data via this.liveVueData()...
+ *        <Example data={this.liveVueData()}/>
  *      </LiveVueData>
  *    }
  *    ```
@@ -283,14 +314,24 @@ class LiveVueGatsby extends Component {
     super(props)
 
     if (this.state === undefined) {
-      // we'll provide our own
-      this.state = {}
+      // we'll provide our own, but otherwise use theirs
     }
 
+    this.state.dataArrived = false
+    this.state.editFadeDuration = 802
     this.state.liveVueData = null
 
     this.reporter = React.createRef()
     this.setter = this.props.setter
+    this.dataArrived = 'hoho'
+  }
+
+  getDataArrived = () => {
+    return this.state.dataArrived
+  }
+  getEditFadeDuration = () => {
+    console.log('getEditFadeDuration: ' + this.state.editFadeDuration)
+    return this.state.editFadeDuration
   }
 
   /**
@@ -361,42 +402,40 @@ class LiveVueGatsby extends Component {
         let obj = { data: {} }
         try {
           obj = JSON.parse(parentMsg)
-          editFadeDuration = obj.lvMeta.editFadeDuration
-          // console.log('lvMeta is: ' + JSON.stringify(obj))
-          console.log('editFadeDuration: ' + editFadeDuration)
-          let localStyle = {
-            opacity: '1',
-          }
-          // editFadeDuration = 3000
-          console.log('setting editFade to: ' + editFadeDuration)
-          localStyle.opacity = '1'
-          localStyle.transition
-            = 'opacity ' + (editFadeDuration + 'ms').toString()
-          fadeIn = localStyle
 
           if (!obj.data) {
             // *todo* fix this -- here we get into integrating Reporter
             throw new Error('no data from Live Preview!')
           }
 
+          // more *todo* must do before rearrange elides lvMeta
+          let editFadeDuration = obj.lvMeta
+            ? obj.lvMeta.editFadeDuration
+            : 1200 // default
+
+          console.log('receive editFadeDuration: ' + editFadeDuration)
+
           // console.log('json parse success; obj is: ' + JSON.stringify(obj))
           if (Object.keys(obj.data).length > 0) {
             obj = this.connector.rearrangeData(obj)
             // console.log('json rearranged; obj is: ' + JSON.stringify(obj))
           }
+
+          if (obj) {
+            this.setState({
+              liveVueData: obj.data,
+              editFadeDuration: editFadeDuration,
+              dataArrived: true
+            })
+          }
+          this.dataArrived = true
+          console.log('showContent on div data arrival')
+          this.showContent()
+          // Relocate()
+
         } catch (error) {
           console.log('json parse error: ' + error)
         }
-
-        if (obj) {
-          this.setState({
-            liveVueData: obj.data
-          })
-        }
-        this.dataArrived = true
-        console.log('showContent on div data arrival')
-        this.showContent()
-        // Relocate()
       } else {
         console.log('event data.text undefined')
       }
