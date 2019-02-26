@@ -48,7 +48,8 @@ function ShowTheCards (props) {
    * @note it's a functional component
    * @usage in Page render(), <LiveVueWrap>...render tree...</LiveVueWrap>
    */
-    // console.log('ShowTheCards data: ' + JSON.stringify(data))
+  console.log('ShowTheCards props: ' + props)
+  console.log(props)
 
   let data = props.data
   if (!data || !data.craftql) {
@@ -72,6 +73,7 @@ function ShowTheCards (props) {
         <h5>Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... </h5>
       </Card>
     </React.Fragment>)
+  console.log('ShowTheCards rendering with: ' + cards)
   return cards
 }
 
@@ -118,14 +120,20 @@ class SeventhPage extends LiveVueGatsby {
   render (props) {
 
     let liveData = this.liveVueData()
+    let dataArrived = this.getDataArrived()
+    console.log('page-7 rendering with rendering props: ' + JSON.stringify(props))
+    console.log('page-7 rendering with props: ' + JSON.stringify(this.props))
 
     return (
 
-      <LiveVueWrap>
+      <LiveVueWrap
+        dataArrived={this.getDataArrived()}
+        editFadeDuration={this.getEditFadeDuration()}
+      >
         <Layout>
           <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
 
-          <ShowTheCards data={liveData}/>
+          <ShowTheCards data={this.liveVueData()}/>
 
           <br/><br/>
           <Link to="/page-6">Go to sixth page</Link>
