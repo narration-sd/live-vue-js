@@ -5,10 +5,10 @@ import {StaticQuery, graphql} from 'gatsby'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
 import {
-  LiveVueGatsby,
-  LiveVueWrap,
-  LiveVueData
-} from '../live-vue-js/react/LiveVueGatsby.jsx'
+  LiveVueGatsbyA,
+  LiveVueWrapA,
+  LiveVueDataA
+} from '../live-vue-js/react/LiveVueGatsbyA.jsx'
 import Reporter from '../live-vue-js/react/Reporter.jsx'
 import GatsbyConnect from '../live-vue-js/gatsby-connect.js'
 
@@ -58,7 +58,7 @@ function ShowTheCards (props) {
 
   let cardStyle = {
     color: '#00091a',
-    backgroundColor: 'ffffcc',
+    backgroundColor: 'lightgoldenrodyellow',
     maxWidth: '640px',
     margin: '30px 40px',
     padding: '20px 20px'
@@ -100,7 +100,7 @@ const Child = () => {
  * will have Live Vue Craft Preview ability
  * @usage in Page render(), enclose using <LiveVueWrap>...render tree...</LiveVueWrap>
  */
-class SeventhPage extends LiveVueGatsby {
+class SeventhPage extends LiveVueGatsbyA {
 
   state = {
     liveVueData: {}
@@ -127,8 +127,8 @@ class SeventhPage extends LiveVueGatsby {
     console.log('page-7 rendering with props: ' + JSON.stringify(this.props))
 
     const style = {
-      // color: 'lightgoldenrodyellow',
-      backgroundColor: '#ffffcc'
+      color: 'lightgoldenrodyellow',
+      backgroundColor: '#004d66'
     }
 
     const boxStyle = {
@@ -138,7 +138,7 @@ class SeventhPage extends LiveVueGatsby {
 
     return (
 
-      <LiveVueWrap
+      <LiveVueWrapA
         dataArrived={this.getDataArrived()}
         editFadeDuration={this.getEditFadeDuration()}
       >
@@ -152,15 +152,15 @@ class SeventhPage extends LiveVueGatsby {
             {/*<Link to="/page-6">Go to sixth page</Link>*/}
             {/*<br/>*/}
             <div style={boxStyle}>
-              <Link to="/page-8">Go back to eighth page</Link>
+              <Link to="/page-7">Go back to seventh page</Link>
               <br/>
-              <Link to="/page-9">Go back to ninth page</Link>
+              <Link to="/page-9">Go to ninth page</Link>
               <br/>
               <Link to="/">Go back to the homepage</Link>
             </div>
           </div>
         </Layout>
-      </LiveVueWrap>
+      </LiveVueWrapA>
     )
   }
 }
@@ -169,7 +169,7 @@ export default SeventhPage
 
 export const
   pageQuery = graphql`
-      query Cards7 ($id: [Int]) {
+      query Cards8 ($id: [Int]) {
           craftql {
               cards: entries (section: cards, id: $id, orderBy: "postDate asc") {
                   ...on CraftQL_Cards {

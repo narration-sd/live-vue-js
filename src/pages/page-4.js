@@ -53,8 +53,8 @@ class FourthPage extends Component {
 
     const post = this.props.data
 
-    console.log(JSON.stringify(post.swapi))
-    console.log(JSON.stringify(post.swapi.allSpecies[1].name))
+    // console.log(JSON.stringify(post.swapi))
+    // console.log(JSON.stringify(post.swapi.allSpecies[1].name))
 
     return (
       <Layout>
@@ -64,7 +64,7 @@ class FourthPage extends Component {
         </div>
         <p>Welcome to page 4</p>
 
-        <h2>Star Wars says of Yoda, { post.swapi.allSpecies[1].name }</h2>
+        {/*<h2>Star Wars says of Yoda, { post.swapi.allSpecies[1].name }</h2>*/}
 
 {/*
         <StaticQuery query={  graphql`
@@ -115,25 +115,25 @@ class FourthPage extends Component {
 
 export default FourthPage
 
-export const pageQuery = graphql`
-  query {
-      swapi {
-          allFilms {
-              title
-          }
-#          allFilms{
-#              edges{
-#                  node{
-#                      title
-#                  }
-#              }
-#          }
-          allSpecies {
-              name
-          }
-      }
-  }
-`
+// export const pageQuery = graphql`
+//   query {
+//       swapi {
+//           allFilms {
+//               title
+//           }
+// #          allFilms{
+// #              edges{
+// #                  node{
+// #                      title
+// #                  }
+// #              }
+// #          }
+//           allSpecies {
+//               name
+//           }
+//       }
+//   }
+// `
 /*
 export const pageQuery = graphql`
 

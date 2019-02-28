@@ -58,7 +58,7 @@ function ShowTheCards (props) {
 
   let cardStyle = {
     color: '#00091a',
-    backgroundColor: 'ffffcc',
+    backgroundColor: 'lightgoldenrodyellow',
     maxWidth: '640px',
     margin: '30px 40px',
     padding: '20px 20px'
@@ -94,13 +94,13 @@ const Child = () => {
 }
 
 /**
- * @classdesc the page-7 Page class, inheriting from LiveVueGatsby so we
+ * @classdesc the page-9 Page class, inheriting from LiveVueGatsby so we
  * will have Live Vue Craft Preview ability
  * @note inheriting from LiveVueGatsby so we
  * will have Live Vue Craft Preview ability
  * @usage in Page render(), enclose using <LiveVueWrap>...render tree...</LiveVueWrap>
  */
-class SeventhPage extends LiveVueGatsby {
+class SeventhPage extends React.Component {
 
   state = {
     liveVueData: {}
@@ -115,20 +115,14 @@ class SeventhPage extends LiveVueGatsby {
     }
   }
 
-  componentDidMount () {
-    super.componentDidMount() // must call super if using any React lifecycle methods like  this
-  }
-
   render (props) {
 
-    let liveData = this.liveVueData()
-    let dataArrived = this.getDataArrived()
-    console.log('page-7 rendering with rendering props: ' + JSON.stringify(props))
-    console.log('page-7 rendering with props: ' + JSON.stringify(this.props))
+    console.log('page-9 rendering with rendering props: ' + JSON.stringify(props))
+    console.log('page-9 rendering with props: ' + JSON.stringify(this.props))
 
     const style = {
       // color: 'lightgoldenrodyellow',
-      backgroundColor: '#ffffcc'
+      backgroundColor: '#ccffcc'
     }
 
     const boxStyle = {
@@ -137,30 +131,22 @@ class SeventhPage extends LiveVueGatsby {
     }
 
     return (
+      <Layout>
+        <div style={style}>
+          <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
 
-      <LiveVueWrap
-        dataArrived={this.getDataArrived()}
-        editFadeDuration={this.getEditFadeDuration()}
-      >
-        <Layout>
-          <div style={style}>
-            <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
+          <ShowTheCards data={this.props.data}/>
 
-            <ShowTheCards data={this.liveVueData()}/>
-
-            <br/><br/>
-            {/*<Link to="/page-6">Go to sixth page</Link>*/}
-            {/*<br/>*/}
-            <div style={boxStyle}>
-              <Link to="/page-8">Go back to eighth page</Link>
-              <br/>
-              <Link to="/page-9">Go back to ninth page</Link>
-              <br/>
-              <Link to="/">Go back to the homepage</Link>
-            </div>
+          <br/><br/>
+          <div style={boxStyle}>
+            <Link to="/page-7">Go to 7eventh page</Link>
+            <br/>
+            <Link to="/page-8">Go back to eighth page</Link>
+            <br/>
+            <Link to="/">Go back to the homepage</Link>
           </div>
-        </Layout>
-      </LiveVueWrap>
+        </div>
+      </Layout>
     )
   }
 }
@@ -169,7 +155,7 @@ export default SeventhPage
 
 export const
   pageQuery = graphql`
-      query Cards7 ($id: [Int]) {
+      query Cards9 ($id: [Int]) {
           craftql {
               cards: entries (section: cards, id: $id, orderBy: "postDate asc") {
                   ...on CraftQL_Cards {

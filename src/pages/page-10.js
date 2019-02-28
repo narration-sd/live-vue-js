@@ -57,7 +57,7 @@ function ShowTheCards (props) {
   }
 
   let cardStyle = {
-    color: '#00091a',
+    color: 'red', // '#00091a',
     backgroundColor: 'ffffcc',
     maxWidth: '640px',
     margin: '30px 40px',
@@ -103,65 +103,113 @@ const Child = () => {
 class SeventhPage extends LiveVueGatsby {
 
   state = {
-    liveVueData: {}
+    liveVueData: {},
+    delayed: true
   }
 
   constructor (props) {
+    console.log('constructing SeventhPage before super')
+
     super(props)
 
+    console.log('constructing SeventhPage')
     this.state = {
+      delayed: true,
       weHaveToProvideThis: true,
       liveVueData: {} // must provide and not modify this if include or set a state at all.
     }
+
+    console.log('state at construct: ' + JSON.stringify(this.state))
+    // this.state = Object(this.state.assign)({
+    //   // delayed: true,
+    //   weHaveToProvideThis: true,
+    //   liveVueData: {} // must provide and not modify this if include or set a state at all.
+    // })
   }
 
-  componentDidMount () {
-    super.componentDidMount() // must call super if using any React lifecycle methods like  this
+  isData = (data) => {
+    return typeof window !== `undefined`
+      && data
+      && (Object.entries(data).length !== 0
+        && data.constructor === Object)
+  }
+
+  holdoff = () => {
+    console.log('render delay state at holdoff/will mount: ' + JSON.stringify(this.state))
+    const data = this.state.liveVueData
+    if (typeof window === `undefined` || this.isData(data)) {
+      console.log('render delay set false as data present')
+      this.setState({ delayed: false })
+    } else {
+      setTimeout(() => {
+        console.log('render delay timed out properly')
+        this.holdoff()
+      }, 500)
+    }
+  }
+
+  componentWillMount () {
+    // super.componentWillUpdate() // must call super if using any React lifecycle methods like  this
+    this.holdoff()
   }
 
   render (props) {
+    console.log('render delay at render: ' + this.state.delayed)
+    if (this.state.delayed) {
 
-    let liveData = this.liveVueData()
-    let dataArrived = this.getDataArrived()
-    console.log('page-7 rendering with rendering props: ' + JSON.stringify(props))
-    console.log('page-7 rendering with props: ' + JSON.stringify(this.props))
+      console.log('render delayed properly')
+      // console.log('render delay timer set inner')
+      //
+      // setTimeout(() => {
+      //   console.log('render delay timed out properly inner')
+      //   this.setState ({ delayed: false })
+      // }, 3500)
 
-    const style = {
-      // color: 'lightgoldenrodyellow',
-      backgroundColor: '#ffffcc'
-    }
+      return null
+    } else {
+      console.log('render delay fired properly')
+      let liveData = this.liveVueData()
+      let dataArrived = this.getDataArrived()
+      console.log('page-7 rendering with rendering props: ' + JSON.stringify(props))
+      console.log('page-7 rendering with props: ' + JSON.stringify(this.props))
 
-    const boxStyle = {
-      padding: '15px',
-      backgroundColor: 'lightgoldenrodyellow'
-    }
+      const style = {
+        // color: 'lightgoldenrodyellow',
+        backgroundColor: '#ffffcc'
+      }
 
-    return (
+      const boxStyle = {
+        padding: '15px',
+        backgroundColor: 'lightgoldenrodyellow'
+      }
 
-      <LiveVueWrap
-        dataArrived={this.getDataArrived()}
-        editFadeDuration={this.getEditFadeDuration()}
-      >
-        <Layout>
-          <div style={style}>
-            <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
+      return (
 
-            <ShowTheCards data={this.liveVueData()}/>
+        <LiveVueWrap
+          dataArrived={this.getDataArrived()}
+          editFadeDuration={this.getEditFadeDuration()}
+        >
+          <Layout>
+            <div style={style}>
+              <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
 
-            <br/><br/>
-            {/*<Link to="/page-6">Go to sixth page</Link>*/}
-            {/*<br/>*/}
-            <div style={boxStyle}>
-              <Link to="/page-8">Go back to eighth page</Link>
-              <br/>
-              <Link to="/page-9">Go back to ninth page</Link>
-              <br/>
-              <Link to="/">Go back to the homepage</Link>
+              <ShowTheCards data={this.liveVueData()}/>
+
+              <br/><br/>
+              {/*<Link to="/page-6">Go to sixth page</Link>*/}
+              {/*<br/>*/}
+              <div style={boxStyle}>
+                <Link to="/page-8">Go back to eighth page</Link>
+                <br/>
+                <Link to="/page-9">Go back to ninth page</Link>
+                <br/>
+                <Link to="/">Go back to the homepage</Link>
+              </div>
             </div>
-          </div>
-        </Layout>
-      </LiveVueWrap>
-    )
+          </Layout>
+        </LiveVueWrap>
+      )
+    }
   }
 }
 
@@ -169,7 +217,7 @@ export default SeventhPage
 
 export const
   pageQuery = graphql`
-      query Cards7 ($id: [Int]) {
+      query Cards10 ($id: [Int]) {
           craftql {
               cards: entries (section: cards, id: $id, orderBy: "postDate asc") {
                   ...on CraftQL_Cards {
