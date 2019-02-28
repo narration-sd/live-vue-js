@@ -1,0 +1,9 @@
+@keyframes wrap-fade {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.wrap-fade-in {
+  animation-name: wrap-fade;
+  animation-duration: 0.05s;
+}

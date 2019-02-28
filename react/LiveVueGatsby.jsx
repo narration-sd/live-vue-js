@@ -1,8 +1,8 @@
 import React, {Component, useContext} from 'react'
 import GatsbyConnect from '../gatsby-connect.js'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
-
-// import Fade from '@material-ui/core/Fade'
+// import './lv-fade-in-anim.css'
+import Fade from '@material-ui/core/Fade'
 
 // import Reporter from './Reporter.jsx'
 
@@ -11,7 +11,10 @@ const LVGatsbyContext = React.createContext('no Context')
 var parentMsg = 'could be the message, really? Where\'s the event?'
 var editFadeDuration = 0
 
+// console.log = function() {}
+
 // this is really dirty, but React object freezing makes necessary
+// *todo* one of many now long gone...
 var fadeOut = {
   opacity: '0.1'
   // transition: 'opacity 0ms'
@@ -82,14 +85,37 @@ class LiveVueWrap extends Component {
 
   render = (props) => {
 
-    let style = {
-      visibility: this.isLiveVue
-        ? 'hidden'  // critical so we don't flash static page
-        : 'visible',
-      opacity: this.isLiveVue
-        ? '1'  // critical so we don't flash static page
-        : '0'
+    console.log('Wrap style: ' + JSON.stringify(style))
+    console.log(style)
+
+    let fadeInClass = ''
+    let style = {}
+    let fadeIn = false
+    let fadeTime = 0
+    if (!this.inIFrame()) {
+      console.log('viewstate: !inIFrame, fade: ' + this.props.editFadeDuration)
+      fadeIn = true
+      fadeTime = 0
+      fadeInClass = ''
+      style = { visibility: 'visible', /*display: 'block',*/ backgroundColor: '#004d66' }
+    } else if (this.props.dataArrived) {
+      console.log('viewstate: dataArrived, fade: ' + this.props.editFadeDuration)
+      fadeIn = true
+      fadeTime = this.props.editFadeDuration
+      style = { visibility: 'hidden', /*display: 'block',*/ backgroundColor: '#004d66' }
+      // fadeInClass = 'wrap-fade-in'
+      fadeInClass = ''
+    } else {
+      console.log('viewstate: !dataArrived, fade: ' + this.props.editFadeDuration)
+      fadeIn = false
+      fadeTime = 0
+      // style = { backgroundColor: '#004d66' }
+      style = { visibility: 'hidden', /*display: 'none !important',*/ backgroundColor: '#004d66' }
+      fadeInClass = ''
     }
+
+    console.log('Wrap fade time: ' + fadeTime + 'ms')
+    console.log(this.props)
 
     return (
       <LVGatsbyContext.Provider value={
@@ -102,14 +128,11 @@ class LiveVueWrap extends Component {
       }>
         <React.Fragment>
           <ErrorBoundary>
-            <Fader>
-              {/*in={this.state.isLiveVue}*/}
-              {/*timeout={{ enter: this.getEditFadeDuration(), exit: 0 }}>*/}
-              <div id="content" style={style}>
-                {/*<h2>Wrapping...</h2>*/}
+            <Fade in={fadeIn} timeout={fadeTime}>
+              <div id={"content"} style={style}>
                 {this.props.children}
               </div>
-            </Fader>
+            </Fade>
           </ErrorBoundary>
         </React.Fragment>
       </LVGatsbyContext.Provider>
@@ -185,30 +208,29 @@ class Fader extends React.Component {
       ? 'yes'
       : 'no'))
 
-    // if (!this.inIFrame()) {
-    //   this.theStyle = fadeIn
-    // }
-    // console.log('render  this.theStyle: ' + JSON.stringify(this.theStyle))
-    // console.log('render  fadeIn: ' + JSON.stringify(fadeIn))
-    // console.log('render dataArrived: ' + this.context.dataArrived)
-    // console.log('render dataArr: ' + this.context.dataArr)
-    // console.log('render liveVue: ' + this.context.liveVue)
     console.log(this.context)
 
-    const show = { opacity: 1, transition: '' }
-    const hidden = { opacity: 0, transition: '' }
-    const fadeIn = { opacity: 1, transition: 'opacity '
-        + this.context.editFadeDuration + 'ms' }
-
-    let style = {}
-    if (!this.inIFrame()) {
-      style = show
-    } else if (this.context.dataArrived) {
-      style = fadeIn
-    } else {
-      style = hidden
+    const showy = { }
+    const show = { opacity: 1, backgroundColor: '#004d66' }
+    const hidden = { opacity: 0 }
+    const fadeIn = {
+      opacity: 1,
+      transition: 'opacity ' + this.context.editFadeDuration + 'ms',
+      backgroundColor: '#004d66',
+      color: 'white'
     }
+
+    let style = showy
+    // let style = {}
+    // if (!this.inIFrame()) {
+    //   style = show // .assign(this.props.style)
+    // } else if (this.context.dataArrived) {
+    //   style = fadeIn
+    // } else {
+    //   style = hidden
+    // }
     console.log('Fader style: ' + JSON.stringify(style))
+    console.log(style)
 
     return (
       <div id={'Fader'} style={style}>
@@ -411,7 +433,7 @@ class LiveVueGatsby extends Component {
           // more *todo* must do before rearrange elides lvMeta
           let editFadeDuration = obj.lvMeta
             ? obj.lvMeta.editFadeDuration
-            : 1200 // default
+            : 900 // default
 
           console.log('receive editFadeDuration: ' + editFadeDuration)
 
@@ -452,7 +474,7 @@ class LiveVueGatsby extends Component {
       // *todo* here's where Hider does better?
       if (content) {
         content.style.visibility = 'visible'
-        content.style.opacity = '1'
+        // *todo* nononono!!! content.style.opacity = '1'
       } else {
         console.log('content div not available for visibility')
       }
