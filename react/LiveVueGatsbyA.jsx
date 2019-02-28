@@ -6,7 +6,7 @@ import Fade from '@material-ui/core/Fade'
 
 // import Reporter from './Reporter.jsx'
 
-const LVGatsbyContext = React.createContext('no Context')
+const LVGatsbyContextA = React.createContext('no Context')
 
 var parentMsg = 'could be the message, really? Where\'s the event?'
 var editFadeDuration = 0
@@ -36,20 +36,20 @@ var fadeIn = {
  * There's also an error-presenting wrapper silently included, which will
  * announce on cases of Page code errors, as may be helpful during development.
  *
- * @note used in combination with LiveVueGatsby, which the Page class inherits from
- * @usage place LiveVueWrap in the Page render(), surrounding the actual child components
+ * @note used in combination with LiveVueGatsbyA, which the Page class inherits from
+ * @usage place LiveVueWrapA in the Page render(), surrounding the actual child components
  *
  * ```
  *    // here's an example
  *    render () {
- *      <LiveVueWrap>
+ *      <LiveVueWrapA>
  *        ...render tree...
- *      </LiveVueWrap>
+ *      </LiveVueWrapA>
  *    }
  *    ```
  *
  */
-class LiveVueWrap extends Component {
+class LiveVueWrapA extends Component {
 
   state = {
     isLiveVue: true,
@@ -96,16 +96,16 @@ class LiveVueWrap extends Component {
       fadeIn = true
       fadeTime = 0
       fadeInClass = ''
-      style = { visibility: 'visible', backgroundColor: '#ffffcc' }
+      style = { visibility: 'visible', backgroundColor: '#004d66' }
     } else if (this.props.dataArrived) {
       fadeIn = true
       fadeTime = this.props.editFadeDuration
-      style = { visibility: 'visible', backgroundColor: '#ffffcc' }
+      style = { visibility: 'visible', backgroundColor: '#004d66' }
       fadeInClass = 'wrap-fade-in'
     } else {
       fadeIn = false
       fadeTime = 0
-      style = { visibility: 'hidden', backgroundColor: '#ffffcc' }
+      style = { visibility: 'hidden', backgroundColor: '#004d66' }
       fadeInClass = ''
     }
 
@@ -113,7 +113,7 @@ class LiveVueWrap extends Component {
     console.log(this.props)
 
     return (
-      <LVGatsbyContext.Provider value={
+      <LVGatsbyContextA.Provider value={
         {
           liveVue: this.state.isLiveVue,
           dataArrived: this.props.dataArrived,
@@ -122,21 +122,26 @@ class LiveVueWrap extends Component {
         }
       }>
         <React.Fragment>
-          <ErrorBoundary>
+          <ErrorBoundaryA>
             <Fade in={fadeIn} timeout={fadeTime}>
               <div id={"content"} style={style}>
+              {/*in={this.state.isLiveVue}*/}
+              {/*timeout={{ enter: this.getEditFadeDuration(), exit: 0 }}>*/}
+                {/*<div id="content" style={style} className={fadeInClass}>*/}
+                {/*<div id="content" style={style}>*/}
+                {/*<h2>Wrapping...</h2>*/}
                 {this.props.children}
               </div>
             </Fade>
-          </ErrorBoundary>
+          </ErrorBoundaryA>
         </React.Fragment>
-      </LVGatsbyContext.Provider>
+      </LVGatsbyContextA.Provider>
     )
   }
 }
 
-class Fader extends React.Component {
-  static contextType = LVGatsbyContext
+class FaderA extends React.Component {
+  static contextType = LVGatsbyContextA
 
   theStyle = fadeOut
 
@@ -205,13 +210,13 @@ class Fader extends React.Component {
 
     console.log(this.context)
 
-    const showy = { backgroundColor: '#ffffcc' }
-    const show = { opacity: 1, backgroundColor: '#ffffcc' }
+    const showy = { backgroundColor: '#004d66' }
+    const show = { opacity: 1, backgroundColor: '#004d66' }
     const hidden = { opacity: 0 }
     const fadeIn = {
       opacity: 1,
       transition: 'opacity ' + this.context.editFadeDuration + 'ms',
-      backgroundColor: '#ffffcc',
+      backgroundColor: '#004d66',
       color: 'white'
     }
 
@@ -224,11 +229,11 @@ class Fader extends React.Component {
     // } else {
     //   style = hidden
     // }
-    console.log('Fader style: ' + JSON.stringify(style))
+    console.log('FaderA style: ' + JSON.stringify(style))
     console.log(style)
 
     return (
-      <div id={'Fader'} style={style}>
+      <div id={'FaderA'} style={style}>
         { this.props.children }
       </div>
     )
@@ -241,21 +246,21 @@ class Fader extends React.Component {
  * - normally supplies the expected props.data from the pageData GraphQL query
  * - but in Craft Preview, supplies the live data as edited in the CP
  *
- * @note used in combination with LiveVueGatsby, which the Page class inherits from
- * @example place LiveVueWrap in the Page render(), surrounding the actual child components
+ * @note used in combination with LiveVueGatsbyA, which the Page class inherits from
+ * @example place LiveVueWrapA in the Page render(), surrounding the actual child components
  *
  * ```
  *    render () {
- *      <LiveVueWrap dataArrived={this.getDataArrived()}>
+ *      <LiveVueWrapA dataArrived={this.getDataArrived()}>
  *        [future]...render tree of components which use prop.liveData rather than props.data...
  *        ...render tree of components which set their data via this.liveVueData()...
  *        <Example data={this.liveVueData()}/>
- *      </LiveVueData>
+ *      </LiveVueDataA>
  *    }
  *    ```
  *
  */
-function LiveVueData (props) {
+function LiveVueDataA (props) {
 
   const addDataToChildren = (children, liveVueData = null) => {
 
@@ -279,7 +284,7 @@ function LiveVueData (props) {
     })
   }
 
-  const lvgData = useContext(LVGatsbyContext)
+  const lvgData = useContext(LVGatsbyContextA)
   const { isLiveVue } = lvgData
 
   console.log('lvgData: ' + JSON.stringify(lvgData))
@@ -306,11 +311,11 @@ function Relocate () {
 /**
  * @classdesc Basis Component to enable Live Vue preview on a Gatsby Page.
  * It provides all services to manage previewing transit from static to live data
- * Companion LiveVueWrap is used to wrap the render tree for the Page.
- * @usage: The page inherits from LiveVueGatsby, rather than from React.Component.
+ * Companion LiveVueWrapA is used to wrap the render tree for the Page.
+ * @usage: The page inherits from LiveVueGatsbyA, rather than from React.Component.
  * This allows retrieving preview data on behalf of the Page.
  */
-class LiveVueGatsby extends Component {
+class LiveVueGatsbyA extends Component {
 
   location = null
   dataArrived = false
@@ -367,17 +372,17 @@ class LiveVueGatsby extends Component {
    */
   liveVueData = (forceLive = false) => {
 
-    const isLiveVueData = Object.keys(this.state.liveVueData).length === 0
+    const isliveVueData = Object.keys(this.state.liveVueData).length === 0
 
     // we should free up display as soon as we know we're static
     // *todo* this works, but isn't the optimum place
 
-    if (!isLiveVueData) {
+    if (!isliveVueData) {
       console.log('showContent on call to liveVueData')
       this.showContent()
     }
 
-    let displayData = isLiveVueData
+    let displayData = isliveVueData
       ? this.props.data
       : this.state.liveVueData
 
@@ -575,7 +580,7 @@ class LiveVueGatsby extends Component {
 
 }
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundaryA extends React.Component {
   constructor (props) {
     super(props)
     this.state = { hasError: false }
@@ -619,7 +624,7 @@ class ErrorBoundary extends React.Component {
 }
 
 export {
-  LiveVueGatsby,
-  LiveVueWrap,
-  LiveVueData
+  LiveVueGatsbyA,
+  LiveVueWrapA,
+  LiveVueDataA
 }
