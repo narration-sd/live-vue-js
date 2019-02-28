@@ -495,12 +495,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/cms.git",
-                "reference": "88ddb8f9391603b7125cccf46d1c52fa807a31f6"
+                "reference": "54e51f51a62269cc35b253110c4e7157381dd167"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/cms/zipball/88ddb8f9391603b7125cccf46d1c52fa807a31f6",
-                "reference": "88ddb8f9391603b7125cccf46d1c52fa807a31f6",
+                "url": "https://api.github.com/repos/craftcms/cms/zipball/54e51f51a62269cc35b253110c4e7157381dd167",
+                "reference": "54e51f51a62269cc35b253110c4e7157381dd167",
                 "shasum": ""
             },
             "require": {
@@ -575,7 +575,7 @@
                 "craftcms",
                 "yii2"
             ],
-            "time": "2019-02-26T20:13:44+00:00"
+            "time": "2019-02-27T16:57:12+00:00"
         },
         {
             "name": "craftcms/element-api",
@@ -1729,7 +1729,7 @@
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:narrationsd/live-vue.git",
-                "reference": "a8a6840515bf3454ea2274dea458e9f5340fa6a5"
+                "reference": "ff50389f3c8ecd4fcef41bcd3200345b65ce0241"
             },
             "require": {
                 "craftcms/cms": "^3.0.15"
@@ -1758,7 +1758,7 @@
                 }
             },
             "description": "Provide Craft Live View for Vue or similar components",
-            "time": "2019-02-26T21:11:09+00:00"
+            "time": "2019-02-27T10:51:45+00:00"
         },
         {
             "name": "narrationsd/live-vue-js",
@@ -4017,12 +4017,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "ff1020e24967e525adf76ebf9c28a14601d6fc8c"
+                "reference": "4e04718428742618a4bf24dafca45b8645c9320d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/ff1020e24967e525adf76ebf9c28a14601d6fc8c",
-                "reference": "ff1020e24967e525adf76ebf9c28a14601d6fc8c",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/4e04718428742618a4bf24dafca45b8645c9320d",
+                "reference": "4e04718428742618a4bf24dafca45b8645c9320d",
                 "shasum": ""
             },
             "conflict": {
@@ -4155,7 +4155,7 @@
                 "symfony/yaml": ">=2,<2.0.22|>=2.1,<2.1.7",
                 "tecnickcom/tcpdf": "<6.2.22",
                 "thelia/backoffice-default-template": ">=2.1,<2.1.2",
-                "thelia/thelia": ">=2.1,<2.1.2|>=2.1.0-beta1,<2.1.3",
+                "thelia/thelia": ">=2.1.0-beta1,<2.1.3|>=2.1,<2.1.2",
                 "theonedemon/phpwhois": "<=4.2.5",
                 "titon/framework": ">=0,<9.9.99",
                 "truckersmp/phpwhois": "<=4.3.1",
@@ -4213,7 +4213,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2019-02-26T18:37:22+00:00"
+            "time": "2019-02-26T21:14:50+00:00"
         }
     ],
     "aliases": [

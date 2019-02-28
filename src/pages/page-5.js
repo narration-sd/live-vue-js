@@ -422,6 +422,8 @@ class FifthPage extends Component {
       {/*<cardsPlay />*/
       }
     }
+
+
   }
 
   showContent () {
@@ -504,7 +506,10 @@ class FifthPage extends Component {
 
             <ShowSome msg="showing some"/>
 
-            <ShowTheCards data={this.state.data}/>
+            {/*<ShowTheCards data={this.state.data}/>*/}
+            <ShowTheCards data={this.props.data}/>
+            {console.log('props data') }
+            { console.log(this.props)}
 
             <br/>
             <br/>

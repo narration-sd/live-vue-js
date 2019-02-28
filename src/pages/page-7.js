@@ -57,8 +57,10 @@ function ShowTheCards (props) {
   }
 
   let cardStyle = {
-    maxWidth: '600px',
-    margin: '20px 40px',
+    color: '#00091a',
+    backgroundColor: 'lightgoldenrodyellow',
+    maxWidth: '640px',
+    margin: '30px 40px',
     padding: '20px 20px'
   }
 
@@ -70,7 +72,7 @@ function ShowTheCards (props) {
         <Body content={{ __html: card.body.content }}/>
         <SafeImage image={card.image}/>
         <h6>card id: {card.id}</h6>
-        <h5>Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... </h5>
+        {/*<h5>Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... </h5>*/}
       </Card>
     </React.Fragment>)
   console.log('ShowTheCards rendering with: ' + cards)
@@ -124,6 +126,10 @@ class SeventhPage extends LiveVueGatsby {
     console.log('page-7 rendering with rendering props: ' + JSON.stringify(props))
     console.log('page-7 rendering with props: ' + JSON.stringify(this.props))
 
+    const style = {
+      color: 'lightgoldenrodyellow',
+      backgroundColor: '#004d66'
+    }
     return (
 
       <LiveVueWrap
@@ -131,18 +137,20 @@ class SeventhPage extends LiveVueGatsby {
         editFadeDuration={this.getEditFadeDuration()}
       >
         <Layout>
+          <div style={style}>
           <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
 
           <ShowTheCards data={this.liveVueData()}/>
 
           <br/><br/>
-          <Link to="/page-6">Go to sixth page</Link>
-          <br/>
-          <Link to="/page-5">Go back to fifth page</Link>
-          <br/>
-          <Link to="/page-3">Go back to third page</Link>
-          <br/>
+          {/*<Link to="/page-6">Go to sixth page</Link>*/}
+          {/*<br/>*/}
+          {/*<Link to="/page-5">Go back to fifth page</Link>*/}
+          {/*<br/>*/}
+          {/*<Link to="/page-3">Go back to third page</Link>*/}
+          {/*<br/>*/}
           <Link to="/">Go back to the homepage</Link>
+          </div>
         </Layout>
       </LiveVueWrap>
     )
