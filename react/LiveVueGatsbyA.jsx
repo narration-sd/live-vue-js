@@ -100,12 +100,12 @@ class LiveVueWrapA extends Component {
     } else if (this.props.dataArrived) {
       fadeIn = true
       fadeTime = this.props.editFadeDuration
-      style = { visibility: 'visible', backgroundColor: '#004d66' }
+      style = { visibility: 'visible', display: 'block', backgroundColor: '#004d66' }
       fadeInClass = 'wrap-fade-in'
-    } else {
+    } else { // in live vue, but no data yet
       fadeIn = false
       fadeTime = 0
-      style = { visibility: 'hidden', backgroundColor: '#004d66' }
+      style = { visibility: 'hidden', display: 'none', backgroundColor: '#004d66' }
       fadeInClass = ''
     }
 
@@ -473,7 +473,8 @@ class LiveVueGatsbyA extends Component {
       let content = document.getElementById('content')
       // *todo* here's where Hider does better?
       if (content) {
-        content.style.visibility = 'visible'
+        // content.style.visibility = 'visible'
+        // content.style.display = 'display'
         // *todo* nononono!!! content.style.opacity = '1'
       } else {
         console.log('content div not available for visibility')
