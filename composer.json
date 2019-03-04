@@ -26,11 +26,14 @@
         },
         {
             "type": "vcs",
-            "url":  "git@bitbucket.org:narrationsd/dev-standards-agent.git"
+            "url":  "git@bitbucket.org:narrationsd/live-vue-js.git"
         },
         {
-            "type": "vcs",
-            "url":  "git@bitbucket.org:narrationsd/live-vue-js.git"
+            "type": "path",
+            "url": "plugin-dev/live-vue-edit",
+            "options": {
+                "symlink": true
+            }
         }
     ],
     "extra": {
@@ -44,8 +47,10 @@
         "craftcms/cms": "dev-develop as 3.1",
         "craftcms/element-api": "^2.5",
         "craftcms/redactor": "^2.3",
+        "doublesecretagency/craft-cpjs": "^2.1",
         "markhuot/craftql": "dev-master",
         "narrationsd/live-vue": "dev-dev-gatsby",
+        "narrationsd/live-vue-edit": "dev-master",
         "narrationsd/live-vue-js": "^0.9.58",
         "oomphinc/composer-installers-extender": "^1.1",
         "vlucas/phpdotenv": "^2.4.0"

@@ -154,7 +154,8 @@ class SeventhPage extends LiveVueGatsby {
       : ''
 
     // more incredible nastiness, that  Router or Redirect blows up if not in window during build
-    const deviate = typeof window !== 'undefined' && pathPresent
+    // and fixing that defeats the choice on build. So, patch the choice out for now
+    const deviate = true && typeof window !== 'undefined' && pathPresent
 
     console.log('deviator: ' + presentPath)
     // console.log(props)

@@ -79,3 +79,6 @@ vendor
 # vagrant
 /.vagrant/machines/lv-gatsby-html/virtualbox/action_set_name
 /.vagrant/
+
+# for local dev
+plugin-dev/
