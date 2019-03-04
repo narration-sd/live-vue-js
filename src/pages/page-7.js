@@ -1,9 +1,9 @@
 /* eslint-disable  */
 import React, {Component} from 'react'
 import {Link} from 'gatsby'
+import {Redirect} from '@reach/router'
 import {StaticQuery, graphql} from 'gatsby'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
-
 import {
   LiveVueGatsby,
   LiveVueWrap,
@@ -16,6 +16,7 @@ import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 
 import Layout from '../components/layout'
+import {Router} from '@reach/router'
 
 function Body (props) {
   return <React.Fragment>
@@ -93,6 +94,18 @@ const Child = () => {
     <p>{scontext.msg}</p>}</MyContext.Consumer>
 }
 
+const PrivateRoute = ({ component: Component, location, ...rest }) => {
+  // if (!isLoggedIn() && location.pathname !== `/app/login`) {
+  //   // If the user is not logged in, redirect to the login page.
+  //   navigate(`/app/login`)
+  //   return null
+  // }
+  navigate('/page-8')
+  return null
+
+  // return <Component {...rest} />
+}
+
 /**
  * @classdesc the page-7 Page class, inheriting from LiveVueGatsby so we
  * will have Live Vue Craft Preview ability
@@ -120,7 +133,6 @@ class SeventhPage extends LiveVueGatsby {
   }
 
   render (props) {
-
     let liveData = this.liveVueData()
     let dataArrived = this.getDataArrived()
     console.log('page-7 rendering with rendering props: ' + JSON.stringify(props))
@@ -136,33 +148,76 @@ class SeventhPage extends LiveVueGatsby {
       backgroundColor: 'lightgoldenrodyellow'
     }
 
+    const pathPresent = typeof this.props.location.pathname !== 'undefined'
+    const presentPath = pathPresent
+      ? this.props.location.pathname
+      : ''
+
+    // more incredible nastiness, that  Router or Redirect blows up if not in window during build
+    const deviate = typeof window !== 'undefined' && pathPresent
+
+    console.log('deviator: ' + presentPath)
+    // console.log(props)
+    // console.log(this.props)
     return (
+      <>
+        {deviate ? <Router>
+            <Redirect path={presentPath} to={'/page-8/'} noThrow/>
+          </Router>
+          : <LiveVueWrap
+            dataArrived={this.getDataArrived()}
+            editFadeDuration={this.getEditFadeDuration()}
+          >
+            <Layout>
+              <div style={style}>
+                <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
 
-      <LiveVueWrap
-        dataArrived={this.getDataArrived()}
-        editFadeDuration={this.getEditFadeDuration()}
-      >
-        <Layout>
-          <div style={style}>
-            <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
+                <ShowTheCards data={this.liveVueData()}/>
 
-            <ShowTheCards data={this.liveVueData()}/>
-
-            <br/><br/>
-            {/*<Link to="/page-6">Go to sixth page</Link>*/}
-            {/*<br/>*/}
-            <div style={boxStyle}>
-              <Link to="/page-8">Go back to eighth page</Link>
-              <br/>
-              <Link to="/page-9">Go back to ninth page</Link>
-              <br/>
-              <Link to="/">Go back to the homepage</Link>
-            </div>
-          </div>
-        </Layout>
-      </LiveVueWrap>
+                <br/><br/>
+                <Link to="/page-6">Go to sixth page</Link>
+                <br/>
+                <div style={boxStyle}>
+                  <Link to="/page-8">Go back to eighth page</Link>
+                  <br/>
+                  <Link to="/page-9">Go back to ninth page</Link>
+                  <br/>
+                  <Link to="/">Go back to the homepage</Link>
+                </div>
+              </div>
+            </Layout>
+          </LiveVueWrap>
+        }
+      </>
     )
   }
+}
+
+{/*
+<LiveVueWrap
+  dataArrived={this.getDataArrived()}
+  editFadeDuration={this.getEditFadeDuration()}
+>
+  <Layout>
+    <div style={style}>
+      <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
+
+      <ShowTheCards data={this.liveVueData()}/>
+
+      <br/><br/>
+      <Link to="/page-6">Go to sixth page</Link>
+      <br/>
+      <div style={boxStyle}>
+        <Link to="/page-8">Go back to eighth page</Link>
+        <br/>
+        <Link to="/page-9">Go back to ninth page</Link>
+        <br/>
+        <Link to="/">Go back to the homepage</Link>
+      </div>
+    </div>
+  </Layout>
+</LiveVueWrap>
+*/
 }
 
 export default SeventhPage

@@ -144,7 +144,7 @@ class SeventhPage extends LiveVueGatsbyA {
       >
         <Layout>
           <div style={style}>
-            <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
+            <h3>The eighth page, with Cards via LiveVueGatsby...</h3>
 
             <ShowTheCards data={this.liveVueData()}/>
 
@@ -152,10 +152,10 @@ class SeventhPage extends LiveVueGatsbyA {
             {/*<Link to="/page-6">Go to sixth page</Link>*/}
             {/*<br/>*/}
             <div style={boxStyle}>
-              <Link to="/page-7">Go back to seventh page</Link>
-              <br/>
-              <Link to="/page-9">Go to ninth page</Link>
-              <br/>
+              {/*<Link to="/page-7">Go back to seventh page</Link>*/}
+              {/*<br/>*/}
+              {/*<Link to="/page-9">Go to ninth page</Link>*/}
+              {/*<br/>*/}
               <Link to="/">Go back to the homepage</Link>
             </div>
           </div>

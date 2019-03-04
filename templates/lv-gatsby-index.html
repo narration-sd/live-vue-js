@@ -11,21 +11,24 @@
         width: 100%;
         height: 100%;
     }
-    /* these have rules marked out as they don't work */
-    .lv-hidden {
-        /*visibility: 'hidden';*/
+    .lv-frame-hidden {
+        visibility: hidden;
+        display: none;
         /*width: 0;*/
     }
-    .lv-show {
-        /*visibility: 'visible';*/
+    .lv-frame-show {
+        visibility: visible;
+        display: block;
         /*width: 100%;*/
     }
     .lv-content-hide {
         visibility: hidden;
+        display: none;
         opacity: 0;
     }
     .lv-content-show {
         visibility: visible;
+        display: block;
     }
     </style>
 
@@ -53,7 +56,7 @@
     var iframeElem = document.createElement('iframe')
     iframeElem.src = gatsbySite + '?isLiveVue=1'
     iframeElem.id = 'ifrm'
-    iframeElem.className = 'lv-iframe lv-hidden'
+    iframeElem.className = 'lv-iframe lv-frame-hidden'
 
     // *todo* any amount of these dataset tryouts can go
     iframeElem.name = 'live-vue-frame'
@@ -101,7 +104,7 @@
       // post msg to win - but remember, otherwise mayn't touch it
       // because CSRF rules as this iframe src is on another site
       win.postMessage(msg, '*')
-      iframeElem.className = 'lv-iframe lv-show'
+      iframeElem.className = 'lv-iframe lv-frame-show'
       contentElement.className = 'lv-content-show'
     }
 

@@ -495,12 +495,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/cms.git",
-                "reference": "54e51f51a62269cc35b253110c4e7157381dd167"
+                "reference": "b896a6168a6a481b9eb2fe88d34c42697edb0c3d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/cms/zipball/54e51f51a62269cc35b253110c4e7157381dd167",
-                "reference": "54e51f51a62269cc35b253110c4e7157381dd167",
+                "url": "https://api.github.com/repos/craftcms/cms/zipball/b896a6168a6a481b9eb2fe88d34c42697edb0c3d",
+                "reference": "b896a6168a6a481b9eb2fe88d34c42697edb0c3d",
                 "shasum": ""
             },
             "require": {
@@ -575,7 +575,7 @@
                 "craftcms",
                 "yii2"
             ],
-            "time": "2019-02-27T16:57:12+00:00"
+            "time": "2019-03-02T14:00:39+00:00"
         },
         {
             "name": "craftcms/element-api",
@@ -1729,7 +1729,7 @@
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:narrationsd/live-vue.git",
-                "reference": "ff50389f3c8ecd4fcef41bcd3200345b65ce0241"
+                "reference": "6591f425350e36104c92aeb9995ef6e36266adbf"
             },
             "require": {
                 "craftcms/cms": "^3.0.15"
@@ -1758,7 +1758,7 @@
                 }
             },
             "description": "Provide Craft Live View for Vue or similar components",
-            "time": "2019-02-27T10:51:45+00:00"
+            "time": "2019-02-27T21:09:34+00:00"
         },
         {
             "name": "narrationsd/live-vue-js",
@@ -3412,16 +3412,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.16",
+            "version": "2.0.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "789de9783d41e6ca10fffc3644a43a764f79b399"
+                "reference": "089198cced57c4b8c9545ddc56001a1bd114b2dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/789de9783d41e6ca10fffc3644a43a764f79b399",
-                "reference": "789de9783d41e6ca10fffc3644a43a764f79b399",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/089198cced57c4b8c9545ddc56001a1bd114b2dd",
+                "reference": "089198cced57c4b8c9545ddc56001a1bd114b2dd",
                 "shasum": ""
             },
             "require": {
@@ -3508,7 +3508,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2019-01-30T23:54:16+00:00"
+            "time": "2019-02-28T07:03:06+00:00"
         },
         {
             "name": "yiisoft/yii2-bootstrap",
