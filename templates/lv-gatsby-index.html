@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
+    /* n.b. don't believe an IDE that these aren't used -- they are in javascript */
     .lv-iframe {
         position: absolute;
         top: 0;
@@ -40,19 +41,47 @@
 </noscript>
 
 <div id="content" class="lv-content-hide">
-    <script>
-    // console.log = function() {}
-
-    // *todo* some choices here for now, before Settings routing
-    var gatsbySite = "https://lv-gatsby.test/page-8"
-    // var gatsbySite = "https://staging.narrationsd.com/page-7"
-
-    // no non-https because browsers, and this one can only be used w/mitmproxy
-    // var gatsbySite = "https://localhost/page-7"
-
-    </script>
     {% hook "live-vue" %}
     <script>
+
+    var lvDiv = document.getElementById('liveVue')
+    if (!lvDiv) {
+      document.write('<h2>Sorry, no Live Vue div to proceed on - check Live Vue Settings</h2>')
+      throw new Error('no Live Vue div')
+    }
+
+    var lvText = lvDiv.innerText
+    var lvData = null
+    try {
+      lvData = JSON.parse(lvText)
+    }
+    catch (e) {
+      document.write('<h2>Sorry, Live Vue data parse error: ' + e + ' - check Live Vue Settings</h2>')
+      throw new Error('Live Vue data parse error: ' + e)
+    }
+
+    gatsbySiteUrl = null
+    gatsbyPage = null
+    if (lvData && lvData.lvMeta) {
+      gatsbySiteUrl = lvData.lvMeta.liveVueGatsbySiteUrl
+      gatsbyPage = lvData.lvMeta.liveVueGatsbyPage
+    }
+
+    console.log('gatsbySiteUrl: ' + gatsbySiteUrl)
+    console.log('gatsbyPage: ' + gatsbyPage)
+
+    var gatsbySite = null
+    if (gatsbySiteUrl && gatsbyPage) {
+      gatsbySite = gatsbySiteUrl + '/' + gatsbyPage
+    } else {
+      document.write('<h2>Sorry, error in gatsbySiteUrl: ' +
+        gatsbySiteUrl + ' or gatsbyPage: ' +
+        gatsbyPage + '</h2>')
+      throw new Error('Live Vue error in gatsbySiteUrl: ' + gatsbySiteUrl +
+        ', or gatsbyPage: ' + gatsbyPage)
+    }
+    console.log('gatsbySite: ' + gatsbySite)
+
     var iframeElem = document.createElement('iframe')
     iframeElem.src = gatsbySite + '?isLiveVue=1'
     iframeElem.id = 'ifrm'
@@ -74,25 +103,11 @@
       if (event.data === 'loaded') {
         iframeLoaded = 'loaded'
         console.log('parent got iframe loaded on data: ' + event.data)
-        // document.getElementById('content').style.visibility = 'visible'
-        // document.getElementById('content').style.opacity = 1
-        // document.write('DO WE SEE THIS ANYWAY?')
       }
     }
     window.addEventListener('message', receiveMessage, false)
-    </script>
-    {#<iframe id="ifrm" name="live-vue" class="lv-iframe"#}
-    {#        src="https://localhost/page-5"></iframe>#}
-    {#<iframe id="ifrm" name="live-vue" class="lv-iframe" src="https://lv-gatsby.test/page-5"></iframe>#}
-    {#<iframe id="ifrm" name="live-vue" class="lv-iframe" src="https://localhost/page-5"></iframe>#}
-    {#<iframe id="ifrm" name="live-vue" class="lv-iframe" ></iframe>#}
-    <script>
-    // document.getElementById('ifrm').src = gatsbySite
-    // document.write('<div style="position: absolute; bottom: 5px; background: lightcoral;"><h6 style="margin: 2px 5px;">we are here</h6></div>')
-    </script>
-    <script>
-    function pushMessage () {
 
+    function pushMessage () {
       var msg = // { text: 'from our Craft parent' }
         { text: document.getElementById('liveVue').innerText }
       // get reference to window in iframe
@@ -125,7 +140,6 @@
         }
       }
     }
-
     window.addEventListener('load', tickDelayPush, false)
 
     </script>
