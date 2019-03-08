@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c9d357469453135a7897e099d25a865",
+    "content-hash": "0fd748db427dcf9f7c43078fff3a97cf",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -65,53 +65,6 @@
                 "markdown-extra"
             ],
             "time": "2018-03-26T11:24:36+00:00"
-        },
-        {
-            "name": "clubstudioltd/craft-asset-rev",
-            "version": "6.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/clubstudioltd/craft-asset-rev.git",
-                "reference": "b4d4ada7902af654ceb081103ab4f5abb6a7e19c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/clubstudioltd/craft-asset-rev/zipball/b4d4ada7902af654ceb081103ab4f5abb6a7e19c",
-                "reference": "b4d4ada7902af654ceb081103ab4f5abb6a7e19c",
-                "shasum": ""
-            },
-            "require": {
-                "craftcms/cms": "^3.0.0-beta.29"
-            },
-            "require-dev": {
-                "mockery/mockery": "0.9.*",
-                "phpunit/php-token-stream": "<2",
-                "phpunit/phpunit": "~5.0"
-            },
-            "type": "craft-plugin",
-            "extra": {
-                "name": "Asset Rev",
-                "handle": "assetrev",
-                "hasCpSettings": false,
-                "hasCpSection": false,
-                "changelogUrl": "https://github.com/clubstudioltd/craft-asset-rev/blob/master/CHANGELOG.md",
-                "documentationUrl": "https://github.com/clubstudioltd/craft-asset-rev",
-                "downloadUrl": "https://github.com/clubstudioltd/craft-asset-rev/archive/v6.zip",
-                "developer": "Club Studio Ltd",
-                "developerUrl": "https://clubstudio.co.uk",
-                "class": "club\\assetrev\\AssetRev"
-            },
-            "autoload": {
-                "psr-4": {
-                    "club\\assetrev\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "A plugin to aid cache-busting in Craft 3",
-            "time": "2018-11-20T14:45:15+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -247,126 +200,6 @@
             "time": "2018-01-31T15:28:18+00:00"
         },
         {
-            "name": "composer/installers",
-            "version": "v1.6.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/composer/installers.git",
-                "reference": "cfcca6b1b60bc4974324efb5783c13dca6932b5b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/cfcca6b1b60bc4974324efb5783c13dca6932b5b",
-                "reference": "cfcca6b1b60bc4974324efb5783c13dca6932b5b",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0"
-            },
-            "replace": {
-                "roundcube/plugin-installer": "*",
-                "shama/baton": "*"
-            },
-            "require-dev": {
-                "composer/composer": "1.0.*@dev",
-                "phpunit/phpunit": "^4.8.36"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "Composer\\Installers\\Plugin",
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Composer\\Installers\\": "src/Composer/Installers"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Kyle Robinson Young",
-                    "email": "kyle@dontkry.com",
-                    "homepage": "https://github.com/shama"
-                }
-            ],
-            "description": "A multi-framework Composer library installer",
-            "homepage": "https://composer.github.io/installers/",
-            "keywords": [
-                "Craft",
-                "Dolibarr",
-                "Eliasis",
-                "Hurad",
-                "ImageCMS",
-                "Kanboard",
-                "Lan Management System",
-                "MODX Evo",
-                "Mautic",
-                "Maya",
-                "OXID",
-                "Plentymarkets",
-                "Porto",
-                "RadPHP",
-                "SMF",
-                "Thelia",
-                "WolfCMS",
-                "agl",
-                "aimeos",
-                "annotatecms",
-                "attogram",
-                "bitrix",
-                "cakephp",
-                "chef",
-                "cockpit",
-                "codeigniter",
-                "concrete5",
-                "croogo",
-                "dokuwiki",
-                "drupal",
-                "eZ Platform",
-                "elgg",
-                "expressionengine",
-                "fuelphp",
-                "grav",
-                "installer",
-                "itop",
-                "joomla",
-                "kohana",
-                "laravel",
-                "lavalite",
-                "lithium",
-                "magento",
-                "majima",
-                "mako",
-                "mediawiki",
-                "modulework",
-                "modx",
-                "moodle",
-                "osclass",
-                "phpbb",
-                "piwik",
-                "ppi",
-                "puppet",
-                "pxcms",
-                "reindex",
-                "roundcube",
-                "shopware",
-                "silverstripe",
-                "sydes",
-                "symfony",
-                "typo3",
-                "wordpress",
-                "yawik",
-                "zend",
-                "zikula"
-            ],
-            "time": "2018-08-27T06:10:37+00:00"
-        },
-        {
             "name": "composer/semver",
             "version": "1.4.2",
             "source": {
@@ -491,16 +324,16 @@
         },
         {
             "name": "craftcms/cms",
-            "version": "dev-develop",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/cms.git",
-                "reference": "aec07d28a649e59e6849032e1a56dbb55277ab59"
+                "reference": "693c1b6120332900c3ce1c807e0d58c110a4e086"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/cms/zipball/aec07d28a649e59e6849032e1a56dbb55277ab59",
-                "reference": "aec07d28a649e59e6849032e1a56dbb55277ab59",
+                "url": "https://api.github.com/repos/craftcms/cms/zipball/693c1b6120332900c3ce1c807e0d58c110a4e086",
+                "reference": "693c1b6120332900c3ce1c807e0d58c110a4e086",
                 "shasum": ""
             },
             "require": {
@@ -531,7 +364,7 @@
                 "true/punycode": "^2.1.0",
                 "twig/twig": "^2.5.0",
                 "yii2tech/ar-softdelete": "^1.0.2",
-                "yiisoft/yii2": "~2.0.16.0",
+                "yiisoft/yii2": "~2.0.16.1",
                 "yiisoft/yii2-debug": "^2.0.10",
                 "yiisoft/yii2-queue": "2.1.0",
                 "yiisoft/yii2-swiftmailer": "^2.1.0",
@@ -575,7 +408,7 @@
                 "craftcms",
                 "yii2"
             ],
-            "time": "2019-03-08T04:55:41+00:00"
+            "time": "2019-03-08T19:06:55+00:00"
         },
         {
             "name": "craftcms/element-api",
@@ -949,57 +782,6 @@
                 "parser"
             ],
             "time": "2014-09-09T13:34:57+00:00"
-        },
-        {
-            "name": "doublesecretagency/craft-cpjs",
-            "version": "2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/doublesecretagency/craft-cpjs.git",
-                "reference": "c8cdb87b0361362162c97981494038b3d8595407"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/doublesecretagency/craft-cpjs/zipball/c8cdb87b0361362162c97981494038b3d8595407",
-                "reference": "c8cdb87b0361362162c97981494038b3d8595407",
-                "shasum": ""
-            },
-            "require": {
-                "craftcms/cms": "^3.0.0-RC1"
-            },
-            "type": "craft-plugin",
-            "extra": {
-                "name": "Control Panel JS",
-                "handle": "cp-js",
-                "schemaVersion": "2.0.0",
-                "changelogUrl": "https://raw.githubusercontent.com/doublesecretagency/craft-cpjs/v2/CHANGELOG.md",
-                "class": "doublesecretagency\\cpjs\\CpJs"
-            },
-            "autoload": {
-                "psr-4": {
-                    "doublesecretagency\\cpjs\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Double Secret Agency",
-                    "homepage": "https://www.doublesecretagency.com/plugins"
-                }
-            ],
-            "description": "Add custom JavaScript to your Control Panel.",
-            "keywords": [
-                "Craft",
-                "cms",
-                "cp-js",
-                "craft-plugin",
-                "craftcms",
-                "javascript"
-            ],
-            "time": "2018-01-01T22:58:51+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -1776,11 +1558,11 @@
         },
         {
             "name": "narrationsd/live-vue",
-            "version": "dev-dev-gatsby",
+            "version": "dev-gatsby",
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:narrationsd/live-vue.git",
-                "reference": "326c46b33e8b47aa2ba561ce4293990b7c4c9103"
+                "reference": "ebc09085503a73fc11587436c3d8343d5346d081"
             },
             "require": {
                 "craftcms/cms": "^3.0.15"
@@ -1809,15 +1591,15 @@
                 }
             },
             "description": "Provide Craft Live View for Vue or similar components",
-            "time": "2019-03-04T19:41:22+00:00"
+            "time": "2019-03-08T09:50:12+00:00"
         },
         {
             "name": "narrationsd/live-vue-js",
-            "version": "v0.9.59",
+            "version": "dev-gatsby",
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:narrationsd/live-vue-js.git",
-                "reference": "16d6c25049150617031639a195b733f020bcba2a"
+                "reference": "fdcf9a353fcbf93db149473bde530b39f94961c2"
             },
             "type": "library",
             "extra": {
@@ -1826,49 +1608,7 @@
                 "developerUrl": "https://narrationsd.com"
             },
             "description": "ES6 library for Craft Live View on Vue or similar components",
-            "time": "2019-01-28T11:40:34+00:00"
-        },
-        {
-            "name": "oomphinc/composer-installers-extender",
-            "version": "v1.1.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/oomphinc/composer-installers-extender.git",
-                "reference": "ca1c4b16b0905c81d1e77e608f36a2eff1a56f56"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/oomphinc/composer-installers-extender/zipball/ca1c4b16b0905c81d1e77e608f36a2eff1a56f56",
-                "reference": "ca1c4b16b0905c81d1e77e608f36a2eff1a56f56",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0",
-                "composer/installers": "^1.0"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "OomphInc\\ComposerInstallersExtender\\Plugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "OomphInc\\ComposerInstallersExtender\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Stephen Beemsterboer",
-                    "email": "stephen@oomphinc.com",
-                    "homepage": "https://github.com/balbuf"
-                }
-            ],
-            "description": "Extend the composer/installers plugin to accept any arbitrary package type.",
-            "homepage": "http://www.oomphinc.com/",
-            "time": "2017-03-31T16:57:39+00:00"
+            "time": "2019-03-04T06:10:51+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -4269,9 +4009,9 @@
     ],
     "aliases": [
         {
-            "alias": "3.1",
-            "alias_normalized": "3.1.0.0",
-            "version": "dev-develop",
+            "alias": "3.1.16",
+            "alias_normalized": "3.1.16.0",
+            "version": "9999999-dev",
             "package": "craftcms/cms"
         }
     ],
@@ -4280,6 +4020,7 @@
         "craftcms/cms": 20,
         "markhuot/craftql": 20,
         "narrationsd/live-vue": 20,
+        "narrationsd/live-vue-js": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

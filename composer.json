@@ -27,36 +27,20 @@
         {
             "type": "vcs",
             "url":  "git@bitbucket.org:narrationsd/live-vue-js.git"
-        },
-        {
-            "type": "path",
-            "url": "plugin-dev/live-vue-edit",
-            "options": {
-                "symlink": true
-            }
         }
     ],
-    "extra": {
-        "installer-types": ["library"],
-        "installer-paths": {
-            "src/live-vue-js/": ["narrationsd/live-vue-js"]
-        }
-    },
     "require": {
-        "clubstudioltd/craft-asset-rev": "^v6.0.0",
-        "craftcms/cms": "dev-develop as 3.1",
+        "craftcms/cms": "dev-master as 3.1.16",
         "craftcms/element-api": "^2.5",
         "craftcms/redactor": "^2.3",
-        "doublesecretagency/craft-cpjs": "^2.1",
         "markhuot/craftql": "dev-master",
-        "narrationsd/live-vue": "dev-dev-gatsby",
-        "narrationsd/live-vue-js": "^0.9.58",
-        "oomphinc/composer-installers-extender": "^1.1",
+        "narrationsd/live-vue": "dev-gatsby",
+        "narrationsd/live-vue-js": "dev-gatsby",
         "vlucas/phpdotenv": "^2.4.0"
     },
     "require-dev": {
         "laravel/homestead": "^8.0",
-        "roave/security-adcompovisories": "dev-master"
+        "roave/security-advisories": "dev-master"
     },
     "autoload": {
         "psr-4": {
