@@ -1,3 +1,4 @@
+// let's get this completely re-factored, in time for the beta
 import React, {Component, useContext} from 'react'
 import GatsbyConnect from '../gatsby-connect.js'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
@@ -6,7 +7,7 @@ import Fade from '@material-ui/core/Fade'
 
 // import Reporter from './Reporter.jsx'
 
-const LVGatsbyContextA = React.createContext('no Context')
+const LVGatsbyContextB = React.createContext('no Context')
 
 var parentMsg = 'could be the message, really? Where\'s the event?'
 var editFadeDuration = 0
@@ -36,20 +37,20 @@ var fadeIn = {
  * There's also an error-presenting wrapper silently included, which will
  * announce on cases of Page code errors, as may be helpful during development.
  *
- * @note used in combination with LiveVueGatsbyA, which the Page class inherits from
- * @usage place LiveVueWrapA in the Page render(), surrounding the actual child components
+ * @note used in combination with LiveVueGatsbyB, which the Page class inherits from
+ * @usage place LiveVueWrapB in the Page render(), surrounding the actual child components
  *
  * ```
  *    // here's an example
  *    render () {
- *      <LiveVueWrapA>
+ *      <LiveVueWrapB>
  *        ...render tree...
- *      </LiveVueWrapA>
+ *      </LiveVueWrapB>
  *    }
  *    ```
  *
  */
-class LiveVueWrapA extends Component {
+class LiveVueWrapB extends Component {
 
   state = {
     isLiveVue: true,
@@ -113,7 +114,7 @@ class LiveVueWrapA extends Component {
     console.log(this.props)
 
     return (
-      <LVGatsbyContextA.Provider value={
+      <LVGatsbyContextB.Provider value={
         {
           liveVue: this.state.isLiveVue,
           dataArrived: this.props.dataArrived,
@@ -122,7 +123,7 @@ class LiveVueWrapA extends Component {
         }
       }>
         <React.Fragment>
-          <ErrorBoundaryA>
+          <ErrorBoundaryB>
             <Fade in={fadeIn} timeout={fadeTime}>
               <div id={"content"} style={style}>
               {/*in={this.state.isLiveVue}*/}
@@ -133,15 +134,15 @@ class LiveVueWrapA extends Component {
                 {this.props.children}
               </div>
             </Fade>
-          </ErrorBoundaryA>
+          </ErrorBoundaryB>
         </React.Fragment>
-      </LVGatsbyContextA.Provider>
+      </LVGatsbyContextB.Provider>
     )
   }
 }
 
-class FaderA extends React.Component {
-  static contextType = LVGatsbyContextA
+class FaderB extends React.Component {
+  static contextType = LVGatsbyContextB
 
   theStyle = fadeOut
 
@@ -229,11 +230,11 @@ class FaderA extends React.Component {
     // } else {
     //   style = hidden
     // }
-    console.log('FaderA style: ' + JSON.stringify(style))
+    console.log('FaderB style: ' + JSON.stringify(style))
     console.log(style)
 
     return (
-      <div id={'FaderA'} style={style}>
+      <div id={'FaderB'} style={style}>
         { this.props.children }
       </div>
     )
@@ -246,21 +247,21 @@ class FaderA extends React.Component {
  * - normally supplies the expected props.data from the pageData GraphQL query
  * - but in Craft Preview, supplies the live data as edited in the CP
  *
- * @note used in combination with LiveVueGatsbyA, which the Page class inherits from
- * @example place LiveVueWrapA in the Page render(), surrounding the actual child components
+ * @note used in combination with LiveVueGatsbyB, which the Page class inherits from
+ * @example place LiveVueWrapB in the Page render(), surrounding the actual child components
  *
  * ```
  *    render () {
- *      <LiveVueWrapA dataArrived={this.getDataArrived()}>
+ *      <LiveVueWrapB dataArrived={this.getDataArrived()}>
  *        [future]...render tree of components which use prop.liveData rather than props.data...
  *        ...render tree of components which set their data via this.liveVueData()...
  *        <Example data={this.liveVueData()}/>
- *      </LiveVueDataA>
+ *      </LiveVueDataB>
  *    }
  *    ```
  *
  */
-function LiveVueDataA (props) {
+function LiveVueDataB (props) {
 
   const addDataToChildren = (children, liveVueData = null) => {
 
@@ -274,17 +275,17 @@ function LiveVueDataA (props) {
         // if we don't have Live Vue data, replay the Gatsby
         // static data that the child already has
         const liveData = liveVueData
-          ? liveVueData
-          : child.props.data
+          // ? liveVueData
+          // : child.props.data
 
-        return React.cloneElement(child, { liveData: liveData })
+        return React.cloneElement(child, { data: liveData })
       } else {
         return React.cloneElement(child)
       }
     })
   }
 
-  const lvgData = useContext(LVGatsbyContextA)
+  const lvgData = useContext(LVGatsbyContextB)
   const { isLiveVue } = lvgData
 
   console.log('lvgData: ' + JSON.stringify(lvgData))
@@ -311,11 +312,11 @@ function Relocate () {
 /**
  * @classdesc Basis Component to enable Live Vue preview on a Gatsby Page.
  * It provides all services to manage previewing transit from static to live data
- * Companion LiveVueWrapA is used to wrap the render tree for the Page.
- * @usage: The page inherits from LiveVueGatsbyA, rather than from React.Component.
+ * Companion LiveVueWrapB is used to wrap the render tree for the Page.
+ * @usage: The page inherits from LiveVueGatsbyB, rather than from React.Component.
  * This allows retrieving preview data on behalf of the Page.
  */
-class LiveVueGatsbyA extends Component {
+class LiveVueGatsbyB extends Component {
 
   location = null
   dataArrived = false
@@ -439,7 +440,7 @@ class LiveVueGatsbyA extends Component {
 
           // console.log('json parse success; obj is: ' + JSON.stringify(obj))
           if (Object.keys(obj.data).length > 0) {
-            obj = this.connector.rearrangeData(obj)
+            obj = this.connector.rearrangeToGatsbyDatal(obj)
             // console.log('json rearranged; obj is: ' + JSON.stringify(obj))
           }
 
@@ -581,7 +582,7 @@ class LiveVueGatsbyA extends Component {
 
 }
 
-class ErrorBoundaryA extends React.Component {
+class ErrorBoundaryB extends React.Component {
   constructor (props) {
     super(props)
     this.state = { hasError: false }
@@ -624,8 +625,385 @@ class ErrorBoundaryA extends React.Component {
   }
 }
 
+class Content extends Component {
+  static contextType = LVGatsbyContextB
+
+  constructor (props) {
+    super(props)
+  }
+
+  addDataToChildren = (children, data = null) => {
+
+    return React.Children.map(children, child => {
+
+      // React mis-recognizes <Elements> that aren't its own,
+      // and then, passes them as empty strings.
+      // Also, children can be null. I ask you.
+      if (child && child.type !== undefined) {
+        return React.cloneElement(child, { data: data })
+      } else {
+        return React.cloneElement(child)
+      }
+    })
+  }
+
+  render () {
+    console.log('ContentWrap context: ' + this.context)
+    console.log(this.context)
+
+    const childrenWithData
+    // = this.addDataToChildren(this.context.children, this.context.data)
+    // *todo* rather, recurse addData, but first try
+    = this.addDataToChildren(this.context.children.props.children, this.context.data)
+
+    return (
+      <div style={this.props.style}>
+        { childrenWithData }
+      </div>
+    )
+  }
+}
+
+class LiveVueOnlyWrap extends Component {
+
+  state = {
+    show: false,
+    content: 'This is original state content',
+    parentMsg: 'a message? ',
+    testVar: 'unset', // *todo* get this out of here
+    liveVueData: {}, // critical, unless they over-ride it
+    isLiveVue: true,
+    else: 'else state'
+  }
+
+  constructor (props) {
+    super(props)
+
+    if (this.state === undefined) {
+      // we'll provide our own, but otherwise use theirs
+    }
+
+    console.log('Wrap props data: ' + props.data)
+    console.log(props.data)
+    this.state.dataArrived = false
+    this.state.editFadeDuration = 802
+    this.state.liveVueData = null
+
+    this.reporter = React.createRef()
+    this.setter = this.props.setter
+    this.dataArrived = 'hoho'
+    this.state.isLiveVue = this.inIFrame()
+    console.log('Wrap props dataArrived: ' + props.dataArrived)
+    console.log('Wrap props editFadeDuration: ' + props.editFadeDuration)
+    console.log(props)
+    console.log(this.props)
+  }
+
+  getDataArrived = () => {
+    return this.state.dataArrived
+  }
+
+  getEditFadeDuration = () => {
+    console.log('getEditFadeDuration: ' + this.state.editFadeDuration)
+    return this.state.editFadeDuration
+  }
+
+  markWin () {
+    // let pos = '[' + String(window.scrollX) + ',' + String(window.scrollY + this.count++) + ']'
+    // // let pos = [ parseInt(window.scrollX), parseInt(window.scrollY) ]
+    // // pos = '[0,350]'
+    // console.log('markWin pos: ' + JSON.stringify(pos))
+    // console.log('markWin page-7/: ' + window.sessionStorage.getItem('@@scroll|/page-7/'))
+    // // window.sessionStorage.setItem('@@scroll|/page-7', pos)
+    // // window.sessionStorage.setItem('@@scroll|/page-7/', pos)
+    // window.sessionStorage.setItem('mine', pos)
+  }
+
+  /**
+   * @param fullResult
+   * @returns {{data: {craftql: {cards: *}}}}
+   */
+  rearrangeToGatsbyDatal (fullResult) {
+    // now revise this into shape gatsby expects
+    let cardsData = fullResult.data.cards
+    fullResult = {
+      data: {
+        craftql: {
+          cards: cardsData
+        }
+      }
+    }
+
+    return fullResult
+  }
+
+    /**
+   * provides the automatically switched liveVueData:
+   *  - Gatsby props data as expected for a static page
+   *  - but Craft Live Preview data, when entries are edited in Craft
+   *
+   * @example create a prop for the element which calls this function, which
+   * will appear on the Page class, then use that data in the rendering Component:
+   * ```
+   *     <ShowTheData data={ this.liveVueData()} />
+   * ```
+   * @param {boolean} [forceLive = false]
+   * @function
+   * @returns string
+   */
+  liveVueData = (forceLive = false) => {
+
+    const isliveVueData = Object.keys(this.state.liveVueData).length === 0
+
+    // we should free up display as soon as we know we're static
+    // *todo* this works, but isn't the optimum place
+
+    if (!isliveVueData) {
+      console.log('showContent on call to liveVueData')
+      this.showContent()
+    }
+
+    let displayData = isliveVueData
+      ? this.props.data
+      : this.state.liveVueData
+
+    return displayData
+  }
+
+  setData = (event) => {
+    let data = this.state.liveVueData
+    if (data !== undefined) {
+      data.craftql.cards[0].title = 'We changed this with setData'
+      this.setState({
+        liveVueData: data,
+        parentMsg: 'and we set a fresh message...'
+      })
+    }
+  }
+
+  inIFrame () {
+    if (typeof window === `undefined`) {
+      // abso necessary for build time with no window to check
+      return false
+    } else {
+      try {
+        return window.self !== window.top
+      } catch (e) {
+        return true
+      }
+    }
+  }
+
+  getEditFadeDuration = () => {
+    console.log('getting editFadeDuration')
+    return editFadeDuration
+  }
+
+  receiveMessage = (event) => {
+    // if (event.origin !== "http://example.org:8080")
+    //   return;
+
+    // console.log('child received event: ' + JSON.stringify(event))
+    if (event.data === undefined) {
+      console.log('skipping data on undefined')
+      return
+    }
+
+    if (event.data === '') {
+      console.log('skipping data on empty')
+      return
+    }
+
+    if (event.data !== undefined) {
+      // console.log('received event is: ' + JSON.stringify(event))
+      if (event.data.text !== undefined) {
+        parentMsg = event.data.text
+        // console.log('event.data.text: ' + event.data.text)
+        // let's see the jsoniousness  of it
+        let obj = { data: {} }
+        try {
+          obj = JSON.parse(parentMsg)
+
+          if (!obj.data) {
+            // *todo* fix this -- here we get into integrating Reporter
+            throw new Error('no data from Live Preview!')
+          }
+
+          // more *todo* must do before rearrange elides lvMeta
+          let editFadeDuration = obj.lvMeta
+            ? obj.lvMeta.editFadeDuration
+            : 0 // default, which share will use
+
+          console.log('receive editFadeDuration: ' + editFadeDuration)
+
+          // console.log('json parse success; obj is: ' + JSON.stringify(obj))
+          if (Object.keys(obj.data).length > 0) {
+            obj = this.rearrangeToGatsbyDatal(obj)
+            // console.log('json rearranged; obj is: ' + JSON.stringify(obj))
+          }
+
+          if (obj) {
+            this.setState({
+              liveVueData: obj.data,
+              editFadeDuration: editFadeDuration,
+              dataArrived: true
+            })
+          }
+          this.dataArrived = true
+          console.log('showContent on div data arrival')
+          this.showContent()
+          // Relocate()
+
+        } catch (error) {
+          console.log('json parse error: ' + error)
+        }
+      } else {
+        console.log('event data.text undefined')
+      }
+    } else {
+      console.log('no data')
+    }
+  }
+
+  componentDidMount = () => {
+    this.receiveMessage = this.receiveMessage.bind(this)
+    window.addEventListener('message', this.receiveMessage, false)
+    window.addEventListener('beforeunload', this.markWin, false)
+
+    window.parent.postMessage('loaded', '*')
+    const params = new URLSearchParams(window.location.search)
+    let blocked = params.get('isLiveVue') ? 'lv_blocked' : 'lv_unblocked'
+
+    if (blocked !== 'lv_blocked') {
+      this.dataArrived = true // since we're not in the Live Vue iframe
+      console.log('showContent on non-live-vue')
+      this.showContent()
+    }
+
+    this.markWin()
+    // console.log('did mount session storage: ' + JSON.stringify(window.sessionStorage))
+
+      // this.connector = new GatsbyConnect()
+
+    // let dataQuery = 'script=Cards'
+    //
+    // here we're going to use Live Vue only for previews.
+    // This method will never call out for server data.
+    // let theData = this.connector.liveVue(dataQuery)
+    //
+    // if (theData) {
+    //   console.log('Live Vue data present: ' + JSON.stringify(theData))
+    //   // so we'll reactively show it...
+    //   this.setState(
+    //     {
+    //       content: 'We set fresh Live Vue content from connector.liveVue...',
+    //       liveVueData: theData
+    //     }
+    //   )
+    //   this.dataArrived = true
+    // } else { // normal run case
+    //   // *todo* Here's the looping problem -- result of setState
+    //   // this.setState({
+    //   //   liveVueData: this.props.data
+    //   // })
+    // }
+    // console.log('componentDidMount state.content: ' + this.state.content)
+    // console.log('componentDidMount state: ' + JSON.stringify(this.state))
+    Relocate()
+  }
+
+  showContent () {
+    if (typeof window !== 'undefined' && this.dataArrived) {
+      this.dataArrived = false // don't keep looping on it
+      console.log('showing content')
+      let content = document.getElementById('content')
+      // *todo* here's where Hider does better?
+      if (content) {
+        // content.style.visibility = 'visible'
+        // content.style.display = 'display'
+        // *todo* nononono!!! content.style.opacity = '1'
+      } else {
+        console.log('content div not available for visibility')
+      }
+    } else if (!this.dataArrived) {
+      console.log('not dataArrived')
+    }
+  }
+
+  componentDidUpdate () {
+    // Relocate()
+    console.log('showContent on componentDidUpdate')
+    this.showContent()
+  }
+
+  componentWillUnmount () {
+    this.markWin()
+    // console.log('will unmount session storage: ' + JSON.stringify(window.sessionStorage))
+    window.removeEventListener('message', this.receiveMessage)
+    window.removeEventListener('beforeunload', this.markWin)
+  }
+
+  report = (title, content) => {
+    this.reporter.current.report(title, content)
+  }
+
+  render = () => {
+
+    console.log('begin LiveVueOnlyWrap render')
+    console.log('Wrap style: ' + JSON.stringify(style))
+    console.log(style)
+
+    // let fadeInClass = ''
+    let style = {}
+    let fadeIn = false
+    let fadeTime = 0
+    if (!this.inIFrame()) {
+      fadeIn = true
+      fadeTime = 0
+      // fadeInClass = ''
+      style = { visibility: 'visible', backgroundColor: '#004d66' }
+    } else if (this.state.dataArrived) {
+      fadeIn = true
+      fadeTime = this.state.editFadeDuration
+      style = { visibility: 'visible', display: 'block', backgroundColor: '#004d66' }
+      // fadeInClass = 'wrap-fade-in'
+    } else { // in live vue, but no data yet
+      fadeIn = false
+      fadeTime = 0
+      style = { visibility: 'hidden', display: 'none', backgroundColor: '#004d66' }
+      // fadeInClass = ''
+    }
+
+    console.log('Wrap fadeIn: ' + fadeIn + ', time: ' + fadeTime + 'ms')
+    console.log(this.props)
+
+    return (
+      <LVGatsbyContextB.Provider value={
+        {
+          liveVue: this.state.isLiveVue,
+          dataArrived: this.state.dataArrived,
+          editFadeDuration: this.state.editFadeDuration,
+          data: this.state.data ? this.state.data : this.props.data,
+          children: this.props.children
+        }
+      }>
+        <React.Fragment>
+          <ErrorBoundaryB>
+            <Fade in={fadeIn} timeout={fadeTime}>
+              <Content style={style}>
+                {this.props.children}
+              </Content>
+            </Fade>
+          </ErrorBoundaryB>
+        </React.Fragment>
+      </LVGatsbyContextB.Provider>
+    )
+  }
+}
+
 export {
-  LiveVueGatsbyA,
-  LiveVueWrapA,
-  LiveVueDataA
+  LiveVueGatsbyB,
+  LiveVueWrapB,
+  LiveVueDataB,
+  LiveVueOnlyWrap,
 }
