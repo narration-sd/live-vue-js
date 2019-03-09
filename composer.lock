@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0fd748db427dcf9f7c43078fff3a97cf",
+    "content-hash": "a29348a86e9bbab5c5d16c4a19da8c96",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -324,7 +324,7 @@
         },
         {
             "name": "craftcms/cms",
-            "version": "dev-master",
+            "version": "3.1.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/cms.git",
@@ -1471,16 +1471,16 @@
         },
         {
             "name": "markhuot/craftql",
-            "version": "dev-master",
+            "version": "2.0.0-beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/markhuot/craftql.git",
-                "reference": "e4b5a435a312539d455d72e2a0a2987f91ff660e"
+                "reference": "4663af3c8bf294284676941a0fcb22adee9063f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markhuot/craftql/zipball/e4b5a435a312539d455d72e2a0a2987f91ff660e",
-                "reference": "e4b5a435a312539d455d72e2a0a2987f91ff660e",
+                "url": "https://api.github.com/repos/markhuot/craftql/zipball/4663af3c8bf294284676941a0fcb22adee9063f0",
+                "reference": "4663af3c8bf294284676941a0fcb22adee9063f0",
                 "shasum": ""
             },
             "require": {
@@ -1515,7 +1515,7 @@
                 "craft-plugin",
                 "craftcms"
             ],
-            "time": "2019-03-05T18:38:50+00:00"
+            "time": "2019-02-05T19:52:54+00:00"
         },
         {
             "name": "mikehaertl/php-shellcommand",
@@ -1562,7 +1562,7 @@
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:narrationsd/live-vue.git",
-                "reference": "ebc09085503a73fc11587436c3d8343d5346d081"
+                "reference": "39489daa3a41cae6ff2f2fc7c43ccdfa3d0d6f41"
             },
             "require": {
                 "craftcms/cms": "^3.0.15"
@@ -1591,7 +1591,7 @@
                 }
             },
             "description": "Provide Craft Live View for Vue or similar components",
-            "time": "2019-03-08T09:50:12+00:00"
+            "time": "2019-03-08T23:19:27+00:00"
         },
         {
             "name": "narrationsd/live-vue-js",
@@ -4007,18 +4007,9 @@
             "time": "2019-02-26T21:14:50+00:00"
         }
     ],
-    "aliases": [
-        {
-            "alias": "3.1.16",
-            "alias_normalized": "3.1.16.0",
-            "version": "9999999-dev",
-            "package": "craftcms/cms"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "beta",
     "stability-flags": {
-        "craftcms/cms": 20,
-        "markhuot/craftql": 20,
         "narrationsd/live-vue": 20,
         "narrationsd/live-vue-js": 20,
         "roave/security-advisories": 20

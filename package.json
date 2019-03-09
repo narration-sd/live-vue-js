@@ -33,6 +33,7 @@
     "docs:dev": "vuepress dev ./documentation",
     "docs:build": "vuepress build",
     "docs:try": "npm run docs:prep && npm run docs:dev",
+    "dev": "gatsby develop -p8001",
     "develop": "gatsby develop -p8001",
     "build": "gatsby build --no-uglify"
   },

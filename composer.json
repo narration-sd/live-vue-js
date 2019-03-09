@@ -30,10 +30,10 @@
         }
     ],
     "require": {
-        "craftcms/cms": "dev-master as 3.1.16",
+        "craftcms/cms": "3.1.17",
         "craftcms/element-api": "^2.5",
         "craftcms/redactor": "^2.3",
-        "markhuot/craftql": "dev-master",
+        "markhuot/craftql": "2.x",
         "narrationsd/live-vue": "dev-gatsby",
         "narrationsd/live-vue-js": "dev-gatsby",
         "vlucas/phpdotenv": "^2.4.0"
