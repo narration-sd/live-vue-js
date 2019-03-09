@@ -9,14 +9,6 @@ import Fade from '@material-ui/core/Fade'
 
 const LVGatsbyContextB = React.createContext('no Context')
 
-function Relocate () {
-  // if (typeof window !== `undefined`) {
-  //   console.log('Relocate to: ' + JSON.stringify(scrollPos))
-  //   window.scrollTo(scrollPos[0], scrollPos[1])
-  // }
-  return null
-}
-
 class ErrorBoundaryB extends React.Component {
   constructor (props) {
     super(props)
@@ -86,19 +78,28 @@ class LiveVueDataWrap extends Component {
     console.log('LiveVueDataWrap context: ' + this.context)
     console.log(this.context)
 
+    // *todo* temporary measures, until eventing sort anyway
+    const fadeIn = this.context.liveVue
+      ? this.context.dataArrived
+      : true
+    const fadeTime = this.context.liveVue
+      ? this.context.editFadeDuration
+      : 0
+    console.log('DataWrap fadeIn: ' + fadeIn +
+      ', fadeTime: ' + fadeTime)
+
     let childrenToUse = this.context.dataArrived
       ? this.addDataToChildren(
           this.props.children,
           this.context.data)
       : this.props.children
 
-    // *todo* rather, recurse addData, but first try
-    // = this.addDataToChildren(this.context.children.props.children, this.context.data)
-
     return (
-      <div style={this.props.style}>
-        { childrenToUse }
-      </div>
+      <Fade in={fadeIn} timeout={fadeTime}>
+        <div style={this.props.style}>
+          { childrenToUse }
+        </div>
+      </Fade>
     )
   }
 }
@@ -293,7 +294,6 @@ class LiveVueGatsbyWrap extends Component {
           this.dataArrived = true
           console.log('showContent on div data arrival')
           this.showContent()
-          // Relocate()
 
         } catch (error) {
           console.log('json parse error: ' + error)
@@ -350,7 +350,6 @@ class LiveVueGatsbyWrap extends Component {
     // }
     // console.log('componentDidMount state.content: ' + this.state.content)
     // console.log('componentDidMount state: ' + JSON.stringify(this.state))
-    Relocate()
   }
 
   showContent () {
@@ -372,7 +371,6 @@ class LiveVueGatsbyWrap extends Component {
   }
 
   componentDidUpdate () {
-    // Relocate()
     console.log('showContent on componentDidUpdate')
     this.showContent()
   }
@@ -424,16 +422,15 @@ class LiveVueGatsbyWrap extends Component {
           liveVue: this.state.isLiveVue,
           dataArrived: this.state.dataArrived,
           editFadeDuration: this.state.editFadeDuration,
-          data: this.state.liveVueData,
-          // data: this.state.dataArrived ? this.state.liveVueData : this.props.data,
+          data: this.state.dataArrived
+            ? this.state.liveVueData
+            : this.props.data,
           children: this.props.children
         }
       }>
         <React.Fragment>
           <ErrorBoundaryB>
-            <Fade in={fadeIn} timeout={fadeTime}>
-                {this.props.children}
-            </Fade>
+              {this.props.children}
           </ErrorBoundaryB>
         </React.Fragment>
       </LVGatsbyContextB.Provider>
