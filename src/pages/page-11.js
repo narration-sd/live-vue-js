@@ -5,10 +5,11 @@ import {StaticQuery, graphql} from 'gatsby'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
 import {
-  LiveVueGatsby,
-  LiveVueWrap,
-  LiveVueData
-} from '../live-vue-js/react/LiveVueGatsby.jsx'
+  LiveVueGatsbyB,
+  LiveVueWrapB,
+  LiveVueDataB,
+  LiveVueOnlyWrap
+} from '../live-vue-js/react/LiveVueGatsbyB.jsx'
 import Reporter from '../live-vue-js/react/Reporter.jsx'
 import GatsbyConnect from '../live-vue-js/gatsby-connect.js'
 
@@ -81,8 +82,7 @@ function ShowTheCards (props) {
 
 function SeeSomeData (props) {
   return <>
-    <h4>Data: </h4>
-    <h6>{props.data}</h6>
+    <h4>See this: {props.data}</h4>
   </>
 }
 
@@ -100,78 +100,11 @@ const Child = () => {
  * will have Live Vue Craft Preview ability
  * @usage in Page render(), enclose using <LiveVueWrap>...render tree...</LiveVueWrap>
  */
-class SeventhPage extends LiveVueGatsby {
+class SeventhPage extends Component {
 
-  state = {
-    liveVueData: {},
-    delayed: true
-  }
 
-  constructor (props) {
-    console.log('constructing SeventhPage before super')
-
-    super(props)
-
-    console.log('constructing SeventhPage')
-    this.state = {
-      delayed: true,
-      weHaveToProvideThis: true,
-      liveVueData: {} // must provide and not modify this if include or set a state at all.
-    }
-
-    console.log('state at construct: ' + JSON.stringify(this.state))
-    // this.state = Object(this.state.assign)({
-    //   // delayed: true,
-    //   weHaveToProvideThis: true,
-    //   liveVueData: {} // must provide and not modify this if include or set a state at all.
-    // })
-  }
-
-  isData = (data) => {
-    return typeof window !== `undefined`
-      && data
-      && (Object.entries(data).length !== 0
-        && data.constructor === Object)
-  }
-
-  holdoff = () => {
-    console.log('render delay state at holdoff/will mount: ' + JSON.stringify(this.state))
-    const data = this.state.liveVueData
-    if (typeof window === `undefined` || this.isData(data)) {
-      console.log('render delay set false as data present')
-      this.setState({ delayed: false })
-    } else {
-      setTimeout(() => {
-        console.log('render delay timed out properly')
-        this.holdoff()
-      }, 500)
-    }
-  }
-
-  componentWillMount () {
-    // super.componentWillUpdate() // must call super if using any React lifecycle methods like  this
-    this.holdoff()
-  }
-
-  render (props) {
-    console.log('render delay at render: ' + this.state.delayed)
-    if (this.state.delayed) {
-
-      console.log('render delayed properly')
-      // console.log('render delay timer set inner')
-      //
-      // setTimeout(() => {
-      //   console.log('render delay timed out properly inner')
-      //   this.setState ({ delayed: false })
-      // }, 3500)
-
-      return null
-    } else {
-      console.log('render delay fired properly')
-      let liveData = this.liveVueData()
-      let dataArrived = this.getDataArrived()
-      console.log('page-7 rendering with rendering props: ' + JSON.stringify(props))
-      console.log('page-7 rendering with props: ' + JSON.stringify(this.props))
+  render () {
+      console.log('page-11 rendering with props: ' + JSON.stringify(this.props))
 
       const style = {
         // color: 'lightgoldenrodyellow',
@@ -185,15 +118,13 @@ class SeventhPage extends LiveVueGatsby {
 
       return (
 
-        <LiveVueWrap
-          dataArrived={this.getDataArrived()}
-          editFadeDuration={this.getEditFadeDuration()}
-        >
+        <LiveVueOnlyWrap data={this.props.data}>
           <Layout>
-            <div style={style}>
-              <h3>The seventh page, with Cards via LiveVueGatsby...</h3>
+            {/*<div style={style}>*/}
+              <h3>The seventh page, with Cards via LiveVueGatsbyB...</h3>
 
-              <ShowTheCards data={this.liveVueData()}/>
+              {/*<SeeSomeData data={'hello there'} />*/}
+              <ShowTheCards data={this.props.data}/>
 
               <br/><br/>
               {/*<Link to="/page-6">Go to sixth page</Link>*/}
@@ -205,19 +136,19 @@ class SeventhPage extends LiveVueGatsby {
                 <br/>
                 <Link to="/">Go back to the homepage</Link>
               </div>
-            </div>
+            {/*</div>*/}
           </Layout>
-        </LiveVueWrap>
+        </LiveVueOnlyWrap>
       )
     }
-  }
+
 }
 
 export default SeventhPage
 
 export const
   pageQuery = graphql`
-      query Cards10 ($id: [Int]) {
+      query Cards11 ($id: [Int]) {
           craftql {
               cards: entries (section: cards, id: $id, orderBy: "postDate asc") {
                   ...on CraftQL_Cards {
