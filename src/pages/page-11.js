@@ -5,10 +5,8 @@ import {StaticQuery, graphql} from 'gatsby'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
 import {
-  LiveVueGatsbyB,
-  LiveVueWrapB,
-  LiveVueDataB,
-  LiveVueOnlyWrap
+  LiveVueGatsbyWrap,
+  LiveVueDataWrap
 } from '../live-vue-js/react/LiveVueGatsbyB.jsx'
 import Reporter from '../live-vue-js/react/Reporter.jsx'
 import GatsbyConnect from '../live-vue-js/gatsby-connect.js'
@@ -118,9 +116,10 @@ class SeventhPage extends Component {
 
       return (
 
-        <LiveVueOnlyWrap data={this.props.data}>
+        <LiveVueGatsbyWrap data={this.props.data}>
           <Layout>
-            {/*<div style={style}>*/}
+            <LiveVueDataWrap>
+              {/*<div style={style}>*/}
               <h3>The seventh page, with Cards via LiveVueGatsbyB...</h3>
 
               {/*<SeeSomeData data={'hello there'} />*/}
@@ -136,9 +135,10 @@ class SeventhPage extends Component {
                 <br/>
                 <Link to="/">Go back to the homepage</Link>
               </div>
-            {/*</div>*/}
+              {/*</div>*/}
+            </LiveVueDataWrap>
           </Layout>
-        </LiveVueOnlyWrap>
+        </LiveVueGatsbyWrap>
       )
     }
 

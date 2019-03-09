@@ -1599,7 +1599,7 @@
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:narrationsd/live-vue-js.git",
-                "reference": "fdcf9a353fcbf93db149473bde530b39f94961c2"
+                "reference": "b278de70432185ffd782ca597b9c58bb6445b486"
             },
             "type": "library",
             "extra": {
@@ -1608,7 +1608,7 @@
                 "developerUrl": "https://narrationsd.com"
             },
             "description": "ES6 library for Craft Live View on Vue or similar components",
-            "time": "2019-03-04T06:10:51+00:00"
+            "time": "2019-03-09T11:41:17+00:00"
         },
         {
             "name": "paragonie/random_compat",
