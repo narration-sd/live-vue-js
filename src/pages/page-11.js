@@ -98,7 +98,7 @@ const Child = () => {
  * will have Live Vue Craft Preview ability
  * @usage in Page render(), enclose using <LiveVueWrap>...render tree...</LiveVueWrap>
  */
-class SeventhPage extends Component {
+class EleventhPage extends Component {
 
 
   render () {
@@ -144,7 +144,7 @@ class SeventhPage extends Component {
 
 }
 
-export default SeventhPage
+export default EleventhPage
 
 export const
   pageQuery = graphql`

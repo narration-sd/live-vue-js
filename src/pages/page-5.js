@@ -481,7 +481,7 @@ class FifthPage extends Component {
     }
     {/*<ErrorBoundary>*/
     }
-
+    console.log('page-5, about to return the components')
     return (
       <LiveVueGatsby>
         <div id="content" style={style}>

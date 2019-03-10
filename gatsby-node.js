@@ -10,15 +10,15 @@
 // you have to clear once after installing this, as all it does
 // is prevent maps, which were apparently what was not overwritten/removed
 // how do they think???
-exports.onCreateWebpackConfig = ({ actions, stage }) => {
-  // If production JavaScript and CSS build
-  if (stage === 'build-javascript') {
-    // Turn off source maps
-    actions.setWebpackConfig({
-      devtool: false,
-    })
-  }
-};
+// exports.onCreateWebpackConfig = ({ actions, stage }) => {
+//   // If production JavaScript and CSS build
+//   if (stage === 'build-javascript') {
+//     // Turn off source maps
+//     actions.setWebpackConfig({
+//       devtool: false,
+//     })
+//   }
+// };
 
 // doesn't work as noted, but also, not employed until build??
 /*
