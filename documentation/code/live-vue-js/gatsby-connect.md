@@ -1,6 +1,9 @@
 ---
 title: gatsby-connect
 ---
+
+# gatsby-connect
+
 <a name="GatsbyConnect"></a>
 
 ## GatsbyConnect

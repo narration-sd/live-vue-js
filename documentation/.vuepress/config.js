@@ -1,5 +1,5 @@
 // auto generated sidebar
-const { sidebarTree } = require('../code/config');
+const { sidebarTree } = require('../code/config')
 
 module.exports = {
   dest: 'dist',
@@ -7,6 +7,10 @@ module.exports = {
     '/': {
       title: 'vuepress-jsdoc',
       description: 'Generate jsdoc markdown files for vuepress'
+    },
+    '../src': {
+      title: 'live-vue-jsdoc',
+      description: 'self-documentation from source files'
     }
   },
   themeConfig: {
@@ -26,4 +30,4 @@ module.exports = {
       }
     }
   }
-};
+}

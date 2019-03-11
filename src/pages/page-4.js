@@ -59,7 +59,7 @@ class FourthPage extends Component {
     return (
       <Layout>
         <div id="main">
-        <h1>Hi from the fourth page, where we plan queries...</h1>
+        <h1>Hi from the fourth page, where we have a query...only</h1>
           <h2>{this.state.content}</h2>
         </div>
         <p>Welcome to page 4</p>

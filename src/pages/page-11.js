@@ -71,17 +71,10 @@ function ShowTheCards (props) {
         <Body content={{ __html: card.body.content }}/>
         <SafeImage image={card.image}/>
         <h6>card id: {card.id}</h6>
-        {/*<h5>Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... Here is extratext... </h5>*/}
       </Card>
     </React.Fragment>)
   console.log('ShowTheCards rendering with: ' + cards)
   return cards
-}
-
-function SeeSomeData (props) {
-  return <>
-    <h4>See this: {props.data}</h4>
-  </>
 }
 
 const Child = () => {
@@ -92,8 +85,7 @@ const Child = () => {
 }
 
 /**
- * @classdesc the page-7 Page class, inheriting from LiveVueGatsby so we
- * will have Live Vue Craft Preview ability
+ * @classdesc the page-11 Page class
  * @note inheriting from LiveVueGatsby so we
  * will have Live Vue Craft Preview ability
  * @usage in Page render(), enclose using <LiveVueWrap>...render tree...</LiveVueWrap>
@@ -119,15 +111,11 @@ class EleventhPage extends Component {
         <LiveVueGatsbyWrap data={this.props.data}>
           <Layout>
             <LiveVueDataWrap>
-              {/*<div style={style}>*/}
               <h3>The eleventh page, with Cards via LiveVueGatsbyB...</h3>
 
-              {/*<SeeSomeData data={'hello there'} />*/}
               <ShowTheCards data={this.props.data}/>
 
               <br/><br/>
-              {/*<Link to="/page-6">Go to sixth page</Link>*/}
-              {/*<br/>*/}
               <div style={boxStyle}>
                 <Link to="/page-8">Go back to eighth page</Link>
                 <br/>
@@ -135,7 +123,6 @@ class EleventhPage extends Component {
                 <br/>
                 <Link to="/">Go back to the homepage</Link>
               </div>
-              {/*</div>*/}
             </LiveVueDataWrap>
           </Layout>
         </LiveVueGatsbyWrap>
@@ -150,7 +137,11 @@ export const
   pageQuery = graphql`
       query Cards11 ($id: [Int]) {
           craftql {
-              cards: entries (section: cards, id: $id, orderBy: "postDate asc") {
+              cards: entries (
+                  section: cards, 
+                  id: $id, 
+                  orderBy: "postDate asc"
+              ) {
                   ...on CraftQL_Cards {
                       id
                       title
