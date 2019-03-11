@@ -18,27 +18,62 @@ import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
 const LVGatsbyContextB = React.createContext('no Context')
 
+/**
+ * @classdesc This is the primary component to operate
+ * Live Vue Gatsby
+ *
+ * @usage LiveVueGatsbyWrap communicates automatically
+ * with the Live Vue Craft plugin, delivering your momentary
+ * editing to the Gatsby page shown in the Craft Live Preview
+ * panel. This gives you real time viewing of the result, each
+ * time a content text, image, etc. is altered. Even while you
+ * do this, the currently compiled Gatsby page will continue
+ * to be rapidly served and shown as normal on your website.
+ *
+ * @note As ever, to make use of a fresh
+ * Live Vue/Live Preview edited result, you must save it
+ * as the current version in Craft, then rebuild your Gatsby
+ * page/s in the usual manner which makes use of the Craft data.
+ *
+ * @description To use Live Vue editing for your Gatsby site,
+ * you'll wrap the entire render tree of a Page with
+ * this component, and then wrap the content portion of the
+ * tree with the companion component described below,
+ * LiveVueDataWrap.
+ *
+ * @example At head of your page file, include  the following:
+ * ```
+ * import {
+ *   LiveVueGatsbyWrap,
+ *   LiveVueDataWrap
+ * } from '../live-vue-js/react/LiveVueGatsbyB.jsx'
+ ```
+ *
+ * Then in your Page render(), arrange the top level this way:
+ * ```
+ *    return (
+ *      <LiveVueGatsbyWrap>
+ *        ...your render tree...
+ *      </LiveVueGatsbyWrap>
+ *    )
+ * ```
+ */
 class LiveVueGatsbyWrap extends Component {
 
   state = {
-    liveVueData: {},
-    isLiveVue: false
+    liveVueData: null,
+    dataArrived: false,
+    isLiveVue: false,
+    editFadeDuration: 802 // identifiable
   }
 
   constructor (props) {
     super(props)
 
-    if (this.state === undefined) {
-      // we'll provide our own, but otherwise use theirs
-    }
-
     console.log('Wrap props data: ' + props.data)
     console.log(props.data)
-    this.state.dataArrived = false
-    this.state.liveVueData = null
-    this.state.isLiveVue = this.inIFrame()
-    this.state.editFadeDuration = 802
 
+    this.state.isLiveVue = this.inIFrame()
     this.reporter = React.createRef() // *todo* to be used...?
   }
 
@@ -72,7 +107,8 @@ class LiveVueGatsbyWrap extends Component {
    * ```
    * @param {boolean} [forceLive = false]
    * @function
-   * @returns string
+   * @returns object displayData
+   * @deprecated we aren't going to use this on new architecture
    */
   liveVueData = (forceLive = false) => {
 
@@ -171,7 +207,7 @@ class LiveVueGatsbyWrap extends Component {
     window.removeEventListener('message', this.receiveMessage)
   }
 
-  // nice if this would help us
+  // nice if this would help us but it won't
   // shouldComponentUpdate (nextProps, nextState, nextContext) {
   //   return this.state.isLiveVue // if not, not...
   // }
@@ -200,11 +236,18 @@ class LiveVueGatsbyWrap extends Component {
 
   render = () => {
 
-    // *todo* this little number can't be done but for dev test
-    if (false && !this.state.isLiveVue) {
-      console.log('LiveVueGatsbyWrap render out of Live Vue')
-      return null // but why are we called?
-    }
+    // *todo* leaving this for the moment to remind not to do it.
+    // Because...one of the subtleties.  We need the html page
+    // to run to be able to scrollrecover. Unless we bring back
+    // running our own scrollrecover which skips intermediate run.
+    // But first, rationalize eventing, which might well mean
+    // the addition wouldn't be required.
+    //
+    // if (this.state.isLiveVue && !this.state.dataArrived) {
+    //   console.log('LiveVueGatsbyWrap render out of Live Vue')
+    //   return null // but why are we called?
+    // }
+
     console.log('begin LiveVueGatsbyWrap render')
     console.log(this.props)
 
@@ -263,6 +306,41 @@ class LiveVueGatsbyWrap extends Component {
 }
 
 
+/**
+ * @classdesc This is the inner wrap component necessary
+ * to operate Live Vue Gatsby
+ *
+ * @usage LiveVueGatsbyWrap has received Live Preview/Live Vue
+ * editing content from Craft, but we need to communicate it
+ * now to your Page components. LiveVueGatsbyWrap does this
+ * automatically, providing a data prop with the content.
+ *
+ * @description To complete installing Live Vue editing for
+ * your Gatsby Page, enclose its render tree by inserting
+ * a LiveVueDataWrap just below the Layout component,
+ * and above your own Page components.
+*
+ * @example In your Page render(), arrange the completed result
+ * in this way:
+ * ```
+ *    return (
+ *      <LiveVueGatsbyWrap>
+ *        <Layout>
+ *          <LiveVueDataWrap>
+ *            <YourExampleComponent data={this.props.data}/>
+ *            ...your other render components...
+ *          </LiveVueDataWrap>
+ *        </Layout>
+ *      </LiveVueGatsbyWrap>
+ *    )
+ * ```
+ * Be sure to leave your current data prop for each
+ * render component in place, so that Gatsby will use
+ * current Craft headless data as normal in development
+ * or build. Live Vue Gatsby will automatically substitute
+ * the fresh content for each moment's change, during the
+ * periods while you're editing in Craft Live Preview.
+ */
 class LiveVueDataWrap extends Component {
   static contextType = LVGatsbyContextB
 
