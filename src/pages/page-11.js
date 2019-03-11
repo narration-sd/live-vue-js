@@ -120,7 +120,7 @@ class EleventhPage extends Component {
           <Layout>
             <LiveVueDataWrap>
               {/*<div style={style}>*/}
-              <h3>The seventh page, with Cards via LiveVueGatsbyB...</h3>
+              <h3>The eleventh page, with Cards via LiveVueGatsbyB...</h3>
 
               {/*<SeeSomeData data={'hello there'} />*/}
               <ShowTheCards data={this.props.data}/>
