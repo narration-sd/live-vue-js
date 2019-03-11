@@ -1,8 +1,19 @@
-import React, {Component} from 'react'
-// import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
-// import './lv-fade-in-anim.css'
-import Fade from '@material-ui/core/Fade'
+/*
+ * @link           https://narrationsd.com/
+ * @copyright Copyright (c) 2018 Narration SD
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
+import React, {Component} from 'react'
+import LvModal from './lv-modal.jsx'
+import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
+// import './lv-fade-in-anim.css'
+// import Fade from '@material-ui/core/Fade'
 // import Reporter from './Reporter.jsx'
 
 const LVGatsbyContextB = React.createContext('no Context')
@@ -10,7 +21,8 @@ const LVGatsbyContextB = React.createContext('no Context')
 class LiveVueGatsbyWrap extends Component {
 
   state = {
-    liveVueData: {}
+    liveVueData: {},
+    isLiveVue: false
   }
 
   constructor (props) {
@@ -68,7 +80,6 @@ class LiveVueGatsbyWrap extends Component {
 
     // we should free up display as soon as we know we're static
     // *todo* this works, but isn't the optimum place
-
     // if (!isliveVueData) {
     //   console.log('showContent on call to liveVueData')
     //   this.showContent()
@@ -95,9 +106,6 @@ class LiveVueGatsbyWrap extends Component {
   }
 
   receiveMessage = (event) => {
-    // if (event.origin !== "http://example.org:8080")
-    //   return;
-
     // console.log('child received event: ' + JSON.stringify(event))
     if (event.data === undefined) {
       console.log('skipping data on undefined')
@@ -157,22 +165,32 @@ class LiveVueGatsbyWrap extends Component {
     this.receiveMessage = this.receiveMessage.bind(this)
     window.addEventListener('message', this.receiveMessage, false)
     window.parent.postMessage('loaded', '*')
-
-    // // keep this around for a moment
-    // const params = new URLSearchParams(window.location.search)
-    // let blocked = params.get('isLiveVue') ? 'lv_blocked' : 'lv_unblocked'
-    //
-    // if (blocked !== 'lv_blocked') {
-    //   // this.dataArrived = true // since we're not in the Live Vue iframe
-    //   // console.log('showContent on non-live-vue')
-    //   // this.showContent()
-    // }
   }
 
-  componentWillUnmount () {
-    // keep this a moment too
-    // console.log('will unmount session storage: ' + JSON.stringify(window.sessionStorage))
+  componentWillUnmount = () => {
     window.removeEventListener('message', this.receiveMessage)
+  }
+
+  // nice if this would help us
+  // shouldComponentUpdate (nextProps, nextState, nextContext) {
+  //   return this.state.isLiveVue // if not, not...
+  // }
+
+  componentWillUpdate (nextProps, nextState, nextContext) {
+    if (this.state.isLiveVue) {
+      this.location = window.location // window is safe here
+      try {
+        const currentPosition = new SessionStorage().read(this.location, null)
+        if (currentPosition) {
+          console.log('scrolling to: ' + JSON.stringify(currentPosition))
+          let x, y
+          [ x, y ] = currentPosition
+          window.scrollTo(x, y)
+        }
+      } catch (e) {
+        console.log('no currentPosition yet: ' + e)
+      }
+    }
   }
 
   // due for some usage, or deprecate...
@@ -190,6 +208,34 @@ class LiveVueGatsbyWrap extends Component {
     console.log('begin LiveVueGatsbyWrap render')
     console.log(this.props)
 
+    let style = {}
+    let fadeIn = false
+    let fadeTime = 0
+    // let fadeInClass = ''
+    if (!this.context.isLiveVue) {
+      fadeIn = true
+      fadeTime = 0
+      // fadeInClass = ''
+      style = { visibility: 'visible' }
+    } else if (this.context.dataArrived) {
+      fadeIn = true
+      fadeTime = this.context.editFadeDuration
+      style = { visibility: 'visible', display: 'block', backgroundColor: '#004d66' }
+      // fadeInClass = 'wrap-fade-in'
+    } else { // in live vue, but no data yet
+      fadeIn = false
+      fadeTime = 0
+      style = { visibility: 'hidden', display: 'none' }
+      // fadeInClass = ''
+    }
+
+    // *todo* provide a material-ui theme available to block the Fade
+    // entirely for public load. If we need it, after clearing events
+    // and if we keep the Fade
+    console.log('LiveVueGatsbyWrap fadeIn: ' + fadeIn +
+      ', fadeTime: ' + fadeTime +
+      ', style: ' + JSON.stringify(style))
+
     return (
       <LVGatsbyContextB.Provider value={
         {
@@ -204,7 +250,11 @@ class LiveVueGatsbyWrap extends Component {
       }>
         <React.Fragment>
           <ErrorBoundaryB>
+            {/*<Fade in={fadeIn} timeout={fadeTime}>*/}
+              <div style={this.style}>
               {this.props.children}
+              </div>
+            {/*</Fade>*/}
           </ErrorBoundaryB>
         </React.Fragment>
       </LVGatsbyContextB.Provider>
@@ -235,42 +285,6 @@ class LiveVueDataWrap extends Component {
     console.log('begin LiveVueDataWrap render; context: ' + this.context)
     console.log(this.context)
 
-    // // *todo* temporary measures, until eventing sort anyway
-    // const fadeIn = this.context.isLiveVue
-    //   ? this.context.dataArrived
-    //   : true
-    // const fadeTime = this.context.isLiveVue
-    //   ? this.context.editFadeDuration
-    //   : 0
-    // console.log('DataWrap fadeIn: ' + fadeIn +
-    //   ', fadeTime: ' + fadeTime)
-
-    let style = {}
-    let fadeIn = false
-    let fadeTime = 0
-    if (!this.context.isLiveVue) {
-      fadeIn = true
-      fadeTime = 0
-      // fadeInClass = ''
-      style = { visibility: 'visible', backgroundColor: '#004d66' }
-    } else if (this.context.dataArrived) {
-      fadeIn = true
-      fadeTime = this.context.editFadeDuration
-      style = { visibility: 'visible', display: 'block', backgroundColor: '#004d66' }
-      // fadeInClass = 'wrap-fade-in'
-    } else { // in live vue, but no data yet
-      fadeIn = false
-      fadeTime = 0
-      style = { visibility: 'hidden', display: 'none', backgroundColor: '#004d66' }
-      // fadeInClass = ''
-    }
-
-    // *todo* provide a material-ui theme available to block the Fade
-    // entirely for public load. If we need it, after clearing events
-    console.log('LiveVueDataWrap fadeIn: ' + fadeIn +
-      ', fadeTime: ' + fadeTime +
-      ', style: ' + JSON.stringify(style))
-
     let childrenToUse = this.context.dataArrived
       ? this.addDataToChildren(
         this.props.children,
@@ -278,11 +292,7 @@ class LiveVueDataWrap extends Component {
       : this.props.children
 
     return (
-      <Fade in={fadeIn} timeout={fadeTime}>
-        <div style={this.style}>
-          { childrenToUse }
-        </div>
-      </Fade>
+      childrenToUse
     )
   }
 }
