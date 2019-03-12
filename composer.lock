@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a29348a86e9bbab5c5d16c4a19da8c96",
+    "content-hash": "1cdde4b961b631e74932ced8a25482b3",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -200,6 +200,126 @@
             "time": "2018-01-31T15:28:18+00:00"
         },
         {
+            "name": "composer/installers",
+            "version": "v1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/installers.git",
+                "reference": "cfcca6b1b60bc4974324efb5783c13dca6932b5b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/installers/zipball/cfcca6b1b60bc4974324efb5783c13dca6932b5b",
+                "reference": "cfcca6b1b60bc4974324efb5783c13dca6932b5b",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0"
+            },
+            "replace": {
+                "roundcube/plugin-installer": "*",
+                "shama/baton": "*"
+            },
+            "require-dev": {
+                "composer/composer": "1.0.*@dev",
+                "phpunit/phpunit": "^4.8.36"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Composer\\Installers\\Plugin",
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Installers\\": "src/Composer/Installers"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kyle Robinson Young",
+                    "email": "kyle@dontkry.com",
+                    "homepage": "https://github.com/shama"
+                }
+            ],
+            "description": "A multi-framework Composer library installer",
+            "homepage": "https://composer.github.io/installers/",
+            "keywords": [
+                "Craft",
+                "Dolibarr",
+                "Eliasis",
+                "Hurad",
+                "ImageCMS",
+                "Kanboard",
+                "Lan Management System",
+                "MODX Evo",
+                "Mautic",
+                "Maya",
+                "OXID",
+                "Plentymarkets",
+                "Porto",
+                "RadPHP",
+                "SMF",
+                "Thelia",
+                "WolfCMS",
+                "agl",
+                "aimeos",
+                "annotatecms",
+                "attogram",
+                "bitrix",
+                "cakephp",
+                "chef",
+                "cockpit",
+                "codeigniter",
+                "concrete5",
+                "croogo",
+                "dokuwiki",
+                "drupal",
+                "eZ Platform",
+                "elgg",
+                "expressionengine",
+                "fuelphp",
+                "grav",
+                "installer",
+                "itop",
+                "joomla",
+                "kohana",
+                "laravel",
+                "lavalite",
+                "lithium",
+                "magento",
+                "majima",
+                "mako",
+                "mediawiki",
+                "modulework",
+                "modx",
+                "moodle",
+                "osclass",
+                "phpbb",
+                "piwik",
+                "ppi",
+                "puppet",
+                "pxcms",
+                "reindex",
+                "roundcube",
+                "shopware",
+                "silverstripe",
+                "sydes",
+                "symfony",
+                "typo3",
+                "wordpress",
+                "yawik",
+                "zend",
+                "zikula"
+            ],
+            "time": "2018-08-27T06:10:37+00:00"
+        },
+        {
             "name": "composer/semver",
             "version": "1.4.2",
             "source": {
@@ -324,16 +444,16 @@
         },
         {
             "name": "craftcms/cms",
-            "version": "3.1.17",
+            "version": "3.1.17.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/craftcms/cms.git",
-                "reference": "693c1b6120332900c3ce1c807e0d58c110a4e086"
+                "reference": "fcfa3889b95955bbfe38c2598e95aa154523c795"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/craftcms/cms/zipball/693c1b6120332900c3ce1c807e0d58c110a4e086",
-                "reference": "693c1b6120332900c3ce1c807e0d58c110a4e086",
+                "url": "https://api.github.com/repos/craftcms/cms/zipball/fcfa3889b95955bbfe38c2598e95aa154523c795",
+                "reference": "fcfa3889b95955bbfe38c2598e95aa154523c795",
                 "shasum": ""
             },
             "require": {
@@ -408,7 +528,7 @@
                 "craftcms",
                 "yii2"
             ],
-            "time": "2019-03-08T19:06:55+00:00"
+            "time": "2019-03-09T01:51:41+00:00"
         },
         {
             "name": "craftcms/element-api",
@@ -1562,7 +1682,7 @@
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:narrationsd/live-vue.git",
-                "reference": "39489daa3a41cae6ff2f2fc7c43ccdfa3d0d6f41"
+                "reference": "b8f54191a7bbe62c2a6279eb0ab56d03df7be390"
             },
             "require": {
                 "craftcms/cms": "^3.0.15"
@@ -1591,7 +1711,7 @@
                 }
             },
             "description": "Provide Craft Live View for Vue or similar components",
-            "time": "2019-03-08T23:19:27+00:00"
+            "time": "2019-03-12T05:21:27+00:00"
         },
         {
             "name": "narrationsd/live-vue-js",
@@ -1599,7 +1719,7 @@
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:narrationsd/live-vue-js.git",
-                "reference": "a3d33611f69126313198d07fd02dc9507d61efb8"
+                "reference": "ddbca342047878d0e89000c0517aeb1963106242"
             },
             "type": "library",
             "extra": {
@@ -1608,7 +1728,49 @@
                 "developerUrl": "https://narrationsd.com"
             },
             "description": "ES6 library for Craft Live View on Vue or similar components",
-            "time": "2019-03-11T08:56:29+00:00"
+            "time": "2019-03-12T07:42:18+00:00"
+        },
+        {
+            "name": "oomphinc/composer-installers-extender",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/oomphinc/composer-installers-extender.git",
+                "reference": "ca1c4b16b0905c81d1e77e608f36a2eff1a56f56"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/oomphinc/composer-installers-extender/zipball/ca1c4b16b0905c81d1e77e608f36a2eff1a56f56",
+                "reference": "ca1c4b16b0905c81d1e77e608f36a2eff1a56f56",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0",
+                "composer/installers": "^1.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "OomphInc\\ComposerInstallersExtender\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "OomphInc\\ComposerInstallersExtender\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stephen Beemsterboer",
+                    "email": "stephen@oomphinc.com",
+                    "homepage": "https://github.com/balbuf"
+                }
+            ],
+            "description": "Extend the composer/installers plugin to accept any arbitrary package type.",
+            "homepage": "http://www.oomphinc.com/",
+            "time": "2017-03-31T16:57:39+00:00"
         },
         {
             "name": "paragonie/random_compat",

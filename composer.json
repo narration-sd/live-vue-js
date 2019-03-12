@@ -29,13 +29,20 @@
             "url":  "git@bitbucket.org:narrationsd/live-vue-js.git"
         }
     ],
+    "extra": {
+        "installer-types": ["library"],
+        "installer-paths": {
+            "src/live-vue-js/": ["narrationsd/live-vue-js"]
+        }
+    },
     "require": {
-        "craftcms/cms": "3.1.17",
+        "craftcms/cms": "^3.1.17",
         "craftcms/element-api": "^2.5",
         "craftcms/redactor": "^2.3",
         "markhuot/craftql": "2.x",
         "narrationsd/live-vue": "dev-gatsby",
         "narrationsd/live-vue-js": "dev-gatsby",
+        "oomphinc/composer-installers-extender": "^1.1",
         "vlucas/phpdotenv": "^2.4.0"
     },
     "require-dev": {
