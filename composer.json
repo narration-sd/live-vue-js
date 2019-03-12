@@ -22,11 +22,11 @@
     "repositories": [
         {
             "type": "vcs",
-            "url":  "git@bitbucket.org:narrationsd/live-vue.git"
+            "url":  "git@gitlab.com:narrationsd/live-vue.git"
         },
         {
             "type": "vcs",
-            "url":  "git@bitbucket.org:narrationsd/live-vue-js.git"
+            "url":  "git@gitlab.com:narrationsd/live-vue-js.git"
         }
     ],
     "extra": {
