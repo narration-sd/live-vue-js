@@ -22,6 +22,7 @@ module.exports = {
         },
       },
     },
+    // keep this only if you are trying out with Star Wars
     {
       resolve: "gatsby-source-graphql",
       options: {

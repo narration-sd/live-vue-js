@@ -1,26 +1,20 @@
-/* eslint-disable  */
 import React, {Component} from 'react'
-import {Link} from 'gatsby'
-import {StaticQuery, graphql} from 'gatsby'
-import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
+import { Link } from 'gatsby'
+import { graphql } from 'gatsby'
+
+import Card from '@material-ui/core/Card'
+import Layout from '../components/layout'
 
 import {
   LiveVueGatsbyWrap,
   LiveVueDataWrap
 } from '../live-vue-js/react/LiveVueGatsbyB.jsx'
-import Reporter from '../live-vue-js/react/Reporter.jsx'
-import GatsbyConnect from '../live-vue-js/gatsby-connect.js'
-
-import Button from '@material-ui/core/Button'
-import Card from '@material-ui/core/Card'
-
-import Layout from '../components/layout'
 
 function Body (props) {
-  return <React.Fragment>
+  return <>
     <h6>Body: </h6>
     <div dangerouslySetInnerHTML={props.content}></div>
-  </React.Fragment>
+  </>
 }
 
 function SafeImage (props) {
@@ -31,11 +25,11 @@ function SafeImage (props) {
   }
 
   if (props.image[0]) {
-    return <React.Fragment>
+    return <>
       <h6>image:</h6>
-      <img src={props.image[0] && props.image[0].url} style={imgStyle}/>
+      <img src={props.image[0] && props.image[0].url} style={imgStyle} alt={'Card presentation'}/>
       <h6>image url: {props.image[0].url}</h6>
-    </React.Fragment>
+    </>
   } else {
     return <h3>Missing Image (*todo* later we will have a substitute)</h3>
   }
@@ -47,8 +41,8 @@ function ShowTheCards (props) {
    * @note it's a functional component
    * @usage in Page render(), <LiveVueWrap>...render tree...</LiveVueWrap>
    */
-  console.log('ShowTheCards props: ' + props)
-  console.log(props)
+  // console.log('ShowTheCards props: ' + props)
+  // console.log(props)
 
   let data = props.data
   if (!data || !data.craftql) {
@@ -73,33 +67,21 @@ function ShowTheCards (props) {
         <h6>card id: {card.id}</h6>
       </Card>
     </React.Fragment>)
-  console.log('ShowTheCards rendering with: ' + cards)
+  // console.log('ShowTheCards rendering with: ' + cards)
   return cards
 }
 
-const Child = () => {
-// We wrap the component that actually needs access to
-// the lastName property in FamilyConsumer
-  return <MyContext.Consumer>{context =>
-    <p>{scontext.msg}</p>}</MyContext.Consumer>
-}
-
 /**
- * @classdesc the page-11 Page class
- * @note inheriting from LiveVueGatsby so we
- * will have Live Vue Craft Preview ability
- * @usage in Page render(), enclose using <LiveVueWrap>...render tree...</LiveVueWrap>
+ * @classdesc the demo Page class
+ * @note Using LiveVueGatsby and LiveVueGatsbyDataWrap components
+ * according to https://narrationsd.com/docs/live-vue/live-vue-gatsby-api.html,
+ * in order to enable Craft Live Preview.
  */
-class EleventhPage extends Component {
+class LVDemoPage extends Component {
 
 
   render () {
       console.log('page-11 rendering with props: ' + JSON.stringify(this.props))
-
-      const style = {
-        // color: 'lightgoldenrodyellow',
-        backgroundColor: '#ffffcc'
-      }
 
       const boxStyle = {
         padding: '15px',
@@ -111,16 +93,12 @@ class EleventhPage extends Component {
         <LiveVueGatsbyWrap data={this.props.data}>
           <Layout>
             <LiveVueDataWrap>
-              <h3>The eleventh page, with Cards via LiveVueGatsbyB...</h3>
+              <h3>The Demo page, with Cards via Live Vue Gatsby...</h3>
 
               <ShowTheCards data={this.props.data}/>
 
               <br/><br/>
               <div style={boxStyle}>
-                <Link to="/page-8">Go back to eighth page</Link>
-                <br/>
-                <Link to="/page-9">Go back to ninth page</Link>
-                <br/>
                 <Link to="/">Go back to the homepage</Link>
               </div>
             </LiveVueDataWrap>
@@ -131,11 +109,11 @@ class EleventhPage extends Component {
 
 }
 
-export default EleventhPage
+export default LVDemoPage
 
 export const
   pageQuery = graphql`
-      query Cards11 ($id: [Int]) {
+      query DemoCards ($id: [Int]) {
           craftql {
               cards: entries (
                   section: cards, 
