@@ -12,15 +12,24 @@
  */
 
 import React, {Component} from 'react'
+import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
 // Gatsby may not need the modal; has ErrorBoundary?
 // import LvModal from './lv-modal.jsx'
-import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
-// until we may return to using Fades, out
+// These out until we may return to using Fades, out
 // import './lv-fade-in-anim.css'
 // import Fade from '@material-ui/core/Fade'
 // import Reporter from './Reporter.jsx'
 
+// preliminaries here
 const LVGatsbyContext = React.createContext('no Context')
+
+let logDemo = false // clean unless desired
+
+function demoLog (msg) {
+  if (logDemo) {
+    console.log(msg)
+  }
+}
 
 /**
  * @classdesc This is the primary component to operate
@@ -74,8 +83,8 @@ class LiveVueGatsby extends Component {
   constructor (props) {
     super(props)
 
-    console.log('Wrap props data: ' + props.data)
-    console.log(props.data)
+    demoLog('Wrap props data: ' + props.data)
+    demoLog(props.data)
 
     this.state.isLiveVue = this.inIFrame()
     this.reporter = React.createRef() // *todo* to be used...?
@@ -109,21 +118,21 @@ class LiveVueGatsby extends Component {
   }
 
   receiveMessage = (event) => {
-    // console.log('child received event: ' + JSON.stringify(event))
+    // demoLog('child received event: ' + JSON.stringify(event))
     if (event.data === undefined) {
-      console.log('skipping data on undefined')
+      demoLog('skipping data on undefined')
       return
     }
 
     if (event.data === '') {
-      console.log('skipping data on empty')
+      demoLog('skipping data on empty')
       return
     }
 
     if (event.data !== undefined) {
-      // console.log('received event is: ' + JSON.stringify(event))
+      // demoLog('received event is: ' + JSON.stringify(event))
       if (event.data.text !== undefined) {
-        // console.log('event.data.text: ' + event.data.text)
+        // demoLog('event.data.text: ' + event.data.text)
 
         let obj = { data: {} }
         try {
@@ -138,29 +147,29 @@ class LiveVueGatsby extends Component {
             ? obj.lvMeta.editFadeDuration
             : 0 // default, which share will use
 
-          console.log('receive editFadeDuration: ' + editFadeDuration)
+          demoLog('receive editFadeDuration: ' + editFadeDuration)
 
           if (Object.keys(obj.data).length > 0) {
             obj = this.rearrangeToGatsbyData(obj)
-            console.log('json rearranged; obj is: ' + JSON.stringify(obj))
+            demoLog('json rearranged; obj is: ' + JSON.stringify(obj))
 
-            console.log('setting state data arrived')
+            demoLog('setting state data arrived')
             // there should be only one...
             this.setState({
               liveVueData: obj.data,
               editFadeDuration: editFadeDuration,
               dataArrived: true
             })
-            console.log('state data after receive: ' + JSON.stringify(this.state.liveVueData))
+            demoLog('state data after receive: ' + JSON.stringify(this.state.liveVueData))
           }
         } catch (error) {
-          console.log('json parse error: ' + error)
+          demoLog('json parse error: ' + error)
         }
       } else {
-        console.log('event data.text undefined')
+        demoLog('event data.text undefined')
       }
     } else {
-      console.log('no data')
+      demoLog('no data')
     }
   }
 
@@ -174,7 +183,7 @@ class LiveVueGatsby extends Component {
     window.removeEventListener('message', this.receiveMessage)
   }
 
-  // nice if this would help us but it won't
+  // nice if this would help us, but it won't
   // shouldComponentUpdate (nextProps, nextState, nextContext) {
   //   return this.state.isLiveVue // if not, not...
   // }
@@ -185,18 +194,18 @@ class LiveVueGatsby extends Component {
       try {
         const currentPosition = new SessionStorage().read(this.location, null)
         if (currentPosition) {
-          console.log('scrolling to: ' + JSON.stringify(currentPosition))
+          demoLog('scrolling to: ' + JSON.stringify(currentPosition))
           let x, y
           [x, y] = currentPosition
           window.scrollTo(x, y)
         }
       } catch (e) {
-        console.log('no currentPosition yet: ' + e)
+        demoLog('no currentPosition yet: ' + e)
       }
     }
   }
 
-  // due for some usage, or deprecate...
+  // due for some usage, or deprecate...do we need it?
   report = (title, content) => {
     this.reporter.current.report(title, content)
   }
@@ -212,17 +221,18 @@ class LiveVueGatsby extends Component {
     // }
     //
     // if (this.state.isLiveVue && !this.state.dataArrived) {
-    //   console.log('LiveVueGatsby render out of Live Vue')
+    //   demoLog('LiveVueGatsby render out of Live Vue')
     //   return <div style={bigStyle}>nada but big</div>
     // }
 
-    console.log('begin LiveVueGatsby render')
-    console.log(this.props)
+    demoLog('begin LiveVueGatsby render')
+    demoLog(this.props)
 
     let style = {}
     let fadeIn = false
     let fadeTime = 0
     // let fadeInClass = ''
+
     if (!this.context.isLiveVue) {
       fadeIn = true
       fadeTime = 0
@@ -243,7 +253,7 @@ class LiveVueGatsby extends Component {
     // *todo* provide a material-ui theme available to block the Fade
     // entirely for public load. If we need it, after clearing events
     // and if we keep the Fade
-    console.log('LiveVueGatsby fadeIn: ' + fadeIn +
+    demoLog('LiveVueGatsby fadeIn: ' + fadeIn +
       ', fadeTime: ' + fadeTime +
       ', style: ' + JSON.stringify(style))
 
@@ -255,7 +265,7 @@ class LiveVueGatsby extends Component {
           editFadeDuration: this.state.editFadeDuration,
           data: this.state.dataArrived
             ? this.state.liveVueData
-            : null, // this.props.data,
+            : this.props.data,
           children: this.props.children
         }
       }>
@@ -327,10 +337,12 @@ class LiveVueDataWrap extends Component {
   }
 
   render () {
-    console.log('begin LiveVueDataWrap render; context: ' + this.context)
-    console.log(this.context)
+    demoLog('begin LiveVueDataWrap render; context: ' + this.context)
+    demoLog(this.context)
 
-    let childrenToUse = this.context.dataArrived
+    let childrenToUse =
+      this.context.dataArrived &&
+      this.context.data !== null
       ? this.addDataToChildren(
         this.props.children,
         this.context.data)
@@ -342,7 +354,7 @@ class LiveVueDataWrap extends Component {
     // }
     //
     // if (this.context.isLiveVue && !this.context.dataArrived) {
-    //   console.log('LiveVueGatsby render out of Live Vue')
+    //   demoLog('LiveVueGatsby render out of Live Vue')
     //   return <div style={bigStyle}>nada but big</div>
     // } else {
     //   return (
@@ -376,10 +388,10 @@ class ErrorBoundary extends React.Component {
 
   render () {
     if (this.state.hasError) {
-      console.log('this.state.errMsg: ' + this.state.errMsg)
+      demoLog('this.state.errMsg: ' + this.state.errMsg)
       // You can render any custom fallback UI
       return this.props.msg ? <div>{this.props.msg}</div> : <div>
-        <h2>Something has gone wrong.</h2>
+        <h2>Sorry, something has gone wrong.</h2>
         <details style={{ whiteSpace: 'pre-wrap' }}>
           {this.state.error && this.state.error.toString()}
           <br/>
@@ -388,7 +400,7 @@ class ErrorBoundary extends React.Component {
         <div>
           {this.state.errorInfo.componentStack}
         </div>
-        {/*//something to do here, or out?*/}
+        {/*// *todo* something to do here, or out?*/}
         {/*<h3>{ this.state.errMsg }</h3>*/}
         {/*<h3>{ this.state.errInfo }</h3>*/}
       </div>
