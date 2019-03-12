@@ -6,9 +6,9 @@ import Card from '@material-ui/core/Card'
 import Layout from '../components/layout'
 
 import {
-  LiveVueGatsbyWrap,
+  LiveVueGatsby,
   LiveVueDataWrap
-} from '../live-vue-js/react/LiveVueGatsbyB.jsx'
+} from '../live-vue-js/react/LiveVueGatsby.jsx'
 
 function Body (props) {
   return <>
@@ -90,7 +90,7 @@ class LVDemoPage extends Component {
 
       return (
 
-        <LiveVueGatsbyWrap data={this.props.data}>
+        <LiveVueGatsby data={this.props.data}>
           <Layout>
             <LiveVueDataWrap>
               <h3>The Demo page, with Cards via Live Vue Gatsby...</h3>
@@ -103,7 +103,7 @@ class LVDemoPage extends Component {
               </div>
             </LiveVueDataWrap>
           </Layout>
-        </LiveVueGatsbyWrap>
+        </LiveVueGatsby>
       )
     }
 
