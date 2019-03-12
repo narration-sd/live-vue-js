@@ -2,7 +2,7 @@
  * @link           https://narrationsd.com/
  * @copyright Copyright (c) 2018 Narration SD
  *
- * MIT LIcense
+ * MIT License
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -11,407 +11,104 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import React, {Component, useContext} from 'react'
-import GatsbyConnect from '../gatsby-connect.js'
+import React, {Component} from 'react'
+// Gatsby may not need the modal; has ErrorBoundary?
+// import LvModal from './lv-modal.jsx'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
+// until we may return to using Fades, out
 // import './lv-fade-in-anim.css'
-import Fade from '@material-ui/core/Fade'
-
+// import Fade from '@material-ui/core/Fade'
 // import Reporter from './Reporter.jsx'
 
 const LVGatsbyContext = React.createContext('no Context')
 
-var parentMsg = 'could be the message, really? Where\'s the event?'
-var editFadeDuration = 0
-
-// console.log = function() {}
-
-// this is really dirty, but React object freezing makes necessary
-// *todo* one of many now long gone...
-var fadeOut = {
-  opacity: '0.1'
-  // transition: 'opacity 0ms'
-}
-
-var fadeIn = {
-  opacity: '1',
-  transition: 'opacity 1200ms'
-}
-
-
-// var scrollPos = [0, 0]
-
 /**
- * @classdesc this is a wrapper Component to enclose a Gatsby Page render tree.
- * It provides blanking during Live Preview refresh, and fade-in transition,
- * which is essential for smoothness of view during use.
+ * @classdesc This is the primary component to operate
+ * Live Vue Gatsby
  *
- * There's also an error-presenting wrapper silently included, which will
- * announce on cases of Page code errors, as may be helpful during development.
+ * @usage LiveVueGatsby communicates automatically
+ * with the Live Vue Craft plugin, delivering your momentary
+ * editing to the Gatsby page shown in the Craft Live Preview
+ * panel. This gives you real time viewing of the result, each
+ * time a content text, image, etc. is altered. Even while you
+ * do this, the currently compiled Gatsby page will continue
+ * to be rapidly served and shown as normal on your website.
  *
- * @note used in combination with LiveVueGatsby, which the Page class inherits from
- * @usage place LiveVueWrap in the Page render(), surrounding the actual child components
+ * @note As ever, to make use of a fresh
+ * Live Vue/Live Preview edited result, you must save it
+ * as the current version in Craft, then rebuild your Gatsby
+ * page/s in the usual manner which makes use of the Craft data.
  *
+ * @description To use Live Vue editing for your Gatsby site,
+ * you'll wrap the entire render tree of a Page with
+ * this component, and then wrap the content portion of the
+ * tree with the companion component described below,
+ * LiveVueDataWrap.
+ *
+ * @example At head of your page file, include  the following:
  * ```
- *    // here's an example
- *    render () {
- *      <LiveVueWrap>
- *        ...render tree...
- *      </LiveVueWrap>
- *    }
- *    ```
+ * import {
+ *   LiveVueGatsby,
+ *   LiveVueDataWrap
+ * } from '../live-vue-js/react/LiveVueGatsby.jsx'
+ ```
  *
- */
-class LiveVueWrap extends Component {
-
-  state = {
-    isLiveVue: true,
-    else: 'else state'
-  }
-
-  constructor (props) {
-    super(props)
-    this.state.isLiveVue = this.inIFrame()
-    console.log('Wrap props dataArrived: ' + props.dataArrived)
-    console.log('Wrap props editFadeDuration: ' + props.editFadeDuration)
-    console.log(props)
-    console.log(this.props)
-  }
-
-  inIFrame () {
-    if (typeof window === `undefined`) {
-      // abso necessary for build time with no window to check
-      return false
-    } else {
-      try {
-        return window.self !== window.top
-      } catch (e) {
-        return true
-      }
-    }
-  }
-
-  getEditFadeDuration = () => {
-    console.log('getting editFadeDuration')
-    return editFadeDuration
-  }
-
-  render = (props) => {
-
-    console.log('Wrap style: ' + JSON.stringify(style))
-    console.log(style)
-
-    let fadeInClass = ''
-    let style = {}
-    let fadeIn = false
-    let fadeTime = 0
-    if (!this.inIFrame()) {
-      fadeIn = true
-      fadeTime = 0
-      fadeInClass = ''
-      style = { visibility: 'visible', backgroundColor: '#ffffcc' }
-    } else if (this.props.dataArrived) {
-      fadeIn = true
-      fadeTime = this.props.editFadeDuration
-      style = { visibility: 'visible', backgroundColor: '#ffffcc' }
-      fadeInClass = 'wrap-fade-in'
-    } else {
-      fadeIn = false
-      fadeTime = 0
-      style = { visibility: 'hidden', backgroundColor: '#ffffcc' }
-      fadeInClass = ''
-    }
-
-    console.log('Wrap fade time: ' + fadeTime + 'ms')
-    console.log(this.props)
-
-    return (
-      <LVGatsbyContext.Provider value={
-        {
-          liveVue: this.state.isLiveVue,
-          dataArrived: this.props.dataArrived,
-          editFadeDuration: this.props.editFadeDuration,
-          data: this.props.data
-        }
-      }>
-        <React.Fragment>
-          <ErrorBoundary>
-            <Fade in={fadeIn} timeout={fadeTime}>
-              <div id={"content"} style={style}>
-                {this.props.children}
-              </div>
-            </Fade>
-          </ErrorBoundary>
-        </React.Fragment>
-      </LVGatsbyContext.Provider>
-    )
-  }
-}
-
-class Fader extends React.Component {
-  static contextType = LVGatsbyContext
-
-  theStyle = fadeOut
-
-  constructor (props) {
-    super(props)
-    // this.theStyle = this.inIFrame()
-    //   ? fadeOut
-    //   : fadeIn
-    // if (!this.inIFrame()) {
-    //   this.theStyle = fadeIn
-    // }
-    if (this.inIFrame()) {
-      fadeIn = {
-        opacity: '0.1',
-        transition: 'opacity 600ms'
-      }
-    }
-
-    console.log('in iframe: ' + (this.inIFrame()
-      ? 'yes'
-      : 'no'))
-
-    console.log('constructor  this.theStyle: ' + JSON.stringify(this.theStyle))
-    console.log('constructor  fadeIn: ' + JSON.stringify(fadeIn))
-  }
-
-  inIFrame () {
-    if (typeof window === `undefined`) {
-      // abso necessary for build time with no window to check
-      return false
-    } else {
-      try {
-        return window.self !== window.top
-      } catch (e) {
-        return true
-      }
-    }
-  }
-
-  componentWillMount () {
-    // this.theStyle = false // this.inIFrame()
-    //   ? fadeOut
-    //   : fadeIn
-  }
-
-  componentWillUpdate (nextProps, nextState, nextContext) {
-    // this.theStyle.transition
-    //   = 'opacity ' + (editFadeDuration + 'ms').toString()
-
-    // *todo* for some reason this is critical - tie down
-    console.log('will update prior this.theStyle: ' + JSON.stringify(this.theStyle))
-    // this.theStyle = false // this.inIFrame()
-    //   ? fadeOut
-    //   : fadeIn
-    // if (!this.inIFrame()) {
-    //   this.theStyle = fadeIn
-    // }
-
-    console.log('will update after this.theStyle: ' + JSON.stringify(this.theStyle))
-  }
-
-  render (props) {
-    console.log('render in iframe: ' + (this.inIFrame()
-      ? 'yes'
-      : 'no'))
-
-    console.log(this.context)
-
-    const showy = { backgroundColor: '#ffffcc' }
-    const show = { opacity: 1, backgroundColor: '#ffffcc' }
-    const hidden = { opacity: 0 }
-    const fadeIn = {
-      opacity: 1,
-      transition: 'opacity ' + this.context.editFadeDuration + 'ms',
-      backgroundColor: '#ffffcc',
-      color: 'white'
-    }
-
-    let style = showy
-    // let style = {}
-    // if (!this.inIFrame()) {
-    //   style = show // .assign(this.props.style)
-    // } else if (this.context.dataArrived) {
-    //   style = fadeIn
-    // } else {
-    //   style = hidden
-    // }
-    console.log('Fader style: ' + JSON.stringify(style))
-    console.log(style)
-
-    return (
-      <div id={'Fader'} style={style}>
-        { this.props.children }
-      </div>
-    )
-  }
-}
-
-/**
- * @classdesc this is a functional Component to enclose a Gatsby Page elements
- * which normally use props.data. It provides instead props.liveData, which:
- * - normally supplies the expected props.data from the pageData GraphQL query
- * - but in Craft Preview, supplies the live data as edited in the CP
- *
- * @note used in combination with LiveVueGatsby, which the Page class inherits from
- * @example place LiveVueWrap in the Page render(), surrounding the actual child components
- *
+ * Then in your Page render(), arrange the top level this way:
  * ```
- *    render () {
- *      <LiveVueWrap dataArrived={this.getDataArrived()}>
- *        [future]...render tree of components which use prop.liveData rather than props.data...
- *        ...render tree of components which set their data via this.liveVueData()...
- *        <Example data={this.liveVueData()}/>
- *      </LiveVueData>
- *    }
- *    ```
- *
- */
-function LiveVueData (props) {
-
-  const addDataToChildren = (children, liveVueData = null) => {
-
-    return React.Children.map(children, child => {
-
-      // React mis-recognizes <Elements> that aren't its own,
-      // and then, passes them as empty strings.
-      // Also, children can be null. I ask you.
-      if (child && child.type !== undefined) {
-
-        // if we don't have Live Vue data, replay the Gatsby
-        // static data that the child already has
-        const liveData = liveVueData
-          ? liveVueData
-          : child.props.data
-
-        return React.cloneElement(child, { liveData: liveData })
-      } else {
-        return React.cloneElement(child)
-      }
-    })
-  }
-
-  const lvgData = useContext(LVGatsbyContext)
-  const { isLiveVue } = lvgData
-
-  console.log('lvgData: ' + JSON.stringify(lvgData))
-  console.log('isLiveVue: ' + isLiveVue)
-
-  const childrenWithData = addDataToChildren(props.children)
-
-  return (
-    <React.Fragment>
-      <h2>Live Vue Data</h2>
-      {childrenWithData}
-    </React.Fragment>
-  )
-}
-
-function Relocate () {
-  // if (typeof window !== `undefined`) {
-  //   console.log('Relocate to: ' + JSON.stringify(scrollPos))
-  //   window.scrollTo(scrollPos[0], scrollPos[1])
-  // }
-  return null
-}
-
-/**
- * @classdesc Basis Component to enable Live Vue preview on a Gatsby Page.
- * It provides all services to manage previewing transit from static to live data
- * Companion LiveVueWrap is used to wrap the render tree for the Page.
- * @usage: The page inherits from LiveVueGatsby, rather than from React.Component.
- * This allows retrieving preview data on behalf of the Page.
+ *    return (
+ *      <LiveVueGatsby>
+ *        ...your render tree...
+ *      </LiveVueGatsby>
+ *    )
+ * ```
  */
 class LiveVueGatsby extends Component {
 
-  location = null
-  dataArrived = false
-  id = [2]
-  post = {}
-  connector = null
-  entries = null
-
   state = {
-    show: false,
-    content: 'This is original state content',
-    parentMsg: 'a message? ',
-    testVar: 'unset', // *todo* get this out of here
-    liveVueData: {} // critical, unless they over-ride it
+    liveVueData: null,
+    dataArrived: false,
+    isLiveVue: false,
+    editFadeDuration: 802 // identifiable
   }
 
   constructor (props) {
     super(props)
 
-    if (this.state === undefined) {
-      // we'll provide our own, but otherwise use theirs
+    console.log('Wrap props data: ' + props.data)
+    console.log(props.data)
+
+    this.state.isLiveVue = this.inIFrame()
+    this.reporter = React.createRef() // *todo* to be used...?
+  }
+
+  rearrangeToGatsbyData (fullResult) {
+    // now revise this into shape gatsby expects
+    let cardsData = fullResult.data.cards
+    fullResult = {
+      data: {
+        craftql: {
+          cards: cardsData
+        }
+      }
     }
 
-    this.state.dataArrived = false
-    this.state.editFadeDuration = 802
-    this.state.liveVueData = null
-
-    this.reporter = React.createRef()
-    this.setter = this.props.setter
-    this.dataArrived = 'hoho'
+    return fullResult
   }
 
-  getDataArrived = () => {
-    return this.state.dataArrived
-  }
-  getEditFadeDuration = () => {
-    console.log('getEditFadeDuration: ' + this.state.editFadeDuration)
-    return this.state.editFadeDuration
-  }
-
-  /**
-   * provides the automatically switched liveVueData:
-   *  - Gatsby props data as expected for a static page
-   *  - but Craft Live Preview data, when entries are edited in Craft
-   *
-   * @example create a prop for the element which calls this function, which
-   * will appear on the Page class, then use that data in the rendering Component:
-   * ```
-   *     <ShowTheData data={ this.liveVueData()} />
-   * ```
-   * @param {boolean} [forceLive = false]
-   * @function
-   * @returns string
-   */
-  liveVueData = (forceLive = false) => {
-
-    const isLiveVueData = Object.keys(this.state.liveVueData).length === 0
-
-    // we should free up display as soon as we know we're static
-    // *todo* this works, but isn't the optimum place
-
-    if (!isLiveVueData) {
-      console.log('showContent on call to liveVueData')
-      this.showContent()
-    }
-
-    let displayData = isLiveVueData
-      ? this.props.data
-      : this.state.liveVueData
-
-    return displayData
-  }
-
-  setData = (event) => {
-    let data = this.state.liveVueData
-    if (data !== undefined) {
-      data.craftql.cards[0].title = 'We changed this with setData'
-      this.setState({
-        liveVueData: data,
-        parentMsg: 'and we set a fresh message...'
-      })
+  inIFrame () {
+    if (typeof window === `undefined`) {
+      // abso necessary for build time with no window to check
+      return false
+    } else {
+      try {
+        return window.self !== window.top
+      } catch (e) {
+        return true
+      }
     }
   }
 
   receiveMessage = (event) => {
-    // if (event.origin !== "http://example.org:8080")
-    //   return;
-
     // console.log('child received event: ' + JSON.stringify(event))
     if (event.data === undefined) {
       console.log('skipping data on undefined')
@@ -426,43 +123,36 @@ class LiveVueGatsby extends Component {
     if (event.data !== undefined) {
       // console.log('received event is: ' + JSON.stringify(event))
       if (event.data.text !== undefined) {
-        parentMsg = event.data.text
         // console.log('event.data.text: ' + event.data.text)
-        // let's see the jsoniousness  of it
+
         let obj = { data: {} }
         try {
-          obj = JSON.parse(parentMsg)
+          obj = JSON.parse(event.data.text)
 
           if (!obj.data) {
-            // *todo* fix this -- here we get into integrating Reporter
+            // *todo* here we get into integrating Reporter??
             throw new Error('no data from Live Preview!')
           }
 
-          // more *todo* must do before rearrange elides lvMeta
           let editFadeDuration = obj.lvMeta
             ? obj.lvMeta.editFadeDuration
             : 0 // default, which share will use
 
           console.log('receive editFadeDuration: ' + editFadeDuration)
 
-          // console.log('json parse success; obj is: ' + JSON.stringify(obj))
           if (Object.keys(obj.data).length > 0) {
-            obj = this.connector.rearrangeData(obj)
-            // console.log('json rearranged; obj is: ' + JSON.stringify(obj))
-          }
+            obj = this.rearrangeToGatsbyData(obj)
+            console.log('json rearranged; obj is: ' + JSON.stringify(obj))
 
-          if (obj) {
+            console.log('setting state data arrived')
+            // there should be only one...
             this.setState({
               liveVueData: obj.data,
               editFadeDuration: editFadeDuration,
               dataArrived: true
             })
+            console.log('state data after receive: ' + JSON.stringify(this.state.liveVueData))
           }
-          this.dataArrived = true
-          console.log('showContent on div data arrival')
-          this.showContent()
-          // Relocate()
-
         } catch (error) {
           console.log('json parse error: ' + error)
         }
@@ -474,118 +164,197 @@ class LiveVueGatsby extends Component {
     }
   }
 
-  showContent () {
-    if (typeof window !== 'undefined' && this.dataArrived) {
-      this.dataArrived = false // don't keep looping on it
-      console.log('showing content')
-      let content = document.getElementById('content')
-      // *todo* here's where Hider does better?
-      if (content) {
-        content.style.visibility = 'visible'
-        // *todo* nononono!!! content.style.opacity = '1'
-      } else {
-        console.log('content div not available for visibility')
-      }
-    } else if (!this.dataArrived) {
-      console.log('not dataArrived')
-    }
-  }
-
-  stripTrailingSlash = (str) => {
-    return str.endsWith('/') ? str.slice(0, -1) : str
-  }
-
-  componentWillUpdate (nextProps, nextState, nextContext) {
-    this.location = window.location // window is safe here
-    const currentPosition = new SessionStorage().read(this.props.location, null)
-    try {
-      if (currentPosition) {
-        // scrollPos = currentPosition
-        window.scrollTo(currentPosition[0], currentPosition[1])
-      }
-    } catch (e) {
-      console.log('no currentPosition yet: ' + e)
-    }
-  }
-
-  count = 5
-
-  markWin () {
-    // let pos = '[' + String(window.scrollX) + ',' + String(window.scrollY + this.count++) + ']'
-    // // let pos = [ parseInt(window.scrollX), parseInt(window.scrollY) ]
-    // // pos = '[0,350]'
-    // console.log('markWin pos: ' + JSON.stringify(pos))
-    // console.log('markWin page-7/: ' + window.sessionStorage.getItem('@@scroll|/page-7/'))
-    // // window.sessionStorage.setItem('@@scroll|/page-7', pos)
-    // // window.sessionStorage.setItem('@@scroll|/page-7/', pos)
-    // window.sessionStorage.setItem('mine', pos)
-  }
-
-  //
-
   componentDidMount = () => {
     this.receiveMessage = this.receiveMessage.bind(this)
     window.addEventListener('message', this.receiveMessage, false)
-    window.addEventListener('beforeunload', this.markWin, false)
-
     window.parent.postMessage('loaded', '*')
-    const params = new URLSearchParams(window.location.search)
-    let blocked = params.get('isLiveVue') ? 'lv_blocked' : 'lv_unblocked'
-
-    if (blocked !== 'lv_blocked') {
-      this.dataArrived = true // since we're not in the Live Vue iframe
-      console.log('showContent on non-live-vue')
-      this.showContent()
-    }
-
-    this.markWin()
-    // console.log('did mount session storage: ' + JSON.stringify(window.sessionStorage))
-    this.connector = new GatsbyConnect()
-
-    // let dataQuery = 'script=Cards'
-    //
-    // here we're going to use Live Vue only for previews.
-    // This method will never call out for server data.
-    // let theData = this.connector.liveVue(dataQuery)
-    //
-    // if (theData) {
-    //   console.log('Live Vue data present: ' + JSON.stringify(theData))
-    //   // so we'll reactively show it...
-    //   this.setState(
-    //     {
-    //       content: 'We set fresh Live Vue content from connector.liveVue...',
-    //       liveVueData: theData
-    //     }
-    //   )
-    //   this.dataArrived = true
-    // } else { // normal run case
-    //   // *todo* Here's the looping problem -- result of setState
-    //   // this.setState({
-    //   //   liveVueData: this.props.data
-    //   // })
-    // }
-    // console.log('componentDidMount state.content: ' + this.state.content)
-    // console.log('componentDidMount state: ' + JSON.stringify(this.state))
-    Relocate()
   }
 
-  componentDidUpdate () {
-    // Relocate()
-    console.log('showContent on componentDidUpdate')
-    this.showContent()
-  }
-
-  componentWillUnmount () {
-    this.markWin()
-    // console.log('will unmount session storage: ' + JSON.stringify(window.sessionStorage))
+  componentWillUnmount = () => {
     window.removeEventListener('message', this.receiveMessage)
-    window.removeEventListener('beforeunload', this.markWin)
   }
 
+  // nice if this would help us but it won't
+  // shouldComponentUpdate (nextProps, nextState, nextContext) {
+  //   return this.state.isLiveVue // if not, not...
+  // }
+
+  componentWillUpdate (nextProps, nextState, nextContext) {
+    if (this.state.isLiveVue) {
+      this.location = window.location // window is safe here
+      try {
+        const currentPosition = new SessionStorage().read(this.location, null)
+        if (currentPosition) {
+          console.log('scrolling to: ' + JSON.stringify(currentPosition))
+          let x, y
+          [x, y] = currentPosition
+          window.scrollTo(x, y)
+        }
+      } catch (e) {
+        console.log('no currentPosition yet: ' + e)
+      }
+    }
+  }
+
+  // due for some usage, or deprecate...
   report = (title, content) => {
     this.reporter.current.report(title, content)
   }
 
+  render = () => {
+
+    // *todo* leaving this for the moment.
+    // As doesn't accomplish the intended, a safety on
+    // scroll recovery regardless of compiled html content
+    //
+    // const bigStyle = {
+    //   height: '10000px'
+    // }
+    //
+    // if (this.state.isLiveVue && !this.state.dataArrived) {
+    //   console.log('LiveVueGatsby render out of Live Vue')
+    //   return <div style={bigStyle}>nada but big</div>
+    // }
+
+    console.log('begin LiveVueGatsby render')
+    console.log(this.props)
+
+    let style = {}
+    let fadeIn = false
+    let fadeTime = 0
+    // let fadeInClass = ''
+    if (!this.context.isLiveVue) {
+      fadeIn = true
+      fadeTime = 0
+      // fadeInClass = ''
+      style = { visibility: 'visible' }
+    } else if (this.context.dataArrived) {
+      fadeIn = true
+      fadeTime = this.context.editFadeDuration
+      style = { visibility: 'visible', display: 'block', backgroundColor: '#004d66' }
+      // fadeInClass = 'wrap-fade-in'
+    } else { // in live vue, but no data yet
+      fadeIn = false
+      fadeTime = 0
+      style = { visibility: 'hidden', display: 'none' }
+      // fadeInClass = ''
+    }
+
+    // *todo* provide a material-ui theme available to block the Fade
+    // entirely for public load. If we need it, after clearing events
+    // and if we keep the Fade
+    console.log('LiveVueGatsby fadeIn: ' + fadeIn +
+      ', fadeTime: ' + fadeTime +
+      ', style: ' + JSON.stringify(style))
+
+    return (
+      <LVGatsbyContext.Provider value={
+        {
+          isLiveVue: this.state.isLiveVue,
+          dataArrived: this.state.dataArrived,
+          editFadeDuration: this.state.editFadeDuration,
+          data: this.state.dataArrived
+            ? this.state.liveVueData
+            : null, // this.props.data,
+          children: this.props.children
+        }
+      }>
+        <React.Fragment>
+          <ErrorBoundary>
+            {/*<Fade in={fadeIn} timeout={fadeTime}>*/}
+            <div style={this.style}>
+              {this.props.children}
+            </div>
+            {/*</Fade>*/}
+          </ErrorBoundary>
+        </React.Fragment>
+      </LVGatsbyContext.Provider>
+    )
+  }
+}
+
+/**
+ * @classdesc This is the inner wrap component necessary
+ * to operate Live Vue Gatsby
+ *
+ * @usage LiveVueGatsby has received Live Preview/Live Vue
+ * editing content from Craft, but we need to communicate it
+ * now to your Page components. LiveVueGatsby does this
+ * automatically, providing a data prop with the content.
+ *
+ * @description To complete installing Live Vue editing for
+ * your Gatsby Page, enclose its render tree by inserting
+ * a LiveVueDataWrap just below the Layout component,
+ * and above your own Page components.
+ *
+ * @example In your Page render(), arrange the completed result
+ * in this way:
+ * ```
+ *    return (
+ *      <LiveVueGatsby>
+ *        <Layout>
+ *          <LiveVueDataWrap>
+ *            <YourExampleComponent data={this.props.data}/>
+ *            ...your other render components...
+ *          </LiveVueDataWrap>
+ *        </Layout>
+ *      </LiveVueGatsby>
+ *    )
+ * ```
+ * Be sure to leave your current data prop for each
+ * render component in place, so that Gatsby will use
+ * current Craft headless data as normal in development
+ * or build. Live Vue Gatsby will automatically substitute
+ * the fresh content for each moment's change, during the
+ * periods while you're editing in Craft Live Preview.
+ */
+class LiveVueDataWrap extends Component {
+  static contextType = LVGatsbyContext
+
+  addDataToChildren = (children, data = null) => {
+
+    return React.Children.map(children, child => {
+
+      // React mis-recognizes <Elements> that aren't its own,
+      // and then, passes them as empty strings.
+      // Also, children can be null. I ask you.
+      if (child && child.type !== undefined) {
+        return React.cloneElement(child, { data: data })
+      } else {
+        return React.cloneElement(child)
+      }
+    })
+  }
+
+  render () {
+    console.log('begin LiveVueDataWrap render; context: ' + this.context)
+    console.log(this.context)
+
+    let childrenToUse = this.context.dataArrived
+      ? this.addDataToChildren(
+        this.props.children,
+        this.context.data)
+      : this.props.children
+
+    // *todo* this doesn't accomplish scroll recovery - later
+    // const bigStyle = {
+    //   height: '10000px'
+    // }
+    //
+    // if (this.context.isLiveVue && !this.context.dataArrived) {
+    //   console.log('LiveVueGatsby render out of Live Vue')
+    //   return <div style={bigStyle}>nada but big</div>
+    // } else {
+    //   return (
+    //     childrenToUse
+    //   )
+    // }
+
+    return (
+      childrenToUse
+    )
+
+  }
 }
 
 class ErrorBoundary extends React.Component {
@@ -595,7 +364,7 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch (error, info) {
-    // *todo* Display fallback UI
+    // *todo* Display fallback UI?
     this.setState({
       hasError: true,
       error: error,
@@ -619,10 +388,12 @@ class ErrorBoundary extends React.Component {
         <div>
           {this.state.errorInfo.componentStack}
         </div>
+        {/*//something to do here, or out?*/}
         {/*<h3>{ this.state.errMsg }</h3>*/}
         {/*<h3>{ this.state.errInfo }</h3>*/}
       </div>
     }
+
     return (
       <div>
         {this.props.children}
@@ -633,6 +404,5 @@ class ErrorBoundary extends React.Component {
 
 export {
   LiveVueGatsby,
-  LiveVueWrap,
-  LiveVueData
+  LiveVueDataWrap
 }
