@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-    /* n.b. don't believe an IDE that these aren't used -- they are, in javascript */
+    /* n.b. don't believe an IDE that these aren't used -- they are, in javascript. To be fully put there... */
     .lv-iframe {
         position: absolute;
         top: 0;
@@ -41,14 +41,32 @@
         enabled. Please enable it to continue.</strong>
 </noscript>
 
-<div id="content" class="lv-content-hide">
+<div id="lvindexcontent" class="lv-content-hide">
+
     {% hook "live-vue" %}
+
     <script>
+
+    let logIndex = false // clean unless desired
+
+    function indexLog (msg) {
+      if (logIndex) {
+        console.log(msg)
+      }
+    }
+
+    function lvIndexPageError (msg) {
+      var contentDiv = document.getElementById('lvindexcontent')
+      contentDiv.style.visibility = 'visible'
+      contentDiv.style.display = 'block'
+      contentDiv.style.opacity = 1
+      document.write(msg)
+      throw new Error(msg)
+    }
 
     var lvDiv = document.getElementById('liveVue')
     if (!lvDiv) {
-      document.write('<h2>Sorry, no Live Vue div to proceed on - check Live Vue Settings</h2>')
-      throw new Error('no Live Vue div')
+      lvIndexPageError('<h2>Sorry, no Live Vue div to proceed on - check Live Vue Settings</h2>')
     }
 
     var lvText = lvDiv.innerText
@@ -57,8 +75,7 @@
       lvData = JSON.parse(lvText)
     }
     catch (e) {
-      document.write('<h2>Sorry, Live Vue data parse error: ' + e + ' - check Live Vue Settings</h2>')
-      throw new Error('Live Vue data parse error: ' + e)
+      lvIndexPageError('<h2>Sorry, Live Vue data parse error: ' + e + ' - check Live Vue Settings</h2>')
     }
 
     gatsbySiteUrl = null
@@ -66,22 +83,21 @@
     if (lvData && lvData.lvMeta) {
       gatsbySiteUrl = lvData.lvMeta.liveVueGatsbySiteUrl
       gatsbyPage = lvData.lvMeta.liveVueGatsbyPage
+      indexLog('gatsbySiteUrl: ' + gatsbySiteUrl)
+      indexLog('gatsbyPage: ' + gatsbyPage)
     }
 
-    console.log('gatsbySiteUrl: ' + gatsbySiteUrl)
-    console.log('gatsbyPage: ' + gatsbyPage)
-
     var gatsbySite = null
+
     if (gatsbySiteUrl && gatsbyPage) {
       gatsbySite = gatsbySiteUrl + '/' + gatsbyPage
     } else {
-      document.write('<h2>Sorry, error in gatsbySiteUrl: ' +
-        gatsbySiteUrl + ' or gatsbyPage: ' +
-        gatsbyPage + '</h2>')
-      throw new Error('Live Vue error in gatsbySiteUrl: ' + gatsbySiteUrl +
+      lvIndexPageError(
+        'Sorry, Live Vue error in gatsbySiteUrl: ' +
+        gatsbySiteUrl +
         ', or gatsbyPage: ' + gatsbyPage)
     }
-    console.log('gatsbySite: ' + gatsbySite)
+    indexLog('gatsbySite: ' + gatsbySite)
 
     var iframeElem = document.createElement('iframe')
     iframeElem.src = gatsbySite + '?isLiveVue=1'
@@ -95,15 +111,15 @@
 
     document.body.appendChild(iframeElem)
     // *todo* out also all with contentElement - nothing touches, hence msgs
-    var contentElement = document.getElementById('content')
+    var contentElement = document.getElementById('lvindexcontent')
 
     // for our postMessage from the iframe
     var iframeLoaded = 'no'
     function receiveMessage(event) {
-      console.log('parent received message: ' + JSON.stringify(event.data))
+      indexLog('parent received message: ' + JSON.stringify(event.data))
       if (event.data === 'loaded') {
         iframeLoaded = 'loaded'
-        console.log('parent got iframe loaded on data: ' + event.data)
+        indexLog('parent got iframe loaded on data: ' + event.data)
       }
     }
     window.addEventListener('message', receiveMessage, false)
@@ -112,10 +128,10 @@
       var msg = // { text: 'from our Craft parent' }
         { text: document.getElementById('liveVue').innerText }
       // get reference to window in iframe
-      console.log('preparing: ' + msg.text)
+      indexLog('preparing: ' + msg.text)
       var frame = iframeElem // document.getElementById('ifrm')
-      console.log('frame.iframeReady: ' + frame.dataset.iframeReady)
-      console.log('sending: ' + msg.text + ', to:' + frame.name)
+      indexLog('frame.iframeReady: ' + frame.dataset.iframeReady)
+      indexLog('sending: ' + msg.text + ', to:' + frame.name)
       var win = frame.contentWindow
       // post msg to win - but remember, otherwise mayn't touch it
       // because CSRF rules as this iframe src is on another site
@@ -129,13 +145,13 @@
     function tickDelayPush () {
 
       if (iframeLoaded === 'loaded') {
-        console.log('tickDelayPush got loaded at tick: ' + tickCount)
+        indexLog('tickDelayPush got loaded at tick: ' + tickCount)
         pushMessage()
         // setTimeout(pushMessage, 0) // *todo* still need our tick? think not
       } else {
-        console.log('ticking: ' + tickCount)
+        indexLog('ticking: ' + tickCount)
         if (tickCount++ > 50) { // *todo* can go down when settable
-          console.log('ticks timed out: no iframe answering')
+          indexLog('ticks timed out: no iframe answering')
         } else {
           setTimeout(tickDelayPush, 50) // *todo* should be settable, within limits
         }

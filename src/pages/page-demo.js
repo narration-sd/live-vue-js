@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import { Link } from 'gatsby'
-import { graphql } from 'gatsby'
+import {Link} from 'gatsby'
+import {graphql} from 'gatsby'
 
 import Card from '@material-ui/core/Card'
 import Layout from '../components/layout'
@@ -27,7 +27,8 @@ function SafeImage (props) {
   if (props.image[0]) {
     return <>
       <h6>image:</h6>
-      <img src={props.image[0] && props.image[0].url} style={imgStyle} alt={'Card presentation'}/>
+      <img src={props.image[0] && props.image[0].url} style={imgStyle}
+           alt={'Card presentation'}/>
       <h6>image url: {props.image[0].url}</h6>
     </>
   } else {
@@ -41,8 +42,6 @@ function ShowTheCards (props) {
    * @note it's a functional component
    * @usage in Page render(), <LiveVueWrap>...render tree...</LiveVueWrap>
    */
-  // console.log('ShowTheCards props: ' + props)
-  // console.log(props)
 
   let data = props.data
   if (!data || !data.craftql) {
@@ -50,24 +49,28 @@ function ShowTheCards (props) {
   }
 
   let cardStyle = {
-    color: 'red', // '#00091a',
-    backgroundColor: 'ffffcc',
+    color: 'darkblue', // '#00091a',
+    backgroundColor: '#dddddd',
     maxWidth: '640px',
     margin: '30px 40px',
     padding: '20px 20px'
   }
 
   let cards = <h2>No Cards</h2>
-  cards = data.craftql.cards.map(card =>
-    <React.Fragment key={card.id}>
-      <Card style={cardStyle}>
-        <h5>title:</h5><h2>{card.title}</h2>
-        <Body content={{ __html: card.body.content }}/>
-        <SafeImage image={card.image}/>
-        <h6>card id: {card.id}</h6>
-      </Card>
-    </React.Fragment>)
-  // console.log('ShowTheCards rendering with: ' + cards)
+  let cardsData = data.craftql.cards
+  // this is safed also...
+  if (cardsData && cardsData.length > 0) {
+    cards = data.craftql.cards.map(card =>
+      <React.Fragment key={card.id}>
+        <Card style={cardStyle}>
+          <h5>title:</h5><h2>{card.title}</h2>
+          <Body content={{ __html: card.body.content }}/>
+          <SafeImage image={card.image}/>
+          <h6>card id: {card.id}</h6>
+        </Card>
+      </React.Fragment>
+    )
+  }
   return cards
 }
 
@@ -79,33 +82,35 @@ function ShowTheCards (props) {
  */
 class LVDemoPage extends Component {
 
-
   render () {
-      console.log('page-11 rendering with props: ' + JSON.stringify(this.props))
 
-      const boxStyle = {
-        padding: '15px',
-        backgroundColor: 'lightgoldenrodyellow'
-      }
-
-      return (
-
-        <LiveVueGatsby data={this.props.data}>
-          <Layout>
-            <LiveVueDataWrap>
-              <h3>The Demo page, with Cards via Live Vue Gatsby...</h3>
-
-              <ShowTheCards data={this.props.data}/>
-
-              <br/><br/>
-              <div style={boxStyle}>
-                <Link to="/">Go back to the homepage</Link>
-              </div>
-            </LiveVueDataWrap>
-          </Layout>
-        </LiveVueGatsby>
-      )
+    const boxStyle = {
+      padding: '15px',
+      backgroundColor: '#eeffee'
     }
+
+    const textStyle = {
+      color: 'white'
+    }
+
+    return (
+      <LiveVueGatsby data={this.props.data}>
+        <Layout>
+          <LiveVueDataWrap>
+            <h3 style={textStyle}>The Demo page, with Cards via Live Vue
+              Gatsby...</h3>
+
+            <ShowTheCards data={this.props.data}/>
+
+            <br/><br/>
+            <div style={boxStyle}>
+              <Link to="/">Go back to the homepage</Link>
+            </div>
+          </LiveVueDataWrap>
+        </Layout>
+      </LiveVueGatsby>
+    )
+  }
 
 }
 
@@ -116,8 +121,8 @@ export const
       query DemoCards ($id: [Int]) {
           craftql {
               cards: entries (
-                  section: cards, 
-                  id: $id, 
+                  section: cards,
+                  id: $id,
                   orderBy: "postDate asc"
               ) {
                   ...on CraftQL_Cards {
