@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1cdde4b961b631e74932ced8a25482b3",
+    "content-hash": "8e2e12404fa0a82fd7733375784474d0",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -1681,8 +1681,14 @@
             "version": "dev-gatsby",
             "source": {
                 "type": "git",
-                "url": "git@bitbucket.org:narrationsd/live-vue.git",
-                "reference": "b8f54191a7bbe62c2a6279eb0ab56d03df7be390"
+                "url": "git@gitlab.com:narrationsd/live-vue.git",
+                "reference": "87c9e88e1cb19a5da2dddb68f57c64e63bfd2619"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://gitlab.com/api/v4/projects/narrationsd%2Flive-vue/repository/archive.zip?sha=87c9e88e1cb19a5da2dddb68f57c64e63bfd2619",
+                "reference": "87c9e88e1cb19a5da2dddb68f57c64e63bfd2619",
+                "shasum": ""
             },
             "require": {
                 "craftcms/cms": "^3.0.15"
@@ -1711,15 +1717,21 @@
                 }
             },
             "description": "Provide Craft Live View for Vue or similar components",
-            "time": "2019-03-12T05:21:27+00:00"
+            "time": "2019-03-12T10:07:13+00:00"
         },
         {
             "name": "narrationsd/live-vue-js",
             "version": "dev-gatsby",
             "source": {
                 "type": "git",
-                "url": "git@bitbucket.org:narrationsd/live-vue-js.git",
-                "reference": "ddbca342047878d0e89000c0517aeb1963106242"
+                "url": "git@gitlab.com:narrationsd/live-vue-js.git",
+                "reference": "5938e4f35d3279e5d0846085fc90eb3c591bccd0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://gitlab.com/api/v4/projects/narrationsd%2Flive-vue-js/repository/archive.zip?sha=5938e4f35d3279e5d0846085fc90eb3c591bccd0",
+                "reference": "5938e4f35d3279e5d0846085fc90eb3c591bccd0",
+                "shasum": ""
             },
             "type": "library",
             "extra": {
@@ -1728,7 +1740,7 @@
                 "developerUrl": "https://narrationsd.com"
             },
             "description": "ES6 library for Craft Live View on Vue or similar components",
-            "time": "2019-03-12T07:42:18+00:00"
+            "time": "2019-03-12T10:16:54+00:00"
         },
         {
             "name": "oomphinc/composer-installers-extender",
@@ -3329,16 +3341,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.6.2",
+            "version": "v2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "7d7342c8a4059fefb9b8d07db0cc14007021f9b7"
+                "reference": "c0dd4dc5f44e541c9c0e0506da76aa4f14b41c69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7d7342c8a4059fefb9b8d07db0cc14007021f9b7",
-                "reference": "7d7342c8a4059fefb9b8d07db0cc14007021f9b7",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/c0dd4dc5f44e541c9c0e0506da76aa4f14b41c69",
+                "reference": "c0dd4dc5f44e541c9c0e0506da76aa4f14b41c69",
                 "shasum": ""
             },
             "require": {
@@ -3354,7 +3366,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.7-dev"
                 }
             },
             "autoload": {
@@ -3392,7 +3404,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-01-14T15:00:48+00:00"
+            "time": "2019-03-12T15:45:07+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -4149,12 +4161,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "4e04718428742618a4bf24dafca45b8645c9320d"
+                "reference": "3521da8036ce31b11490433aaae47f9601774191"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/4e04718428742618a4bf24dafca45b8645c9320d",
-                "reference": "4e04718428742618a4bf24dafca45b8645c9320d",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/3521da8036ce31b11490433aaae47f9601774191",
+                "reference": "3521da8036ce31b11490433aaae47f9601774191",
                 "shasum": ""
             },
             "conflict": {
@@ -4291,7 +4303,7 @@
                 "theonedemon/phpwhois": "<=4.2.5",
                 "titon/framework": ">=0,<9.9.99",
                 "truckersmp/phpwhois": "<=4.3.1",
-                "twig/twig": "<1.20",
+                "twig/twig": "<1.38|>=2,<2.7",
                 "typo3/cms": ">=6.2,<6.2.30|>=7,<7.6.32|>=8,<8.7.23|>=9,<9.5.4",
                 "typo3/cms-core": ">=8,<8.7.23|>=9,<9.5.4",
                 "typo3/flow": ">=1,<1.0.4|>=1.1,<1.1.1|>=2,<2.0.1|>=2.3,<2.3.16|>=3,<3.0.10|>=3.1,<3.1.7|>=3.2,<3.2.7|>=3.3,<3.3.5",
@@ -4345,7 +4357,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2019-02-26T21:14:50+00:00"
+            "time": "2019-03-12T13:04:55+00:00"
         }
     ],
     "aliases": [],
