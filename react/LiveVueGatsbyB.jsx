@@ -2,6 +2,8 @@
  * @link           https://narrationsd.com/
  * @copyright Copyright (c) 2018 Narration SD
  *
+ * MIT LIcense
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
@@ -10,8 +12,10 @@
  */
 
 import React, {Component} from 'react'
-import LvModal from './lv-modal.jsx'
+// Gatsby may not need the modal; has ErrorBoundary?
+// import LvModal from './lv-modal.jsx'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
+// until we may return to using Fades, out
 // import './lv-fade-in-anim.css'
 // import Fade from '@material-ui/core/Fade'
 // import Reporter from './Reporter.jsx'
@@ -95,7 +99,7 @@ class LiveVueGatsbyWrap extends Component {
     return fullResult
   }
 
-    /**
+  /**
    * provides the automatically switched liveVueData:
    *  - Gatsby props data as expected for a static page
    *  - but Craft Live Preview data, when entries are edited in Craft
@@ -220,7 +224,7 @@ class LiveVueGatsbyWrap extends Component {
         if (currentPosition) {
           console.log('scrolling to: ' + JSON.stringify(currentPosition))
           let x, y
-          [ x, y ] = currentPosition
+          [x, y] = currentPosition
           window.scrollTo(x, y)
         }
       } catch (e) {
@@ -236,16 +240,17 @@ class LiveVueGatsbyWrap extends Component {
 
   render = () => {
 
-    // *todo* leaving this for the moment to remind not to do it.
-    // Because...one of the subtleties.  We need the html page
-    // to run to be able to scrollrecover. Unless we bring back
-    // running our own scrollrecover which skips intermediate run.
-    // But first, rationalize eventing, which might well mean
-    // the addition wouldn't be required.
+    // *todo* leaving this for the moment.
+    // As doesn't accomplish the intended, a safety on
+    // scroll recovery regardless of compiled html content
+    //
+    // const bigStyle = {
+    //   height: '10000px'
+    // }
     //
     // if (this.state.isLiveVue && !this.state.dataArrived) {
     //   console.log('LiveVueGatsbyWrap render out of Live Vue')
-    //   return null // but why are we called?
+    //   return <div style={bigStyle}>nada but big</div>
     // }
 
     console.log('begin LiveVueGatsbyWrap render')
@@ -294,9 +299,9 @@ class LiveVueGatsbyWrap extends Component {
         <React.Fragment>
           <ErrorBoundaryB>
             {/*<Fade in={fadeIn} timeout={fadeTime}>*/}
-              <div style={this.style}>
+            <div style={this.style}>
               {this.props.children}
-              </div>
+            </div>
             {/*</Fade>*/}
           </ErrorBoundaryB>
         </React.Fragment>
@@ -304,7 +309,6 @@ class LiveVueGatsbyWrap extends Component {
     )
   }
 }
-
 
 /**
  * @classdesc This is the inner wrap component necessary
@@ -319,7 +323,7 @@ class LiveVueGatsbyWrap extends Component {
  * your Gatsby Page, enclose its render tree by inserting
  * a LiveVueDataWrap just below the Layout component,
  * and above your own Page components.
-*
+ *
  * @example In your Page render(), arrange the completed result
  * in this way:
  * ```
@@ -369,9 +373,24 @@ class LiveVueDataWrap extends Component {
         this.context.data)
       : this.props.children
 
-    return (
-      childrenToUse
-    )
+    // *todo* this doesn't accomplish scroll recovery - later
+    // const bigStyle = {
+    //   height: '10000px'
+    // }
+    //
+    // if (this.context.isLiveVue && !this.context.dataArrived) {
+    //   console.log('LiveVueGatsbyWrap render out of Live Vue')
+    //   return <div style={bigStyle}>nada but big</div>
+    // } else {
+    //   return (
+    //     childrenToUse
+    //   )
+    // }
+
+      return (
+        childrenToUse
+      )
+
   }
 }
 
@@ -382,7 +401,7 @@ class ErrorBoundaryB extends React.Component {
   }
 
   componentDidCatch (error, info) {
-    // *todo* Display fallback UI
+    // *todo* Display fallback UI?
     this.setState({
       hasError: true,
       error: error,
@@ -410,6 +429,7 @@ class ErrorBoundaryB extends React.Component {
         {/*<h3>{ this.state.errInfo }</h3>*/}
       </div>
     }
+
     return (
       <div>
         {this.props.children}
