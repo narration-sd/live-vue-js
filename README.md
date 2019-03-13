@@ -8,18 +8,24 @@
 </h1>
 
 ![Content Editing with Live Vue Gatsby](https://site.staging.narrationsd.com/docimages/live-vue-gatsby.png)
-**Editing Gatsby Pages in Craft CMS, with Live Vue Gatsby** 
+
+**Editing Gatsby Pages directly in Craft CMS, with Live Vue Gatsby** 
 ## Introduction
 
-This repository will give you a full installation of Gatsby operating from headless CraftCMS, demonstrating live CP editing of the resulting Gatsby site, through the use of the forthcoming Live Vue Gatsby.
+This repository will give you a full installation of Gatsby operating from headless CraftCMS, demonstrating instant live CP previews during editing of the resulting Gatsby site. 
 
-The basis of a Vagrant vm is also included, so that you can run the complete demo from a laptop.
+This is accomplished through  use of the forthcoming Live Vue Gatsby.
+
+The basis of a Vagrant vm is also included, so that you can run the complete live website and Craft editing demonstraton from a laptop.
 
 ## Getting started
 
 1. Clone this website from its repo, which you'll have been informed of for the Beta.
+
 1. Run `npm install -g gatsby-cli` to install Gatsby globally, as recommended by the Gatsby team, if you haven't already.
+
 1. Run `npm install` to load required general packages
+
 1. Run `composer install`, which will provide the live-vue-js package, installed directly in `/src`, as well as a complete CraftCMS installation including Live Vue and other plugins. 
     
    The website also includes configuration you can tune and use if you'd like to operate it using Vagrant.
@@ -34,60 +40,127 @@ The basis of a Vagrant vm is also included, so that you can run the complete dem
    Click the link on that page to go to the demo Cards page. You'll see a set of cards, very barebones, with title, body text, and a picture. 
    
    ![Content Editing with Live Vue Gatsby](https://site.staging.narrationsd.com/docimages/live-vue-demo-site.png)
-   **Demo Site Gatsby Pages, with Live Vue Gatsby** 
    
-1. Note that even on the development server, this Gatsby site is very fast, as it should be. This is because although Live Vue Gatsby is present, it doesn't interfere with your operational built Gatsby site.
+   **Demo Site Gatsby Pages, on the development server** 
    
-   This instant demo has worked because Gatsby is configured in this repo to pull its build-states GraphQL from https://staging.narrationsd.com's Craft CMS, giving you the immediately viewable content.
-1. You can now stop the development server, and run `gatsby build`, which will produce the `/public` directory, home of the built Gatsby site. 
+1. Note that even on the development server, pages are very fast, as they should be. This is because although Live Vue Gatsby is present, the design keeps it from interfering with your operational built Gatsby site.
+   
+   This instant demo has worked because Gatsby is configured to pull its build-states GraphQL from https://staging.narrationsd.com's Craft CMS, giving you the immediately viewable content. 
+   
+   You can change this later in the normal Gatsby config, to build from your own site.
+   
+1. When you're finished with first observations, you can stop the development server, and run `gatsby build`, which will produce the `/public` directory, home of the built Gatsby site.
+
 1. To use this, you'll need a web server, so it's also time to bring Craft into the picture.
 
 ## Preparing the Craft site 
 
-1. If you have a workable recent Craft (version 3.1.14 or better I believe) installation, you can use it.
-1. To run with the available Vagrant vm, adjust the config in `Homestead.yaml` to suit. Then with a `vagrant up`, your server will appear with Live Vue needs loaded, and nginx properly set to run separate instances for the web sites.
-1. What kind of DNS/hosts file configuration does Live Vue Gatsby require? You'll need to have separate URLs and server instances for Craft operating fron /web, and for the Gatsby site itself, in /public. 
-1. It can be convenient to have the Craft headless server on `site.domain.com`, while the Gatsby live server is on `domain.com` .
-1. Vagrant will take care of synchronizing all needs at boot-up or reload, given you've got command-line rsync installed on your source machine. If you use a separate server, appropriately arrange to upload at least the `/templates/lv-gatsby-index.html` file and the `/templates/cardz` folder, the` /config/live-vue.php` file, and probably the /web/resources assets.
-1. With a fresh server, you'll run through the short CraftCMS install to set what you want.
-1. Once you've got your Craft vm or server site up, log in as admin, and proceed to set up for this demo website.
-## Craft configuration
-1.The Craft schema for this demo is very simple. You'll need to make two fields:
-   a. body, as a Redactor or other rich text field
-   b. images, as an image Assets field
+1. If you have a workable recent Craft installation(version 3.1.14 or better, due to some recent changes), you can use it for your demo site's headless CMS.
+
+1. Alternatively, to run with a Vagrant vm, adjust the config in `Homestead.yaml` to suit, along with a matching hosts file line to provide an IP and DNS. 
+
+   Then with a `vagrant up`, your server will appear with Live Vue requirements loaded, and `nginx` properly set to run separate instances for the Craft and Gatsby web sites.
    
-1. To match, you'll want a Setting>Assets configuration to use the `/web/resouces/images` folder, and to have run Update Asset Indexes from `Craft>Utilities`. 
-1. You'll also need an `Assets Image Transform` named `Card Image`, with settings Scale to Fit and 600x400.
-1. To complete, make a new Section named `Cards`, and put your fields in it. 
-1. Now you can run Craft, and edit the cards to have titles, body text, and an image. You can run the Craft website with `https://your.domain.com/cardz` to see a listing page of the Cards. 
-1. Three Cards is a good number.
+   The convention is to have the Gatsby site on its base domain, and Craft on a subdomain, typically `site.domain.test/com`.
+   
+   Craft operates from its usual `/web` folder in the installation, and Gatsby from the `/public` folder which `gatsby build` will provision each time.
+   
+1. Vagrant will take care of synchronizing all needs at boot-up or reload, given you've got command-line rsync installed on your source machine. 
 
-## Live Vue configuration.
+   If you use a separate server, appropriately arrange to upload at least the `/public` Gatsby folder, along with the usual `/web`, `/config`, and `/templates` folders for Craft.
+   
+1. With a fresh server, you'll run through the short CraftCMS install pages for the basis settings you want.
 
-How do we get Live Preview into operation? You've installed the Live Vue plugin, and noticed the cat at his evening window icon. Now we'll use that to complete setup.
-1. Open Live Vue Settings from the Settings>Plugins page or from its menu item and icon at left of the CP.
-. You'll need to add just one row to the Endpoints to run the demo. Enter the following, and then Save:
+1. Once you've got your Craft vm or server site up, log in as admin, and proceed to configure the content for this demo website.
+
+## Craft configuration
+
+1.The Craft schema for this demo is very simple. You'll need to make two fields:
+   a. `body`, as a Redactor or other rich text field
+   b. `images`, as an image Assets field
+   
+1. For the images field, you'll want to provide a Setting>Assets configuration to name your assets, using the `/web/resources/images` folder.
+ 
+   Then run Update Asset Indexes from `Craft>Utilities`, and finally, open and re-save your `images` field so that its assets will register.
+ 
+1. You'll also need to set up a new `Assets>Assets Image Transform` named `Card Image`, with Scale to Fit and 600x400 properties.
+
+1. To complete, make a new Section named `Cards`, and put your fields in it.
+
+1. Now you can use Craft CP Entries as usual, and edit new Cards entries to have titles, body text, and an image. 
+   
+   To begin with for the demo, three Cards is likely a good number.
+
+   You can run the Craft website with `https://your.domain.com/cardz` to see a simple Twig listing page of the Cards, to check they're present, before Live Vue is ready to give previews.
+
+## Configuring Live Vue itself.
+
+How do we get Live Preview into operation? 
+
+You've installed the Live Vue plugin along with Redactor and CraftQL, and noticed the cat at his evening window icon, on this page:
+
+   ![Craft Settings page with Live Vue Gatsby](https://site.staging.narrationsd.com/docimages/settings-w-plugins.png)
+   
+   **Craft Settings page with Live Vue Gatsby**
+   
+Now we'll use the plugin's settings to complete setup.
+
+1. Open Live Vue Settings from the Settings page as you've just seen, or from its menu item with icon at left of the CP.
+
+   Here's a view of that page, with all the basic configuration filled in and Saved.
+   
+   ![Content Editing with Live Vue Gatsby](https://site.staging.narrationsd.com/docimages/essential-live-vue-settings.png)
+   
+   **Content Editing with Live Vue Gatsby**
+      
+1. To provide the same for your new demo site,  you'll need to add just one row to the Endpoints table, from its initial blank state. 
+
+   Enter the following, note your result looks like the screenshot above, and then Save:
     - Path Signature: `cards`
     - Endpoint Template: `page-cards`
     - Data Type: select `Gatsby`
     - Endpoint or Script: `Cards`
-1. This row will match any card you edit, and run it with the GraphQL script named `Cards`, which you find in `config/live-vue.php`.
-1. For future page types, you make the CraftQL script by copying the GraphQL query in your Page file, deleting the `craftql {}` bracketing, and removing the `CRAFTQL_` prefix from all query lines, to make a normal query. Those tag lines are named from your `gatsby-config.js` configuration of the `gatsby-source-graphql` plugin.
+    - Notes: anything helpful to you about this routing.
+    
+1.  Let's understand the meanings of what you've just filled in and saved.
 
+   By it's Path Signature `cards`, this row will match any card you edit, and run it with the GraphQL script named `Cards`. 
+   
+   You'll find `Cards` in the set of GraphQL scripts in the file `/config/live-vue.php`. Note how the scripts are conveniently entered so you can cut/paste them, then identify name and details at the bottom of the file.
+   
+1. Please note carefully how scripts for Live View are normal Graph/CraftQL queries, but that Gatsby's in-page queries are a little (but importantly) different. 
+
+   As you probably know or will find in Gatsby documentation, its queries have an added bracketed enclosure and some added prefixes on top of the normal query, to match how the server is set up in your `gatsby-config.js` configuration of the `gatsby-source-graphql` plugin.
+
+   For future page types, you can make the CraftQL script by copy-pasting the GraphQL query in your Page file, then deleting the `craftql {}` bracketing, and removing the `CRAFTQL_` prefix from all query lines. This will recover the normal query in an easy way.
+   
+   The following screenshots show the two forms of query via the nice Graphiql pages, first from Gatsby develop, and then from CraftQL in its CP page.
+   
+   First, the Gatsby version of the query:
+
+![Gatsby Graphiql Cards query](https://site.staging.narrationsd.com/docimages/graphiql-page.png)
+
+**The Cards query as the Gatsby page wants to see it** 
+
+![CraftQL Graphiql Cards query](https://site.staging.narrationsd.com/docimages/craftql-site.png)
+
+**The Cards query as the CraftQL script wants to see it**    
+   
 ## Running Live Vue
 
-Once you have these points set up, you're ready to see each of your Cards live in their Gatsby page, following every change you make while editing their content.
+Once you have the above Setup points arranged, you're ready to see each of your Cards live in their Gatsby page, following every change you make while editing their content.
 
 When you finish editing, Save normally to update Craft's database. Then to publish the results, run `gatsby build`, followed by uploading the `/public` directory to the website. 
 
 Now your edits are out, and available at Gatsby speed.
 
+*n.b. Gatsby is pretty bad about housekeeping in the /public folder. JavaScript map files etc. will accumulate with each build, and while there is configuration that is supposed to prevent this, it isn't 100% effective at this point in Gatsby's rapid development.* 
 
+   *Thus, before a final build, you may wish to clear out your /public folder, so the build's fresh files only will be present for upload. If you're not using rsync to transfer to Vagrant or a remote site, you'd want to do this there as well.*
 
+<h3 style="text-align: center; margin: 0 auto;">Please Enjoy!</h3><br/>
 
-
-
-# Original Gatsby Demo site instructions
+Following are the original Gatsby Demo site instructions:
 
 ## 🚀 Quick start
 
