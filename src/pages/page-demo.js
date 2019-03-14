@@ -7,7 +7,7 @@ import Layout from '../components/layout'
 
 import {
   LiveVueGatsby,
-  LiveVueDataWrap
+  LiveVueData
 } from '../live-vue-js/react/LiveVueGatsby.jsx'
 
 function Body (props) {
@@ -96,9 +96,8 @@ class LVDemoPage extends Component {
     return (
       <LiveVueGatsby data={this.props.data}>
         <Layout>
-          <LiveVueDataWrap>
-            <h3 style={textStyle}>The Demo page, with Cards via Live Vue
-              Gatsby...</h3>
+          <LiveVueData>
+            <h3 style={textStyle}>The Demo page, with Cards via Live Vue Gatsby...</h3>
 
             <ShowTheCards data={this.props.data}/>
 
@@ -106,7 +105,7 @@ class LVDemoPage extends Component {
             <div style={boxStyle}>
               <Link to="/">Go back to the homepage</Link>
             </div>
-          </LiveVueDataWrap>
+          </LiveVueData>
         </Layout>
       </LiveVueGatsby>
     )

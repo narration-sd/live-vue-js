@@ -1682,12 +1682,12 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.com:narrationsd/live-vue.git",
-                "reference": "87c9e88e1cb19a5da2dddb68f57c64e63bfd2619"
+                "reference": "39ce473b5cf2cbc5aee0f75f691caec7758a7349"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/narrationsd%2Flive-vue/repository/archive.zip?sha=87c9e88e1cb19a5da2dddb68f57c64e63bfd2619",
-                "reference": "87c9e88e1cb19a5da2dddb68f57c64e63bfd2619",
+                "url": "https://gitlab.com/api/v4/projects/narrationsd%2Flive-vue/repository/archive.zip?sha=39ce473b5cf2cbc5aee0f75f691caec7758a7349",
+                "reference": "39ce473b5cf2cbc5aee0f75f691caec7758a7349",
                 "shasum": ""
             },
             "require": {
@@ -1717,7 +1717,7 @@
                 }
             },
             "description": "Provide Craft Live View for Vue or similar components",
-            "time": "2019-03-12T10:07:13+00:00"
+            "time": "2019-03-13T15:39:00+00:00"
         },
         {
             "name": "narrationsd/live-vue-js",
@@ -1725,12 +1725,12 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.com:narrationsd/live-vue-js.git",
-                "reference": "5938e4f35d3279e5d0846085fc90eb3c591bccd0"
+                "reference": "9fa758aaa28bb180632b47685902de0a6aa31fda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/narrationsd%2Flive-vue-js/repository/archive.zip?sha=5938e4f35d3279e5d0846085fc90eb3c591bccd0",
-                "reference": "5938e4f35d3279e5d0846085fc90eb3c591bccd0",
+                "url": "https://gitlab.com/api/v4/projects/narrationsd%2Flive-vue-js/repository/archive.zip?sha=9fa758aaa28bb180632b47685902de0a6aa31fda",
+                "reference": "9fa758aaa28bb180632b47685902de0a6aa31fda",
                 "shasum": ""
             },
             "type": "library",
@@ -1740,7 +1740,7 @@
                 "developerUrl": "https://narrationsd.com"
             },
             "description": "ES6 library for Craft Live View on Vue or similar components",
-            "time": "2019-03-12T10:16:54+00:00"
+            "time": "2019-03-12T19:37:54+00:00"
         },
         {
             "name": "oomphinc/composer-installers-extender",
@@ -3341,16 +3341,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.7.1",
+            "version": "v2.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "c0dd4dc5f44e541c9c0e0506da76aa4f14b41c69"
+                "reference": "70c59531da43afe598c66135e39cac39475a2f51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/c0dd4dc5f44e541c9c0e0506da76aa4f14b41c69",
-                "reference": "c0dd4dc5f44e541c9c0e0506da76aa4f14b41c69",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/70c59531da43afe598c66135e39cac39475a2f51",
+                "reference": "70c59531da43afe598c66135e39cac39475a2f51",
                 "shasum": ""
             },
             "require": {
@@ -3404,7 +3404,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-03-12T15:45:07+00:00"
+            "time": "2019-03-12T18:48:26+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
