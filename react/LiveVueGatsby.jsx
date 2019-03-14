@@ -6,20 +6,22 @@
 
 import React, {Component} from 'react'
 import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
-// Gatsby may not need the modal; has ErrorBoundary?
+// *todo* Gatsby may not need the modal; we have ErrorBoundary?
 // import LvModal from './lv-modal.jsx'
-// These out until we may return to using Fades, out
+
+// *todo* out until we may return to using Fades, now rather not needed?
 // import './lv-fade-in-anim.css'
 // import Fade from '@material-ui/core/Fade'
 // import Reporter from './Reporter.jsx'
 
-// preliminaries here
+// this is what makes the simple-to-use wrapping design work...
 const LVGatsbyContext = React.createContext('no Context')
 
-let logDemo = false // clean unless desired
+// *todo* until we select a general log package
+let lvgDevLogDev = false // clean unless desired
 
-function demoLog (msg) {
-  if (logDemo) {
+function lvgDevLog (msg) {
+  if (lvgDevLogDev) {
     console.log(msg)
   }
 }
@@ -45,13 +47,13 @@ function demoLog (msg) {
  * you'll wrap the entire render tree of a Page with
  * this component, and then wrap the content portion of the
  * tree with the companion component described below,
- * LiveVueDataWrap.
+ * LiveVueData.
  *
  * @example At head of your page file, include  the following:
  * ```
  * import {
  *   LiveVueGatsby,
- *   LiveVueDataWrap
+ *   LiveVueData
  * } from '../live-vue-js/react/LiveVueGatsby.jsx'
  ```
  *
@@ -76,28 +78,40 @@ class LiveVueGatsby extends Component {
   constructor (props) {
     super(props)
 
-    demoLog('Wrap props data: ' + props.data)
-    demoLog(props.data)
+    lvgDevLog('Wrap props data: ' + props.data)
+    lvgDevLog(props.data)
 
-    this.state.isLiveVue = this.inIFrame()
-    this.reporter = React.createRef() // *todo* to be used...?
-  }
-
-  rearrangeToGatsbyData (fullResult) {
-    // now revise this into shape gatsby expects
-    let cardsData = fullResult.data.cards
-    fullResult = {
-      data: {
-        craftql: {
-          cards: cardsData
-        }
+    if (!props.data) {
+      const msg = 'LiveVueGatsby: a valid data prop is required, but yet provided!'
+      if (typeof window !== 'undefined') {
+        // likely fail will come in build, but if some dynamic case, show in app...
+        document.write('<h2>Exiting: ' + msg + '</h2>')
       }
+      throw new Error (msg)
     }
 
-    return fullResult
+    // this little dance is JavaScript reflection
+    // it works as written because from Gatsby's GraphQL page data query,
+    // there will be only the one top element, the particular source introducer
+    this.introducer = Object.getOwnPropertyNames(props.data)[0]
+
+    this.state.isLiveVue = this.inIframe()
+    this.reporter = React.createRef() // *todo* to be used...will we?
   }
 
-  inIFrame () {
+  rearrangeToGatsbyData (craftResult) {
+    // Now revise CraftQL's normal result into shape Gatsby expects, using the
+    // introducer element that we got from the pagge GraphQL query in the constructor.
+    // And let's not bring lodash in, so we'll do it by js array notation for objects
+
+    let revisedResult = { data: {} }
+    revisedResult.data[this.introducer] = craftResult.data
+
+    lvgDevLog ('rearrangeToGatsbyData result: ' + JSON.stringify(revisedResult))
+    return revisedResult
+  }
+
+  inIframe () {
     if (typeof window === `undefined`) {
       // abso necessary for build time with no window to check
       return false
@@ -111,21 +125,21 @@ class LiveVueGatsby extends Component {
   }
 
   receiveMessage = (event) => {
-    // demoLog('child received event: ' + JSON.stringify(event))
+    // lvgDevLog('child received event: ' + JSON.stringify(event))
     if (event.data === undefined) {
-      demoLog('skipping data on undefined')
+      lvgDevLog('skipping data on undefined')
       return
     }
 
     if (event.data === '') {
-      demoLog('skipping data on empty')
+      lvgDevLog('skipping data on empty')
       return
     }
 
     if (event.data !== undefined) {
-      // demoLog('received event is: ' + JSON.stringify(event))
+      // lvgDevLog('received event is: ' + JSON.stringify(event))
       if (event.data.text !== undefined) {
-        // demoLog('event.data.text: ' + event.data.text)
+        // lvgDevLog('event.data.text: ' + event.data.text)
 
         let obj = { data: {} }
         try {
@@ -140,29 +154,29 @@ class LiveVueGatsby extends Component {
             ? obj.lvMeta.editFadeDuration
             : 0 // default, which share will use
 
-          demoLog('receive editFadeDuration: ' + editFadeDuration)
+          lvgDevLog('receive editFadeDuration: ' + editFadeDuration)
 
           if (Object.keys(obj.data).length > 0) {
             obj = this.rearrangeToGatsbyData(obj)
-            demoLog('json rearranged; obj is: ' + JSON.stringify(obj))
+            lvgDevLog('json rearranged; obj is: ' + JSON.stringify(obj))
 
-            demoLog('setting state data arrived')
+            lvgDevLog('setting state data arrived')
             // there should be only one...
             this.setState({
               liveVueData: obj.data,
               editFadeDuration: editFadeDuration,
               dataArrived: true
             })
-            demoLog('state data after receive: ' + JSON.stringify(this.state.liveVueData))
+            lvgDevLog('state data after receive: ' + JSON.stringify(this.state.liveVueData))
           }
         } catch (error) {
-          demoLog('json parse error: ' + error)
+          lvgDevLog('json parse error: ' + error)
         }
       } else {
-        demoLog('event data.text undefined')
+        lvgDevLog('event data.text undefined')
       }
     } else {
-      demoLog('no data')
+      lvgDevLog('no data')
     }
   }
 
@@ -187,13 +201,13 @@ class LiveVueGatsby extends Component {
       try {
         const currentPosition = new SessionStorage().read(this.location, null)
         if (currentPosition) {
-          demoLog('scrolling to: ' + JSON.stringify(currentPosition))
+          lvgDevLog('scrolling to: ' + JSON.stringify(currentPosition))
           let x, y
           [x, y] = currentPosition
           window.scrollTo(x, y)
         }
       } catch (e) {
-        demoLog('no currentPosition yet: ' + e)
+        lvgDevLog('no currentPosition yet: ' + e)
       }
     }
   }
@@ -214,12 +228,12 @@ class LiveVueGatsby extends Component {
     // }
     //
     // if (this.state.isLiveVue && !this.state.dataArrived) {
-    //   demoLog('LiveVueGatsby render out of Live Vue')
+    //   lvgDevLog('LiveVueGatsby render out of Live Vue')
     //   return <div style={bigStyle}>nada but big</div>
     // }
 
-    demoLog('begin LiveVueGatsby render')
-    demoLog(this.props)
+    lvgDevLog('begin LiveVueGatsby render')
+    lvgDevLog(this.props)
 
     let style = {}
     let fadeIn = false
@@ -246,7 +260,7 @@ class LiveVueGatsby extends Component {
     // *todo* provide a material-ui theme available to block the Fade
     // entirely for public load. If we need it, after clearing events
     // and if we keep the Fade
-    demoLog('LiveVueGatsby fadeIn: ' + fadeIn +
+    lvgDevLog('LiveVueGatsby fadeIn: ' + fadeIn +
       ', fadeTime: ' + fadeTime +
       ', style: ' + JSON.stringify(style))
 
@@ -287,7 +301,7 @@ class LiveVueGatsby extends Component {
  *
  * @description To complete installing Live Vue editing for
  * your Gatsby Page, enclose its render tree by inserting
- * a LiveVueDataWrap just below the Layout component,
+ * a LiveVueData just below the Layout component,
  * and above your own Page components.
  *
  * @example In your Page render(), arrange the completed result
@@ -296,10 +310,10 @@ class LiveVueGatsby extends Component {
  *    return (
  *      <LiveVueGatsby>
  *        <Layout>
- *          <LiveVueDataWrap>
+ *          <LiveVueData>
  *            <YourExampleComponent data={this.props.data}/>
  *            ...your other render components...
- *          </LiveVueDataWrap>
+ *          </LiveVueData>
  *        </Layout>
  *      </LiveVueGatsby>
  *    )
@@ -311,7 +325,7 @@ class LiveVueGatsby extends Component {
  * the fresh content for each moment's change, during the
  * periods while you're editing in Craft Live Preview.
  */
-class LiveVueDataWrap extends Component {
+class LiveVueData extends Component {
   static contextType = LVGatsbyContext
 
   addDataToChildren = (children, data = null) => {
@@ -330,8 +344,8 @@ class LiveVueDataWrap extends Component {
   }
 
   render () {
-    demoLog('begin LiveVueDataWrap render; context: ' + this.context)
-    demoLog(this.context)
+    lvgDevLog('begin LiveVueData render; context: ' + this.context)
+    lvgDevLog(this.context)
 
     let childrenToUse =
       this.context.dataArrived &&
@@ -341,13 +355,15 @@ class LiveVueDataWrap extends Component {
         this.context.data)
       : this.props.children
 
-    // *todo* this doesn't accomplish scroll recovery - later
+    // *todo* this doesn't accomplish all-cases scroll recovery - later
+    // we will possibly re-institute an earlier extension on React's
+    //
     // const bigStyle = {
     //   height: '10000px'
     // }
     //
     // if (this.context.isLiveVue && !this.context.dataArrived) {
-    //   demoLog('LiveVueGatsby render out of Live Vue')
+    //   lvgDevLog('LiveVueGatsby render out of Live Vue')
     //   return <div style={bigStyle}>nada but big</div>
     // } else {
     //   return (
@@ -381,7 +397,7 @@ class ErrorBoundary extends React.Component {
 
   render () {
     if (this.state.hasError) {
-      demoLog('this.state.errMsg: ' + this.state.errMsg)
+      lvgDevLog('this.state.errMsg: ' + this.state.errMsg)
       // You can render any custom fallback UI
       return this.props.msg ? <div>{this.props.msg}</div> : <div>
         <h2>Sorry, something has gone wrong.</h2>
@@ -409,5 +425,5 @@ class ErrorBoundary extends React.Component {
 
 export {
   LiveVueGatsby,
-  LiveVueDataWrap
+  LiveVueData
 }
