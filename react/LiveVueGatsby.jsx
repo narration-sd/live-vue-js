@@ -60,11 +60,16 @@ function lvgDevLog (msg) {
  * Then in your Page render(), arrange the top level this way:
  * ```
  *    return (
- *      <LiveVueGatsby>
+ *      <LiveVueGatsby data={this.props.data}>
  *        ...your render tree...
  *      </LiveVueGatsby>
  *    )
  * ```
+ *
+ * You must always pass in the expected Page `this.props.data` to LiveVueGatsby,
+ * so that its communicating LiveVueData component will deliver either this or
+ * the freshly edited Craft preview content to your Page displaying components,
+ * automatically according to situation and need. That is Live Vue Gatsby.
  */
 class LiveVueGatsby extends Component {
 
@@ -308,7 +313,7 @@ class LiveVueGatsby extends Component {
  * in this way:
  * ```
  *    return (
- *      <LiveVueGatsby>
+ *      <LiveVueGatsby data={this.props.data}>
  *        <Layout>
  *          <LiveVueData>
  *            <YourExampleComponent data={this.props.data}/>
@@ -320,10 +325,18 @@ class LiveVueGatsby extends Component {
  * ```
  * Be sure to leave your current data prop for each
  * render component in place, so that Gatsby will use
- * current Craft headless data as normal in development
- * or build. Live Vue Gatsby will automatically substitute
- * the fresh content for each moment's change, during the
- * periods while you're editing in Craft Live Preview.
+ * current Craft headless data as normal in development,
+ * and for the build which complies your static Gatsby pages.
+ *
+ * Behind the scenes when you're editing in Craft Live Preview,
+ * this LiveVueData component will automatically substitute the
+ * fresh content for each moment's change into the React portion
+ * of those same website pages.
+ *
+ * This substitution and its display of new or altered content
+ * happens only as the pages appear in Craft. The live site stays
+ * the same, until you may rebuild it with results of such an edit,
+ * so that live pages always will have that Gatsby speed.
  */
 class LiveVueData extends Component {
   static contextType = LVGatsbyContext
