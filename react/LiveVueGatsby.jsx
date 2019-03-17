@@ -224,21 +224,12 @@ class LiveVueGatsby extends Component {
 
   render = () => {
 
-    // *todo* leaving this for the moment.
-    // As doesn't accomplish the intended, a safety on
-    // scroll recovery regardless of compiled html content
-    //
-    // const bigStyle = {
-    //   height: '10000px'
-    // }
-    //
-    // if (this.state.isLiveVue && !this.state.dataArrived) {
-    //   lvgDevLog('LiveVueGatsby render out of Live Vue')
-    //   return <div style={bigStyle}>nada but big</div>
-    // }
-
     lvgDevLog('begin LiveVueGatsby render')
     lvgDevLog(this.props)
+
+    // *todo* all but style of this preparation isn't needed unless we bring
+    // back Fades. If we might, unlikely, add a material-ui theme available
+    // to block entirely for public load.
 
     let style = {}
     let fadeIn = false
@@ -261,10 +252,6 @@ class LiveVueGatsby extends Component {
       style = { visibility: 'hidden', display: 'none' }
       // fadeInClass = ''
     }
-
-    // *todo* provide a material-ui theme available to block the Fade
-    // entirely for public load. If we need it, after clearing events
-    // and if we keep the Fade
     lvgDevLog('LiveVueGatsby fadeIn: ' + fadeIn +
       ', fadeTime: ' + fadeTime +
       ', style: ' + JSON.stringify(style))
@@ -283,11 +270,9 @@ class LiveVueGatsby extends Component {
       }>
         <React.Fragment>
           <ErrorBoundary>
-            {/*<Fade in={fadeIn} timeout={fadeTime}>*/}
             <div style={this.style}>
               {this.props.children}
             </div>
-            {/*</Fade>*/}
           </ErrorBoundary>
         </React.Fragment>
       </LVGatsbyContext.Provider>
