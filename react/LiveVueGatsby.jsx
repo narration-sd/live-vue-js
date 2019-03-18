@@ -104,10 +104,10 @@ class LiveVueGatsby extends Component {
     this.reporter = React.createRef() // *todo* to be used...will we?
   }
 
-  rearrangeToGatsbyData (craftResult) {
+  rearrangeToGatsbyData = (craftResult) => {
     // Now revise CraftQL's normal result into shape Gatsby expects, using the
-    // introducer element that we got from the pagge GraphQL query in the constructor.
-    // And let's not bring lodash in, so we'll do it by js array notation for objects
+    // introducer element that we got from the page GraphQL query in the constructor.
+    // Thus we're able to work with whatever that introducer turns out to be.
 
     let revisedResult = { data: {} }
     revisedResult.data[this.introducer] = craftResult.data
@@ -116,7 +116,7 @@ class LiveVueGatsby extends Component {
     return revisedResult
   }
 
-  inIframe () {
+  inIframe = () => {
     if (typeof window === `undefined`) {
       // abso necessary for build time with no window to check
       return false
@@ -200,7 +200,7 @@ class LiveVueGatsby extends Component {
   //   return this.state.isLiveVue // if not, not...
   // }
 
-  componentWillUpdate (nextProps, nextState, nextContext) {
+  componentWillUpdate = (nextProps, nextState, nextContext) => {
     if (this.state.isLiveVue) {
       this.location = window.location // window is safe here
       try {
