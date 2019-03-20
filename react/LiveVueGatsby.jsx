@@ -65,11 +65,13 @@ function lvgDevLog (msg) {
  *      </LiveVueGatsby>
  *    )
  * ```
- *
+ * ::: tip
+ * Passing in `this.props.data`
+ * :::
  * You must always pass in the expected Page `this.props.data` to LiveVueGatsby,
- * so that its communicating LiveVueData component will deliver either this or
- * the freshly edited Craft preview content to your Page displaying components,
- * automatically according to situation and need. That is Live Vue Gatsby.
+ * so that its communicating LiveVueData wraooer will deliver either this or the
+ * freshly edited Craft preview content to your Page displaying components,
+ * automatically according to situation and need. This is Live Vue Gatsby.
  */
 class LiveVueGatsby extends Component {
 
