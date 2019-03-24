@@ -89,7 +89,7 @@ class LiveVueGatsby extends Component {
     lvgDevLog(props.data)
 
     if (!props.data) {
-      const msg = 'LiveVueGatsby: a valid data prop is required, but yet provided!'
+      const msg = 'LiveVueGatsby: a valid data prop is required, but it\'s not yet provided!'
       if (typeof window !== 'undefined') {
         // likely fail will come in build, but if some dynamic case, show in app...
         document.write('<h2>Exiting: ' + msg + '</h2>')
