@@ -30,13 +30,14 @@ function lvgDevLog (msg) {
  * @classdesc This is the primary component to operate
  * Live Vue Gatsby
  *
- * @usage LiveVueGatsby communicates automatically
- * with the Live Vue Craft plugin, delivering your momentary
- * editing to the Gatsby page shown in the Craft Live Preview
- * panel. This gives you real time viewing of the result, each
+ * @usage LiveVueGatsby communicates automatically with
+ * the Live Vue Craft plugin, delivering your momentary editing
+ * to the Gatsby page shown in the Craft Live Preview panel.
+ *
+ * This gives you immediate real time viewing of the result, each
  * time a content text, image, etc. is altered. Even while you
  * do this, the currently compiled Gatsby page will continue
- * to be rapidly served and shown as normal on your website.
+ * to be rapidly served, and shown as normal on your website.
  *
  * @note As ever, to make use of a fresh
  * Live Vue/Live Preview edited result, you must save it
@@ -44,12 +45,46 @@ function lvgDevLog (msg) {
  * page/s in the usual manner which makes use of the Craft data.
  *
  * @description To use Live Vue editing for your Gatsby site,
- * you'll wrap the entire render tree of a Page with
- * this component, and then wrap the content portion of the
- * tree with the companion component described below,
- * LiveVueData.
+ * you'll add a small new component first, with the following code.
+ * A nice place for it is near the bottom, just above your pageQuery
+ * definition:
  *
- * @example At head of your page file, include  the following:
+ * ```
+ * const YourPage = ({ data }) => {
+ *
+ *  return (
+ *    <LiveVueGatsby data={data}>
+ *      <Layout>
+ *        <LiveVueData>
+ *          <YourPageBase data={data}/>
+ *        </LiveVueData>
+ *      </Layout>
+ *    </LiveVueGatsby>
+ *  )
+ *}
+ * ```
+ *
+ * Before you forget, rename it to your Page component name, then
+ * edit the enclosed YourPageBase to match, keeping the 'Base' part.
+ * Complete by adding 'Base' to your original Page component's name,
+ * and deleting the 'Layout' label from that component, both ends.
+ *
+ * This will leave you with your Page enclosed in the LiveVueGatsby
+ * wrapper, and with shorthand for a React Fragment giving you a
+ * div-less collector for your rendering components -- like so:
+ *
+ * ```
+ *    return (
+ *      <>
+ *        <YourRenderComponent1/>
+ *        <YourRenderComponent2 data={this.props.data}/>
+ *            ...the rest ofyour render tree...
+ *      </>
+ *    )
+ * ```
+ *
+ * That's all, except to add imports for Live Vue with the others
+ * at the head of your page file:
  * ```
  * import {
  *   LiveVueGatsby,
@@ -57,21 +92,22 @@ function lvgDevLog (msg) {
  * } from '../live-vue-js/react/LiveVueGatsby.jsx'
  ```
  *
- * Then in your Page render(), arrange the top level this way:
- * ```
- *    return (
- *      <LiveVueGatsby data={this.props.data}>
- *        ...your render tree...
- *      </LiveVueGatsby>
- *    )
- * ```
- * ::: tip
- * Passing in `this.props.data`
- * :::
- * You must always pass in the expected Page `this.props.data` to LiveVueGatsby,
- * so that its communicating LiveVueData wraooer will deliver either this or the
- * freshly edited Craft preview content to your Page displaying components,
- * automatically according to situation and need. This is Live Vue Gatsby.
+ * You're done!
+ *
+ * What we've accomplished is the two crucial needs for Live Vue.
+ *
+ * 1. The entire render of your Page is now controlled by LiveVueGatsby.
+ *    This arranges for proper updating during the previews we're enabling.
+ *
+ * 2. Your rendering components receive any 'data' prop they specify
+ *    as normal, but when your page is in Live Preview, this will be
+ *    substituted internally with the preview information in Craft.
+ *
+ * We've done this without disturbing anything about how you've
+ * originally designed and proved out your page.
+ *
+ * So adding Live Vue should be a very smooth process, as outlined
+ * in the documentation.
  */
 class LiveVueGatsby extends Component {
 
@@ -289,31 +325,14 @@ class LiveVueGatsby extends Component {
  * @usage LiveVueGatsby has received Live Preview/Live Vue
  * editing content from Craft, but we need to communicate it
  * now to your Page components. LiveVueGatsby does this
- * automatically, providing a data prop with the content.
+ * automatically.
  *
- * @description To complete installing Live Vue editing for
- * your Gatsby Page, enclose its render tree by inserting
- * a LiveVueData just below the Layout component,
- * and above your own Page components.
+ * @description You won't need to do anything special to your
+ * page design or dataflow to enable Live Vue.
  *
- * @example In your Page render(), arrange the completed result
- * in this way:
- * ```
- *    return (
- *      <LiveVueGatsby data={this.props.data}>
- *        <Layout>
- *          <LiveVueData>
- *            <YourExampleComponent data={this.props.data}/>
- *            ...your other render components...
- *          </LiveVueData>
- *        </Layout>
- *      </LiveVueGatsby>
- *    )
- * ```
- * Be sure to leave your current data prop for each
- * render component in place, so that Gatsby will use
- * current Craft headless data as normal in development,
- * and for the build which complies your static Gatsby pages.
+ * Do be sure to leave your data prop as normal for each
+ * render component that needs it, so that Gatsby will fill
+ * in the fast static html page information as expected.
  *
  * Behind the scenes when you're editing in Craft Live Preview,
  * this LiveVueData component will automatically substitute the
@@ -321,9 +340,11 @@ class LiveVueGatsby extends Component {
  * of those same website pages.
  *
  * This substitution and its display of new or altered content
- * happens only as the pages appear in Craft. The live site stays
- * the same, until you may rebuild it with results of such an edit,
- * so that live pages always will have that Gatsby speed.
+ * happens only as the pages appear in Craft editing.
+ *
+ * The live site stays the same, until you may rebuild it with
+ * results of such an edit, so that its pages always will have
+ * that full Gatsby speed.
  */
 class LiveVueData extends Component {
   static contextType = LVGatsbyContext
