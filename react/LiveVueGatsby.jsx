@@ -130,7 +130,7 @@ class LiveVueGatsby extends Component {
         // likely fail will come in build, but if some dynamic case, show in app...
         document.write('<h2>Exiting: ' + msg + '</h2>')
       }
-      throw new Error (msg)
+      throw new Error(msg)
     }
 
     // this little dance is JavaScript reflection
@@ -149,8 +149,9 @@ class LiveVueGatsby extends Component {
 
     let revisedResult = { data: {} }
     revisedResult.data[this.introducer] = craftResult.data
+    revisedResult.data['lvMeta'] = craftResult.lvMeta // power for decisions!
 
-    lvgDevLog ('rearrangeToGatsbyData result: ' + JSON.stringify(revisedResult))
+    lvgDevLog('rearrangeToGatsbyData result: ' + JSON.stringify(revisedResult))
     return revisedResult
   }
 
@@ -371,13 +372,15 @@ class LiveVueData extends Component {
     let childrenToUse =
       this.context.dataArrived &&
       this.context.data !== null
-      ? this.addDataToChildren(
+        ? this.addDataToChildren(
         this.props.children,
         this.context.data)
-      : this.props.children
+        : this.props.children
 
-    // *todo* this doesn't accomplish all-cases scroll recovery - later
-    // we will possibly re-institute an earlier extension on React's
+    // *todo*  This is actually taken care of, but leaving notes
+    // in case we run into the recent Gatsby-React 'choice' hard-lined...
+    // This doesn't actually accomplish all-cases scroll recovery - it
+    // will possibly need re-institute an earlier extension on React's
     //
     // const bigStyle = {
     //   height: '10000px'
@@ -385,7 +388,7 @@ class LiveVueData extends Component {
     //
     // if (this.context.isLiveVue && !this.context.dataArrived) {
     //   lvgDevLog('LiveVueGatsby render out of Live Vue')
-    //   return <div style={bigStyle}>nada but big</div>
+    //   return <div style={bigStyle}>test nada but big</div>
     // } else {
     //   return (
     //     childrenToUse
@@ -396,6 +399,23 @@ class LiveVueData extends Component {
       childrenToUse
     )
 
+  }
+}
+
+function LiveVueDisable (props) {
+
+  const defaultMessage = {
+    __html: '<h3>Disabled during Previews</h3>'
+  }
+
+  let replacement = typeof props.replacement !== 'undefined'
+    ? props.replacement
+    : <div dangerouslySetInnerHTML={defaultMessage}></div>
+
+  if (props && props.data && props.data.lvMeta && props.data.lvMeta.isLivePreview) {
+    return (replacement)
+  } else {
+    return props.children
   }
 }
 
@@ -418,33 +438,45 @@ class ErrorBoundary extends React.Component {
 
   render () {
     if (this.state.hasError) {
-      lvgDevLog('this.state.errMsg: ' + this.state.errMsg)
-      // You can render any custom fallback UI
-      return this.props.msg ? <div>{this.props.msg}</div> : <div>
-        <h2>Sorry, something has gone wrong.</h2>
-        <details style={{ whiteSpace: 'pre-wrap' }}>
-          {this.state.error && this.state.error.toString()}
+      console.log('React Error: this.state.errMsg: ' + this.state.errMsg)
+      const errMsgHtml = { __html: this.state.error }
+      return (
+        <div style={{backgroundColor: 'white',
+          padding: '20px', height: '100h', width: '100w'}}>
+          <h2>Sorry, something has gone wrong during React rendering.</h2>
+          <p>You're very likely to find a useful clue by using the
+            Error Decoder website link that's usually offered in
+            Details, just below. </p>
+          <p>This is React's method of providing quite useful error messages
+            for the compact runtime version. </p>
+          <details open style={{ whiteSpace: 'pre-wrap',
+            fontFamily: 'sans-serif', color: 'darkblue' }}>
+            {this.state.error && this.state.error.toString()}
+          </details>
           <br/>
-          {this.state.errorInfo.componentStack}
-        </details>
-        <div>
-          {this.state.errorInfo.componentStack}
+          <p>Normal troubleshooting practices then apply, and the clues from
+            the Decoder site, combined with a little backing off of recent
+            changes, will usually locate the problem quickly.</p>
+          <p>If needing to go further, you'll find a stack trace in the browser
+            console,which may show code you can recognize, generally two or
+            three levels down.</p>
+          <p>To get a more readable stack trace and results, you can set
+            the Webpack build not to minify -- search online for how
+            to do that with your current Gatsby version.</p>
         </div>
-        {/*// *todo* something to do here, or out?*/}
-        {/*<h3>{ this.state.errMsg }</h3>*/}
-        {/*<h3>{ this.state.errInfo }</h3>*/}
-      </div>
+      )
+    } else {
+      return (
+        <div>
+          {this.props.children}
+        </div>
+      )
     }
-
-    return (
-      <div>
-        {this.props.children}
-      </div>
-    )
   }
 }
 
 export {
   LiveVueGatsby,
-  LiveVueData
+  LiveVueData,
+  LiveVueDisable
 }
