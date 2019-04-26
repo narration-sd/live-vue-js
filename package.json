@@ -2,6 +2,9 @@
   "name": "live-vue-js",
   "version": "0.9.5",
   "dependencies": {
-
+    "@babel/core": "~7.3",
+    "@babel/polyfill": "^7.4.3",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1"
   }
 }
