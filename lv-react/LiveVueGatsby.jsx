@@ -5,7 +5,8 @@
  */
 
 import React, {Component} from 'react'
-import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
+// import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
+import SessionStorage from './StateStorage.js'
 // *todo* Gatsby may not need the modal; we have ErrorBoundary?
 // import LvModal from './lv-modal.jsx'
 
