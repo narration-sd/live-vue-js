@@ -5,20 +5,10 @@
  */
 
 import React, {Component} from 'react'
-// import SessionStorage from 'gatsby-react-router-scroll/StateStorage.js'
-import SessionStorage from './StateStorage.js'
-// *todo* Gatsby may not need the modal; we have ErrorBoundary?
-// import LvModal from './lv-modal.jsx'
+import ScrollStorage from 'gatsby-react-router-scroll/StateStorage.js'
 
-// *todo* out until we may return to using Fades, now rather not needed?
-// import './lv-fade-in-anim.css'
-// import Fade from '@material-ui/core/Fade'
-// import Reporter from './Reporter.jsx'
-
-// this is what makes the simple-to-use wrapping design work...
 const LVGatsbyContext = React.createContext('no Context')
 
-// *todo* until we select a general log package
 let lvgDevLogDev = false // clean unless desired
 
 function lvgDevLog (msg) {
@@ -118,6 +108,9 @@ class LiveVueGatsby extends Component {
     isLiveVue: false,
     editFadeDuration: 802 // identifiable
   }
+
+  scrollStore = new ScrollStorage()
+
 
   constructor (props) {
     super(props)
@@ -235,20 +228,15 @@ class LiveVueGatsby extends Component {
     window.removeEventListener('message', this.receiveMessage)
   }
 
-  // nice if this would help us, but it won't
-  // shouldComponentUpdate (nextProps, nextState, nextContext) {
-  //   return this.state.isLiveVue // if not, not...
-  // }
-
   componentWillUpdate = (nextProps, nextState, nextContext) => {
     if (this.state.isLiveVue) {
       this.location = window.location // window is safe here
+      this.location.key = 'initial'
       try {
-        const currentPosition = new SessionStorage().read(this.location, null)
+        const currentPosition = this.scrollStore.read(this.location, null)
         if (currentPosition) {
           lvgDevLog('scrolling to: ' + JSON.stringify(currentPosition))
-          let x, y
-          [x, y] = currentPosition
+          let [x, y] = currentPosition
           window.scrollTo(x, y)
         }
       } catch (e) {
@@ -378,24 +366,6 @@ class LiveVueData extends Component {
         this.context.data)
         : this.props.children
 
-    // *todo*  This is actually taken care of, but leaving notes
-    // in case we run into the recent Gatsby-React 'choice' hard-lined...
-    // This doesn't actually accomplish all-cases scroll recovery - it
-    // will possibly need re-institute an earlier extension on React's
-    //
-    // const bigStyle = {
-    //   height: '10000px'
-    // }
-    //
-    // if (this.context.isLiveVue && !this.context.dataArrived) {
-    //   lvgDevLog('LiveVueGatsby render out of Live Vue')
-    //   return <div style={bigStyle}>test nada but big</div>
-    // } else {
-    //   return (
-    //     childrenToUse
-    //   )
-    // }
-
     return (
       childrenToUse
     )
@@ -427,14 +397,11 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch (error, info) {
-    // *todo* Display fallback UI?
     this.setState({
       hasError: true,
       error: error,
       errorInfo: info
     })
-    // You can also log the error to an error reporting service
-    // logErrorToMyService(error, info);
   }
 
   render () {
