@@ -1,7 +1,7 @@
 {
   "name": "live-vue-js",
-  "version": "0.9.71",
-  "description": "ES6 library for Craft Live View on Vue or similar components",
+  "version": "0.9.72",
+  "description": "ES6 library for Craft plugin Live Vue",
   "license": "SEE LICENSE IN License.md",
   "author": {
     "name": "Narration SD",
