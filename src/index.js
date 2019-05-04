@@ -1,5 +1,4 @@
-const LiveVueGatsby = require('./react/LiveVueGatsby.jsx')
+// import * as lib from './react/LiveVueGatsby.jsx'
 
-module.exports = {
-  gatsby: LiveVueGatsby
-}
+export * from './react/LiveVueGatsby.jsx'
+export * from './react/Reporter.jsx'

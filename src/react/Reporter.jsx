@@ -5,7 +5,7 @@
  */
 
 import React, {Component} from 'react'
-import LvModal from 'src/react/lv-modal.jsx'
+import LvModal from './lv-modal.jsx'
 
 class Reporter extends Component {
   constructor (props) {
