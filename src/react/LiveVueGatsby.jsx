@@ -35,10 +35,10 @@ function lvgDevLog (msg) {
  * as the current version in Craft, then rebuild your Gatsby
  * page/s in the usual manner which makes use of the Craft data.
  *
- * @description To use Live Vue editing for your Gatsby site,
- * you'll add a small new component first, with the following code.
- * A nice place for it is near the bottom, just above your pageQuery
- * definition:
+ * @description To use Live Vue editing for your existing Gatsby page,
+ * you'll most easily  add a small new component first, with the
+ * following code. A nice place for it is near the bottom, just
+ * above your pageQuery definition:
  *
  * ```
  * const YourPage = ({ data }) => {
@@ -60,9 +60,10 @@ function lvgDevLog (msg) {
  * Complete by adding 'Base' to your original Page component's name,
  * and deleting the 'Layout' label from that component, both ends.
  *
- * This will leave you with your Page enclosed in the LiveVueGatsby
- * wrapper, and with shorthand for a React Fragment giving you a
- * div-less collector for your rendering components -- like so:
+ * This will accomplish enclosing your original page design in the
+ * LiveVueGatsby wrapper, and with the shorthand for a React Fragment
+ * giving you a div-less collector for your rendering components
+ * -- like so:
  *
  * ```
  *    return (
@@ -75,12 +76,13 @@ function lvgDevLog (msg) {
  * ```
  *
  * That's all, except to add imports for Live Vue with the others
- * at the head of your page file:
+ * at the head of your page file, after you've installed live-vue-js
+ * via npm:
  * ```
  * import {
  *   LiveVueGatsby,
  *   LiveVueData
- * } from '../live-vue-js/react/LiveVueGatsby.jsx'
+ * } from 'live-vue-js'
  ```
  *
  * You're done!
@@ -94,11 +96,17 @@ function lvgDevLog (msg) {
  *    as normal, but when your page is in Live Preview, this will be
  *    substituted internally with the preview information in Craft.
  *
- * We've done this without disturbing anything about how you've
+ *  3. Though we haven't shown it here, you can enclose your components
+ *     at any level in their hierarchy by LiveVueData, which will always
+ *     substitute preview data for the data prop you've passed them as
+ *     normal.
+ *
+ * We've done these things without disturbing anything about how you've
  * originally designed and proved out your page.
  *
  * So adding Live Vue should be a very smooth process, as outlined
- * in the documentation.
+ * in the documentation. You'll find there and in the example pages also
+ * how to construct a Live Vue page from scratch, which straightforward.
  */
 class LiveVueGatsby extends Component {
 
@@ -335,6 +343,11 @@ class LiveVueGatsby extends Component {
  * The live site stays the same, until you may rebuild it with
  * results of such an edit, so that its pages always will have
  * that full Gatsby speed.
+ *
+ * n.b. As mentioned with LiveVueGatsby above, you can use LiveVueData
+ * to surround components at any level in your page hierarchy. It will
+ * always receive the full preview data, substituting for the data prop
+ * of the enclosed component when Live Vue is in use.
  */
 class LiveVueData extends Component {
   static contextType = LVGatsbyContext
@@ -373,6 +386,27 @@ class LiveVueData extends Component {
   }
 }
 
+/**
+ * @classdesc This is a component that can be very handy in
+ * a Craft Live Preview situation. It allows you to disable controls
+ * in your app that could be problematic, like a menu that could
+ * move from the page in preview.
+ *
+ * @usage To use LiveVueDisable, just surround your problem component
+ * or group with it, as:
+ * ```
+ *   <LiveVueDisable>
+ *     ...your component/s...
+ *   </LiveVueDisable>
+ * ```
+ *
+ * By default, an h3 'Disabled during Previews' message will replace what's
+ * surrounded during Live Vue/Live Preview.
+ *
+ * You can change this message by passing in a suitable replacement as a
+ * prop named `replacement`. The replacement will be rendered as content of
+ * a div.
+ */
 function LiveVueDisable (props) {
 
   const defaultMessage = {

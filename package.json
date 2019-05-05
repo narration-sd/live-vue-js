@@ -2,12 +2,13 @@
   "name": "live-vue-js",
   "version": "0.9.72",
   "description": "ES6 library for Craft plugin Live Vue",
-  "license": "SEE LICENSE IN License.md",
+  "license": "SEE LICENSE IN LICENSE.md",
   "author": {
     "name": "Narration SD",
     "url": "https://narrationsd.com"
   },
   "main": "build/index.js",
+  "sideEffects": false,
   "peerDependencies": {
     "react": "^16.4.0",
     "react-dom": "^16.8.6"
