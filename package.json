@@ -1,11 +1,15 @@
 {
   "name": "live-vue-js",
-  "version": "0.9.73",
+  "version": "0.9.75",
   "description": "ES6 library for Craft plugin Live Vue",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": {
     "name": "Narration SD",
     "url": "https://narrationsd.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/narration-sd/live-vue-js.git"
   },
   "main": "build/index.js",
   "sideEffects": false,
@@ -36,8 +40,8 @@
     "webpack-cli": "^3.3.1"
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions",
+    ">0.25%",
+    "not dead",
     "not ie <= 10"
   ]
 }
