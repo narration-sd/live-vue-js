@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-## 0.9.77 - 2019-05-27
+## 0.9.77 - 0.9.78 - 2019-05-27
 - @narration-sd/live-vue-js namespace scope
+- correct npm-js.org issue
 
 ## 0.9.75 - 2019-05-26
 - updated copyrights
