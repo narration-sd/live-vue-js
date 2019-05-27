@@ -1,6 +1,6 @@
 {
-  "name": "live-vue-js",
-  "version": "0.9.75",
+  "name": "@narration-sd/live-vue-js",
+  "version": "0.9.76",
   "description": "ES6 library for Craft plugin Live Vue",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": {
@@ -19,7 +19,10 @@
   },
   "scripts": {
     "start": "webpack --watch",
-    "build": "webpack"
+    "build": "webpack",
+    "drypub": "npm publish --access public --dry-run",
+    "publish": "npm publish --access public",
+    "vpublish": "npm publish --registry http://localhost:4873"
   },
   "dependencies": {
     "gatsby-react-router-scroll": "^2.0.7",

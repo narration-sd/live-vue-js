@@ -7,4 +7,7 @@
 - Added and re-capitalized standard repo introductory files -- headed towards Public Beta.
 - sideeffects false in package.json, to enable treeshaking.
 
-
+## 0.9.75 - 2019-05-26
+- copyrights
+- suitable in-component doc
+- treeshakeability
