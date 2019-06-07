@@ -52,9 +52,6 @@ class LiveVueGatsby extends Component {
     editFadeDuration: 802 // identifiable
   }
 
-  scrollStore = new ScrollStorage()
-
-
   constructor (props) {
     super(props)
 
@@ -161,25 +158,36 @@ class LiveVueGatsby extends Component {
     }
   }
 
+  getPageKey = () => {
+    return '%%live-vue-pos' + '|' + window.location.pathname
+  }
+
+  holdPosition = (e) => {
+     if (this.state.dataArrived) { // thus only for the live vue preview page's size
+       window.sessionStorage.setItem(this.getPageKey(),
+         JSON.stringify([ window.scrollX, window.scrollY ]))
+     }
+   }
+
   componentDidMount = () => {
     this.receiveMessage = this.receiveMessage.bind(this)
     window.addEventListener('message', this.receiveMessage, false)
+    window.addEventListener('unload', this.holdPosition)
     window.parent.postMessage('loaded', '*')
   }
 
   componentWillUnmount = () => {
     window.removeEventListener('message', this.receiveMessage)
+    window.removeEventListener('unload', this.holdPosition)
   }
 
   componentWillUpdate = (nextProps, nextState, nextContext) => {
     if (this.state.isLiveVue) {
-      this.location = window.location // window is safe here
-      this.location.key = 'initial'
-      try {
-        const currentPosition = this.scrollStore.read(this.location, null)
+       try {
+        const currentPosition = JSON.parse(window.sessionStorage.getItem(this.getPageKey()))
         if (currentPosition) {
           lvgDevLog('scrolling to: ' + JSON.stringify(currentPosition))
-          let [x, y] = currentPosition
+          const [x, y] = currentPosition
           window.scrollTo(x, y)
         }
       } catch (e) {
@@ -272,6 +280,14 @@ class LiveVueData extends Component {
 
     return React.Children.map(children, child => {
 
+      // could recurse to get them all the way down, but...
+      // in truth usually there's a div in the way, so this
+      // wouldn't work (not React, no children). So better to
+      // be consistent with the <LiveVueData> surround everywhere
+      // substitution's expected, like inner <LiveVueDisable>,
+      // and this avoids any possible dangers from odd elements.
+      // The recursion out: this.addDataToChildren(child.children, data)
+
       // React mis-recognizes <Elements> that aren't its own,
       // and then, passes them as empty strings.
       // Also, children can be null. I ask you.
@@ -320,8 +336,11 @@ class LiveVueData extends Component {
  * surrounded during Live Vue/Live Preview.
  *
  * You can change this message by passing in a suitable replacement as a
- * prop named `replacement`. The replacement will be rendered as content of
- * a div.
+ * JSX prop named `replacement`, as:
+ * ```
+ *   <LiveVueDisable replacement={<h3>This menu disabled during previews...</h3>}
+ * ```
+ * The replacement will be rendered as innerHtml content of a div.
  */
 function LiveVueDisable (props) {
 
@@ -363,10 +382,10 @@ class ErrorBoundary extends React.Component {
           padding: '20px', height: '100h', width: '100w'}}>
           <h2>Sorry, something has gone wrong during React rendering.</h2>
           <p>You're very likely to find a useful clue by using the
-            Error Decoder website link that's usually offered in
-            Details, just below. </p>
-          <p>This is React's method of providing quite useful error messages
-            for the compact runtime version. </p>
+            direct tip or Error Decoder website link that's usually
+            offered under Details, just below. </p>
+          <p>The decoder if offered is React's method of providing quite
+            useful error messages for the compact runtime version. </p>
           <details open style={{ whiteSpace: 'pre-wrap',
             fontFamily: 'sans-serif', color: 'darkblue' }}>
             {this.state.error && this.state.error.toString()}
