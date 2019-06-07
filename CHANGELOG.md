@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 0.9.79-beta.0
+## 0.9.79-beta.0 - 0.9.80-beta.0
 
 - replace Gatsby scroll recovery with our own, fixing its failure on home pages.
 - this also looks like the last Gatsby dependency out, towards futures
