@@ -1,6 +1,6 @@
 {
   "name": "@narration-sd/live-vue-js",
-  "version": "0.9.82-beta.2",
+  "version": "0.9.83-beta.3",
   "description": "ES6 library for Craft plugin Live Vue",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": {
@@ -22,6 +22,8 @@
     "build": "webpack",
     "drypub": "npm publish --access public --dry-run",
     "publish": "npm publish --access public",
+    "bpub": "npm publish --access public --tag beta",
+    "rpub": "npm publish --access public --tag rc",
     "vpub": "npm publish --registry http://localhost:4873"
   },
   "dependencies": {
