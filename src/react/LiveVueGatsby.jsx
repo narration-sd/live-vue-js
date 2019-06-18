@@ -5,7 +5,7 @@
  */
 
 import React, {Component} from 'react'
-import ScrollStorage from 'gatsby-react-router-scroll/StateStorage.js'
+import ScrollMem from  '../common/ScrollMem.js'
 
 const LVGatsbyContext = React.createContext('no Context')
 
@@ -138,6 +138,8 @@ class LiveVueGatsby extends Component {
             obj = this.rearrangeToGatsbyData(obj)
             lvgDevLog('json rearranged; obj is: ' + JSON.stringify(obj))
 
+            ScrollMem.setUp() // correct spot for this, as React is leaving on setState()
+
             lvgDevLog('setting state data arrived')
             // there should be only one...
             this.setState({
@@ -157,42 +159,21 @@ class LiveVueGatsby extends Component {
       lvgDevLog('no data')
     }
   }
-
-  getPageKey = () => {
-    return '%%live-vue-pos' + '|' + window.location.pathname
-  }
-
-  holdPosition = (e) => {
-     if (this.state.dataArrived) { // thus only for the live vue preview page's size
-       window.sessionStorage.setItem(this.getPageKey(),
-         JSON.stringify([ window.scrollX, window.scrollY ]))
-     }
-   }
-
+  
   componentDidMount = () => {
     this.receiveMessage = this.receiveMessage.bind(this)
     window.addEventListener('message', this.receiveMessage, false)
-    window.addEventListener('unload', this.holdPosition)
     window.parent.postMessage('loaded', '*')
   }
 
   componentWillUnmount = () => {
     window.removeEventListener('message', this.receiveMessage)
-    window.removeEventListener('unload', this.holdPosition)
+    ScrollMem.takeDown()
   }
 
   componentWillUpdate = (nextProps, nextState, nextContext) => {
     if (this.state.isLiveVue) {
-       try {
-        const currentPosition = JSON.parse(window.sessionStorage.getItem(this.getPageKey()))
-        if (currentPosition) {
-          lvgDevLog('scrolling to: ' + JSON.stringify(currentPosition))
-          const [x, y] = currentPosition
-          window.scrollTo(x, y)
-        }
-      } catch (e) {
-        lvgDevLog('no currentPosition yet: ' + e)
-      }
+      ScrollMem.remember()
     }
   }
 
@@ -381,22 +362,30 @@ class ErrorBoundary extends React.Component {
         <div style={{backgroundColor: 'white',
           padding: '20px', height: '100h', width: '100w'}}>
           <h2>Sorry, something has gone wrong during React rendering.</h2>
-          <p>You're very likely to find a useful clue by using the
+          <p>You're likely to find a useful clue by using the
             direct tip or Error Decoder website link that's usually
             offered under Details, just below. </p>
           <p>The decoder if offered is React's method of providing quite
-            useful error messages for the compact runtime version. </p>
+            useful error messages for the compact runtime version, and
+            its messages when available are often quite good. </p>
           <details open style={{ whiteSpace: 'pre-wrap',
             fontFamily: 'sans-serif', color: 'darkblue' }}>
             {this.state.error && this.state.error.toString()}
           </details>
           <br/>
-          <p>Normal troubleshooting practices then apply, and the clues from
+          <p><i>A first thing to try, which may often clear a problem that shows here,
+            is to freshly copy the query from your latest Gatsby /src page into its Route rule,
+            and save this updated Yaml config to your server -- then try the preview again.</i></p>
+          <p><i>This will correct (or make more visible) errors that can occur only for preview
+            data, and thus wouldn't have shown up in your initial tests of the currently built
+            Gatsby page itself (which you should always make for all data that needs to show,
+            before previewing).</i></p>
+          <p>If refreshing the query this way doesn't help, then normal troubleshooting
+            practices apply, and any clues linked from
             the Decoder site, combined with a little backing off of recent
-            changes, will usually locate the problem quickly.</p>
+            changes, will usually locate the problem for you rapidly.</p>
           <p>If needing to go further, you'll find a stack trace in the browser
-            console,which may show code you can recognize, generally two or
-            three levels down.</p>
+            console,which may show code you can recognize, at or near its top level.</p>
           <p>To get a more readable stack trace and results, you can set
             the Webpack build not to minify -- search online for how
             to do that with your current Gatsby version.</p>
