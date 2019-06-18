@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.9.81-beta.1 - 0.9.82-beta.2
+
+### Changed
+- detached ScrollMem to module for later sharing
+- upgraded to improve ErrorBoundary response
+- provided ScrollMemNonEs6 as offshoot for other projects
+- Changelist formatting now more like standard...
+
 ## 0.9.79-beta.0 - 0.9.80-beta.0
 
 - replace Gatsby scroll recovery with our own, fixing its failure on home pages.

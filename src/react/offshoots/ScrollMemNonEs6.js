@@ -12,11 +12,11 @@ function rememberPosition (e) {
 }
 
 function scrollSetUpPositioning () {
-  window.addEventListener('unload', this.rememberPosition);
+  window.addEventListener('unload', rememberPosition);
 }
 
 function scrollTakeDownPositioning () {
-  window.removeEventListener('unload', this.rememberPosition);
+  window.removeEventListener('unload', rememberPosition);
 }
 
 function scrollSetRememberedPosition () {
