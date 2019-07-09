@@ -49,6 +49,7 @@ class LiveVueGatsby extends Component {
     liveVueData: null,
     dataArrived: false,
     isLiveVue: false,
+    isLivePreview: false,
     editFadeDuration: 802 // identifiable
   }
 
@@ -128,22 +129,27 @@ class LiveVueGatsby extends Component {
             throw new Error('no data from Live Preview!')
           }
 
+          let isLivePreview = obj.lvMeta
+            ? obj.lvMeta.isLivePreview
+            : false
+
           let editFadeDuration = obj.lvMeta
             ? obj.lvMeta.editFadeDuration
             : 0 // default, which share will use
 
           lvgDevLog('receive editFadeDuration: ' + editFadeDuration)
+          lvgDevLog('receive isLivePreview: ' + isLivePreview)
 
           if (Object.keys(obj.data).length > 0) {
             obj = this.rearrangeToGatsbyData(obj)
             lvgDevLog('json rearranged; obj is: ' + JSON.stringify(obj))
-
             ScrollMem.setUp() // correct spot for this, as React is leaving on setState()
 
             lvgDevLog('setting state data arrived')
             // there should be only one...
             this.setState({
               liveVueData: obj.data,
+              isLivePreview: isLivePreview,
               editFadeDuration: editFadeDuration,
               dataArrived: true
             })
@@ -219,6 +225,7 @@ class LiveVueGatsby extends Component {
       <LVGatsbyContext.Provider value={
         {
           isLiveVue: this.state.isLiveVue,
+          isLivePreview: this.state.isLivePreview,
           dataArrived: this.state.dataArrived,
           editFadeDuration: this.state.editFadeDuration,
           data: this.state.dataArrived
@@ -323,23 +330,34 @@ class LiveVueData extends Component {
  * ```
  * The replacement will be rendered as innerHtml content of a div.
  */
-function LiveVueDisable (props) {
 
-  const defaultMessage = {
-    __html: '<h3>Disabled during Previews</h3>'
-  }
+class LiveVueDisable extends Component {
+  // n.b. we could have done this with the new hotness, Hooks,
+  // but then earlier React versions would falter...
+  static contextType = LVGatsbyContext
 
-  let replacement = typeof props.replacement !== 'undefined'
-    ? props.replacement
-    : <div dangerouslySetInnerHTML={defaultMessage}></div>
+  render() {
 
-  if (props && props.data && props.data.lvMeta && props.data.lvMeta.isLivePreview) {
-    return (replacement)
-  } else {
-    return props.children
+    const defaultMessage = {
+      __html: '<h3>Disabled during Previews</h3>'
+    }
+
+    let replacement = typeof this.props.replacement !== 'undefined'
+      ? this.props.replacement
+      : <div dangerouslySetInnerHTML={defaultMessage}></div>
+
+    if (this.context.isLivePreview) {
+      return (replacement)
+    } else {
+      return this.props.children
+    }
   }
 }
 
+/*
+ * We formulate our response to React internal errors in the sense of Hal,
+ * guiding thoughtfully to likely solutions.
+ */
 class ErrorBoundary extends React.Component {
   constructor (props) {
     super(props)

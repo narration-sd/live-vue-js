@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.9.84-beta.4 - 2019-07-08
+
+### Changed
+# LiveVueDisable now context-based, best for versions
+# removed offshoots folder, was dev temporary
+
 ## 0.9.83-beta.3 - 2019-06-17
 
 ### Changed
